@@ -80,6 +80,7 @@ private void StartScenario()
 
     private void EndGame()
     {
+        Debug.Log("게임 종료");
     }
 
     // 현재 밤/낮 상태와 현재 웨이브를 출력하는 메서드
