@@ -3,13 +3,11 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public UIManager uiManager;
-    public ObjectManager objectManager;
-
     // 게임 상수
     private const float DAY_DURATION = 90f;
     private const float NIGHT_DURATION = 60f;
     private const float SCENARIO_DURATION = 30f;
+    private const float NIGHT_DURATION_WAVE2 = 90f;
 
     // 게임 변수
     private int currentWave = 1;
@@ -34,27 +32,21 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void StartScenario()
-    {
-        uiManager.UpdateGameState("Scenario");
-        objectManager.InitializeObjects("Scenario");
-        StartCoroutine(GameTimer(SCENARIO_DURATION));
-    }
+private void StartScenario()
+{
+    StartCoroutine(GameTimer(SCENARIO_DURATION));
+}
 
     public void StartDay()
     {
         isNight = false;
-        uiManager.UpdateGameState("Day");
-        objectManager.InitializeObjects("Day");
         StartCoroutine(GameTimer(DAY_DURATION));
     }
 
     public void StartNight()
     {
         isNight = true;
-        uiManager.UpdateGameState("Night");
-        objectManager.InitializeObjects("Night");
-        float duration = (currentWave == 2) ? 90f : NIGHT_DURATION;
+        float duration = (currentWave == 2) ? NIGHT_DURATION_WAVE2 : NIGHT_DURATION;
         StartCoroutine(GameTimer(duration));
     }
 
@@ -63,7 +55,6 @@ public class GameManager : MonoBehaviour
         float remainingTime = duration;
         while (remainingTime > 0)
         {
-            uiManager.UpdateTimer(remainingTime);
             yield return new WaitForSeconds(1);
             remainingTime--;
         }
@@ -102,12 +93,9 @@ public class GameManager : MonoBehaviour
     // Update 호출 시, I 키를 누르면 현재 상태를 출력
     void Update()
     {
-        HandleMovement();
-
         if (Input.GetKeyDown(KeyCode.I))
         {
             PrintCurrentState();
         }
     }
-
 }
