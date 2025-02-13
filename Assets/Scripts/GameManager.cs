@@ -92,8 +92,22 @@ public class GameManager : MonoBehaviour
         uiManager.ShowGameResult();
     }
 
+    // 현재 밤/낮 상태와 현재 웨이브를 출력하는 메서드
+    private void PrintCurrentState()
+    {
+        string timeOfDay = isNight ? "밤" : "낮";
+        Debug.Log($"현재는 {timeOfDay}이며, {currentWave} 웨이브입니다.");
+    }
+
+    // Update 호출 시, I 키를 누르면 현재 상태를 출력
     void Update()
     {
         HandleMovement();
+
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            PrintCurrentState();
+        }
     }
+
 }
