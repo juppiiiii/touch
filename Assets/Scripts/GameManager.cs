@@ -9,14 +9,16 @@ public class GameManager : MonoBehaviour
     private const float SCENARIO_DURATION = 30f;
     private const float NIGHT_DURATION_WAVE2 = 90f;
 
-    // 게임 변수
-    public int currentWave = 1;
-    public bool isNight = false;
-    public float sanityGauge = 100f;
-    public float endingGauge = 0f;
-
-    // 타이머 경과 시간을 다른 매니저에서 가져다 쓸 수 있도록 public 프로퍼티 추가
+    // 게임 변수, 프로퍼티, 가져다 쓰는 메서드
+    public int CurrentWave { get; private set; } = 1;    
     public float TimerElapsed { get; private set; }
+    public bool IsNight { get; private set; }
+
+    // 게임 변수, 프로퍼티, 업데이트 가능
+    public float SanityGauge { get; set; } = 100f;
+    public float EndingGauge { get; set; } = 0f;
+
+
 
     void Start()
     {
@@ -25,7 +27,7 @@ public class GameManager : MonoBehaviour
 
     public void StartWave()
     {
-        if (currentWave == 1 || currentWave == 6)
+        if (CurrentWave == 1 || CurrentWave == 6)
         {
             StartScenario();
         }
@@ -42,14 +44,14 @@ public class GameManager : MonoBehaviour
 
     public void StartDay()
     {
-        isNight = false;
+        IsNight = false;
         StartCoroutine(GameTimer(DAY_DURATION));
     }
 
     public void StartNight()
     {
-        isNight = true;
-        float duration = (currentWave == 2) ? NIGHT_DURATION_WAVE2 : NIGHT_DURATION;
+        IsNight = true;
+        float duration = (CurrentWave == 2) ? NIGHT_DURATION_WAVE2 : NIGHT_DURATION;
         StartCoroutine(GameTimer(duration));
     }
 
@@ -69,13 +71,13 @@ public class GameManager : MonoBehaviour
 
     private void OnTimeOver()
     {
-        if (currentWave == 6 && isNight)
+        if (CurrentWave == 6 && IsNight)
         {
             EndGame();
         }
-        else if (isNight)
+        else if (IsNight)
         {
-            currentWave++;
+            CurrentWave++;
             StartWave();
         }
         else
@@ -92,8 +94,8 @@ public class GameManager : MonoBehaviour
     // 현재 밤/낮 상태와 현재 웨이브를 출력하는 메서드
     private void PrintCurrentState()
     {
-        string timeOfDay = isNight ? "밤" : "낮";
-        Debug.Log($"현재는 {timeOfDay}이며, {currentWave} 웨이브입니다.");
+        string timeOfDay = IsNight ? "밤" : "낮";
+        Debug.Log($"현재는 {timeOfDay}이며, {CurrentWave} 웨이브입니다.");
     }
 
     // Update 호출 시, I 키를 누르면 현재 상태를 출력
