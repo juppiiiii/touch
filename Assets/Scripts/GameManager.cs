@@ -33,6 +33,9 @@ public class GameManager : MonoBehaviour
     public float SanityGauge { get; set; } = 100f;
     public float EndingGauge { get; set; } = 0f;
 
+    private bool isPaused = false;
+    private Coroutine currentTimerCoroutine;
+
     void Start()
     {
         StartWave();
@@ -52,20 +55,32 @@ public class GameManager : MonoBehaviour
 
     private void StartScenario()
     {
-        StartCoroutine(GameTimer(SCENARIO_DURATION));
+        if (currentTimerCoroutine != null)
+        {
+            StopCoroutine(currentTimerCoroutine);
+        }
+        currentTimerCoroutine = StartCoroutine(GameTimer(SCENARIO_DURATION));
     }
 
     public void StartDay()
     {
         IsNight = false;
-        StartCoroutine(GameTimer(DAY_DURATION));
+        if (currentTimerCoroutine != null)
+        {
+            StopCoroutine(currentTimerCoroutine);
+        }
+        currentTimerCoroutine = StartCoroutine(GameTimer(DAY_DURATION));
     }
 
     public void StartNight()
     {
         IsNight = true;
+        if (currentTimerCoroutine != null)
+        {
+            StopCoroutine(currentTimerCoroutine);
+        }
         float duration = (CurrentWave == 2) ? NIGHT_DURATION_WAVE2 : NIGHT_DURATION;
-        StartCoroutine(GameTimer(duration));
+        currentTimerCoroutine = StartCoroutine(GameTimer(duration));
     }
 
     // 기존 WaitForSeconds를 사용한 초 단위 업데이트 대신,
@@ -75,10 +90,13 @@ public class GameManager : MonoBehaviour
         TimerElapsed = 0f;  // 타이머 초기화
         while (TimerElapsed < duration)
         {
-            TimerElapsed += Time.deltaTime; // 매 프레임 경과 시간 누적
+            if (!isPaused)  // 일시정지 상태가 아닐 때만 시간이 흐름
+            {
+                TimerElapsed += Time.deltaTime;
+            }
             yield return null;
         }
-        TimerElapsed = duration;  // 정확한 값 보정
+        TimerElapsed = duration;
         OnTimeOver();
     }
 
@@ -104,11 +122,13 @@ public class GameManager : MonoBehaviour
         Debug.Log("게임 종료");
     }
 
-    // 현재 밤/낮 상태와 현재 웨이브를 출력하는 메서드
+    // 현재 게임 상태를 출력하는 메서드
     private void PrintCurrentState()
     {
         string timeOfDay = IsNight ? "밤" : "낮";
-        Debug.Log($"현재는 {timeOfDay}이며, {CurrentWave} 웨이브입니다.");
+        string pauseState = isPaused ? "일시정지" : "진행중";
+        Debug.Log($"[게임 상태] {CurrentWave}웨이브 / {timeOfDay} / {pauseState}");
+        Debug.Log($"[타이머] 경과 시간: {TimerElapsed:F1}초");
     }
 
     // Update 호출 시, I 키를 누르면 현재 상태를 출력
@@ -118,11 +138,38 @@ public class GameManager : MonoBehaviour
         {
             PrintCurrentState();
         }
+
+        // 타이머 일시정지/재개 토글 (추후 삭제)
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            if (isPaused)
+            {
+                ResumeTimer();
+                Debug.Log("타이머 재개");
+            }
+            else
+            {
+                PauseTimer();
+                Debug.Log("타이머 일시정지");
+            }
+        }
     }
 
-    // 다른 매니저에서 타이머 경과시간을 가져다 쓰고 싶다면 아래 메서드를 사용해도 
+    // 다른 매니저에서 타이머 경과시간을 가져다 쓰고 싶다면 아래 메서드를 사용
     public float GetTimerElapsed()
     {
         return TimerElapsed;
+    }
+
+    // 타이머 일시정지
+    public void PauseTimer()
+    {
+        isPaused = true;
+    }
+
+    // 타이머 재개
+    public void ResumeTimer()
+    {
+        isPaused = false;
     }
 }
