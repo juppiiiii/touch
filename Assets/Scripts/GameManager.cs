@@ -3,6 +3,21 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    // 싱글톤 인스턴스
+    public static GameManager Instance { get; private set; }
+
+    private void Awake()
+    {
+        // 싱글톤 패턴 구현
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);  // 씬 전환시에도 유지
+    }
+
     // 게임 상수
     private const float DAY_DURATION = 90f;
     private const float NIGHT_DURATION = 60f;
@@ -17,8 +32,6 @@ public class GameManager : MonoBehaviour
     // 게임 변수, 프로퍼티, 업데이트 가능
     public float SanityGauge { get; set; } = 100f;
     public float EndingGauge { get; set; } = 0f;
-
-
 
     void Start()
     {
