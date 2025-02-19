@@ -2,10 +2,21 @@
 
 public class NCControl : MonoBehaviour
 {
+	private Material material;
+	private float originOutLineWidth;
+	private float highlightOutLineWidth = 0.03f;
     public GameObject obj;
 	//washing 과 trash 의 위치는 병합되고서 실제 washing과 trash의 위치에 맞춰 변동되어야 함
 	private Vector3 washing = new Vector3(7, 0, 0);
 	private Vector3 trash = new Vector3(3, 0, -4);
+
+	void Start()
+	{
+		// 오브젝트의 Material 복제하기
+		material = new Material(GetComponent<Renderer>().material);
+		GetComponent<Renderer>().material = material;
+		originOutLineWidth = material.GetFloat("_OutlineWidth");
+	}
 	private void Update()
 	{
 		//정리가 잘된 경우 - 이때는 어떤 이득이 있는건지?(미구현) + 오브젝트 제거
@@ -24,14 +35,15 @@ public class NCControl : MonoBehaviour
 		}
 	}
 
-	private void OnMouseOver()
+	void OnMouseOver()
 	{
-		//마우스가 위에 올라가있는 경우 테두리가 빛남(미구현)
-        Debug.Log("마우스 감지.");
+		material.SetFloat("_OutlineWidth", highlightOutLineWidth);
+		Debug.Log("마우스 감지. 현재 테두리 두께: " + material.GetFloat("_OutlineWidth"));
 	}
-	private void OnMouseExit()
+
+	void OnMouseExit()
 	{
-		//마우스가 위에서 내려왔을 경우 테두리가 빛나는게 꺼짐.(미구현)
-		Debug.Log("마우스 감지 종료");
+		material.SetFloat("_OutlineWidth", originOutLineWidth);
+		Debug.Log("마우스 감지 종료. 현재 테두리 두께: " + material.GetFloat("_OutlineWidth"));
 	}
 }
