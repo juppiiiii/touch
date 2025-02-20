@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     private const float NIGHT_DURATION = 60f;
     private const float SCENARIO_DURATION = 30f;
     private const float NIGHT_DURATION_WAVE2 = 90f;
+    private const float MAX_INTERACTION_GAUGE = 100f;  // 상호작용 게이지 최댓값
+    private const float MAX_EROSION_GAUGE = 180f;      // 침식 게이지 최댓값
 
     // 게임 변수, 프로퍼티, 가져다 쓰는 메서드
     public int CurrentWave { get; private set; } = 1;    
@@ -30,8 +32,19 @@ public class GameManager : MonoBehaviour
     public bool IsNight { get; private set; }
 
     // 게임 변수, 프로퍼티, 업데이트 가능
-    public float InteractionGauge { get; set; } = 100f;  // 상호작용 게이지
-    public float ErosionGauge { get; set; } = 0f;         // 침식 게이지
+    private float interactionGauge = 0f;
+    public float InteractionGauge
+    {
+        get => interactionGauge;
+        set => interactionGauge = Mathf.Clamp(value, 0f, MAX_INTERACTION_GAUGE);
+    }
+
+    private float erosionGauge = 0f;
+    public float ErosionGauge
+    {
+        get => erosionGauge;
+        set => erosionGauge = Mathf.Clamp(value, 0f, MAX_EROSION_GAUGE);
+    }
 
     private bool isPaused = false;
     private Coroutine currentTimerCoroutine;
