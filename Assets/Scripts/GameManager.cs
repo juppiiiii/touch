@@ -30,8 +30,8 @@ public class GameManager : MonoBehaviour
     public bool IsNight { get; private set; }
 
     // 게임 변수, 프로퍼티, 업데이트 가능
-    public float SanityGauge { get; set; } = 100f;
-    public float EndingGauge { get; set; } = 0f;
+    public float InteractionGauge { get; set; } = 100f;  // 상호작용 게이지
+    public float ErosionGauge { get; set; } = 0f;         // 침식 게이지
 
     private bool isPaused = false;
     private Coroutine currentTimerCoroutine;
