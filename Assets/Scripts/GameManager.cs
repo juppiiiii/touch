@@ -189,24 +189,25 @@ public class GameManager : MonoBehaviour
     }
 
     // 상호작용 게이지 채우기 코루틴
-    private IEnumerator FillInteractionGauge()
+    private IEnumerator FillInteractionGauge(float duration, float amount)
     {
         WaitForSeconds wait = new WaitForSeconds(0.1f);
-        while (true)
+        float elapsed = 0f;
+        while (elapsed < duration)
         {   
-            // TODO: 타이머 관련해서 어떻게 처리할건지 논의 필요
-            InteractionGauge += 3f;
+            InteractionGauge += amount;
+            elapsed += Time.deltaTime;
             yield return wait;
         }
     }
 
-    public void StartFillingInteractionGauge()
+    public void StartFillingInteractionGauge(float duration, float amount)
     {
         if (interactionGaugeCoroutine != null)
         {
             StopCoroutine(interactionGaugeCoroutine);
         }
-        interactionGaugeCoroutine = StartCoroutine(FillInteractionGauge());
+        interactionGaugeCoroutine = StartCoroutine(FillInteractionGauge(duration, amount));
     }
 
     public void StopFillingInteractionGauge()
@@ -218,24 +219,25 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private IEnumerator FillErosionGauge()
+    private IEnumerator FillErosionGauge(float duration, float amount)
     {
         WaitForSeconds wait = new WaitForSeconds(0.1f);
-        while (true)
+        float elapsed = 0f;
+        while (elapsed < duration)
         {
-            // TODO: 타이머 관련해서 어떻게 처리할건지 논의 필요
-            ErosionGauge += 3f;
+            ErosionGauge += amount;
+            elapsed += Time.deltaTime;
             yield return wait;
         }
     }
 
-    public void StartFillingErosionGauge()
+    public void StartFillingErosionGauge(float duration, float amount)
     {
         if (erosionGaugeCoroutine != null)
         {
             StopCoroutine(erosionGaugeCoroutine);
         }
-        erosionGaugeCoroutine = StartCoroutine(FillErosionGauge());
+        erosionGaugeCoroutine = StartCoroutine(FillErosionGauge(duration, amount));
     }
 
     public void StopFillingErosionGauge()
@@ -245,5 +247,11 @@ public class GameManager : MonoBehaviour
             StopCoroutine(erosionGaugeCoroutine);
             erosionGaugeCoroutine = null;
         }
+    }
+
+    // 패널티 함수
+    public void ReduceTimer(float amount)
+    {
+        TimerElapsed = Mathf.Max(TimerElapsed - amount, 0f);
     }
 }
