@@ -248,4 +248,10 @@ public class GameManager : MonoBehaviour
             erosionGaugeCoroutine = null;
         }
     }
+
+    // 패널티 함수
+    public void ReduceTimer(float amount)
+    {
+        TimerElapsed = Mathf.Max(TimerElapsed - amount, 0f);
+    }
 }
