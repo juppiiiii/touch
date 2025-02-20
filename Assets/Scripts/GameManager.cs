@@ -48,6 +48,8 @@ public class GameManager : MonoBehaviour
 
     private bool isPaused = false;
     private Coroutine currentTimerCoroutine;
+    private Coroutine interactionGaugeCoroutine;  // 상호작용 게이지 채우기 코루틴
+    private Coroutine erosionGaugeCoroutine;      // 침식 게이지 채우기 코루틴
 
     void Start()
     {
@@ -184,5 +186,64 @@ public class GameManager : MonoBehaviour
     public void ResumeTimer()
     {
         isPaused = false;
+    }
+
+    // 상호작용 게이지 채우기 코루틴
+    private IEnumerator FillInteractionGauge()
+    {
+        WaitForSeconds wait = new WaitForSeconds(0.1f);
+        while (true)
+        {   
+            // TODO: 타이머 관련해서 어떻게 처리할건지 논의 필요
+            InteractionGauge += 3f;
+            yield return wait;
+        }
+    }
+
+    public void StartFillingInteractionGauge()
+    {
+        if (interactionGaugeCoroutine != null)
+        {
+            StopCoroutine(interactionGaugeCoroutine);
+        }
+        interactionGaugeCoroutine = StartCoroutine(FillInteractionGauge());
+    }
+
+    public void StopFillingInteractionGauge()
+    {
+        if (interactionGaugeCoroutine != null)
+        {
+            StopCoroutine(interactionGaugeCoroutine);
+            interactionGaugeCoroutine = null;
+        }
+    }
+
+    private IEnumerator FillErosionGauge()
+    {
+        WaitForSeconds wait = new WaitForSeconds(0.1f);
+        while (true)
+        {
+            // TODO: 타이머 관련해서 어떻게 처리할건지 논의 필요
+            ErosionGauge += 3f;
+            yield return wait;
+        }
+    }
+
+    public void StartFillingErosionGauge()
+    {
+        if (erosionGaugeCoroutine != null)
+        {
+            StopCoroutine(erosionGaugeCoroutine);
+        }
+        erosionGaugeCoroutine = StartCoroutine(FillErosionGauge());
+    }
+
+    public void StopFillingErosionGauge()
+    {
+        if (erosionGaugeCoroutine != null)
+        {
+            StopCoroutine(erosionGaugeCoroutine);
+            erosionGaugeCoroutine = null;
+        }
     }
 }
