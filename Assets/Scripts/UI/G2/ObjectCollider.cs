@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ObjectCollider : MonoBehaviour
 {
-public bool hasCollided = false; // 충돌 감지 여부
+    public bool hasCollided = false; // 충돌 감지 여부
     private bool isCircle = false;
     private bool isFail = true;
 
