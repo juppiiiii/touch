@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ObjectManager : MonoBehaviour {
 	public GameObject selected;
+	//public Rigidbody selectedRb;
 	private bool isDragging = false;
 	private Vector3 lastMousePosition;
 	private Camera mainCamera;
@@ -24,6 +25,7 @@ public class ObjectManager : MonoBehaviour {
 				if (hit.transform != null)
 				{
 					selected = hit.transform.gameObject; // 클릭한 오브젝트 저장
+					//selectedRb = hit.rigidbody;
 					Debug.Log("Selected Object: " + selected.name);
 
 					// 드래그 시작을 위한 설정
@@ -41,6 +43,7 @@ public class ObjectManager : MonoBehaviour {
 			if (isDragging)
 			{
 				isDragging = false;
+				//selectedRb.useGravity = true;
 				Debug.Log("드래그 종료");
 			}
 		}
@@ -51,6 +54,7 @@ public class ObjectManager : MonoBehaviour {
 			// 드래그 이동 처리
 			if (isDragging)
 			{
+				//selectedRb.useGravity = false;
 				// 현재 마우스 위치
 				Vector3 currentMousePosition = Input.mousePosition;
 
