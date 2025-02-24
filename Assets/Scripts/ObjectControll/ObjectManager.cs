@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using UnityEngine;
 
 public class ObjectManager : MonoBehaviour {
@@ -6,6 +7,12 @@ public class ObjectManager : MonoBehaviour {
 	private bool isDragging = false;
 	private Vector3 lastMousePosition;
 	private Camera mainCamera;
+
+	//이동 가능 영역 한계
+	public float maxZ = -1;
+	public float minZ = -20.5f;
+	public float minX = 1;
+	public float maxX = 20.5f;
 
 	private void Start()
 	{
@@ -91,6 +98,11 @@ public class ObjectManager : MonoBehaviour {
 					selected.transform.position = new Vector3(locate.x + 1, locate.y, locate.z);
 				}
 			}
+			//clamp
+			Vector3 pos = selected.transform.position;
+			pos.x = Mathf.Clamp(pos.x, minX, maxX);
+			pos.z = Mathf.Clamp(pos.z, minZ, maxZ);
+			selected.transform.position = pos;
 		}
 	}
 }
