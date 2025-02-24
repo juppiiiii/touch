@@ -1,11 +1,13 @@
-using JetBrains.Annotations;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ObjectManager : MonoBehaviour {
+	private bool isCorret;
 	public GameObject selected;
-	//public Rigidbody selectedRb;
 	private bool isDragging = false;
 	private Vector3 lastMousePosition;
+	private Vector3 latestPos;
+	private string selectedTag;
 	private Camera mainCamera;
 
 	//이동 가능 영역 한계
@@ -32,11 +34,11 @@ public class ObjectManager : MonoBehaviour {
 				if (hit.transform != null)
 				{
 					selected = hit.transform.gameObject; // 클릭한 오브젝트 저장
-					//selectedRb = hit.rigidbody;
 					Debug.Log("Selected Object: " + selected.name);
 
 					// 드래그 시작을 위한 설정
 					isDragging = true;
+					selectedTag = selected.tag;
 
 					// 마우스 이전 위치 초기화
 					lastMousePosition = Input.mousePosition;
@@ -50,7 +52,7 @@ public class ObjectManager : MonoBehaviour {
 			if (isDragging)
 			{
 				isDragging = false;
-				//selectedRb.useGravity = true;
+				selectedTag = null;
 				Debug.Log("드래그 종료");
 			}
 		}
@@ -102,7 +104,13 @@ public class ObjectManager : MonoBehaviour {
 			Vector3 pos = selected.transform.position;
 			pos.x = Mathf.Clamp(pos.x, minX, maxX);
 			pos.z = Mathf.Clamp(pos.z, minZ, maxZ);
-			selected.transform.position = pos;
+			selected.transform.position = latestPos = pos;
+			
+		}
+		if (selected.IsDestroyed())
+		{
+			Debug.Log($"{selectedTag} 파괴감지"); // NC라는 태그 파괴 감지 성공.
 		}
 	}
+
 }
