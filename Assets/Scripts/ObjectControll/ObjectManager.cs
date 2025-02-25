@@ -1,6 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UI;  // UI 사용 시
 
 public class ObjectManager : MonoBehaviour {
 	private bool isCorrect;
@@ -30,26 +30,26 @@ public class ObjectManager : MonoBehaviour {
 	// WellDestroyed가 1회만 호출되도록 제어하는 플래그 변수
 	private bool wellDestroyedCalled = false;
 
-	// === 우클릭 길게 누르기를 위한 변수들 ===
-	public bool ableInterection = false;  // 3초 동안 우클릭 유지 시 true로 설정됨
-	public string interactionItem = "";    // 상호작용 실행 항목을 알리기 위한 문자열
-	private float rightClickTimer = 0f;
-	public float rightClickHoldTime = 3f;
-	private bool isRightClickHeld = false;
+	// ============================
+	// 우클릭 길게 누르기 위한 변수들
+	// ============================
+	public bool ableInterection = false;           // 3초 동안 우클릭 유지 시 true가 됨
+	public string interactionItem = "";             // 상호작용 실행 항목을 알리기 위한 문자열 변수
+	private float rightClickTimer = 0f;             // 우클릭 지속시간 체크용 타이머
+	public float rightClickHoldTime = 3f;           // 3초가 되어야 효과 발생
+	private bool isRightClickHeld = false;          // 현재 우클릭이 유지되고 있는지 여부
 
-	// Canvas/UI를 위한 Radial Gauge Image (Inspector 할당)
-	public Image radialGaugeImage;
+	// UI를 사용해 원형 게이지를 표시할 경우, 아래 변수들을 이용할 수 있음 (선택사항)
+	// public Image circularGaugeImage;
 
 	private void Start()
 	{
 		mainCamera = Camera.main;
-		if (radialGaugeImage != null)
-			radialGaugeImage.fillAmount = 0f;  // 초기 채우기 상태 0
 	}
 
 	private void Update()
 	{
-		// --- 좌클릭 처리 ---
+		// --- 마우스 좌클릭 처리 ---
 		if (Input.GetMouseButtonDown(0))
 		{
 			FindLeftClick();
@@ -59,43 +59,37 @@ public class ObjectManager : MonoBehaviour {
 			LostLeftClick();
 		}
 
-		// --- 우클릭 길게 누르기 처리 ---
+		// --- 마우스 우클릭 길게 누르기 처리 ---
 		if (Input.GetMouseButtonDown(1))
 		{
 			isRightClickHeld = true;
 			rightClickTimer = 0f;
+			// (옵션) 만약 UI prefab을 사용한다면 여기서 원형 게이지 객체를 생성할 수 있음.
 		}
 
 		if (isRightClickHeld)
 		{
 			rightClickTimer += Time.deltaTime;
+			// (옵션) UI Image를 사용하는 경우, 아래와 같이 채워진 정도를 업데이트 가능:
+			// circularGaugeImage.fillAmount = rightClickTimer / rightClickHoldTime;
 
-			// UI Radial Gauge의 fillAmount 갱신
-			if (radialGaugeImage != null)
-			{
-				float fill = Mathf.Clamp01(rightClickTimer / rightClickHoldTime);
-				radialGaugeImage.fillAmount = fill;
-			}
-
-			// 3초 이상 유지되었으면 상호작용 가능하도록 설정하고 로그 남김
+			// 3초 이상 눌렀고 아직 상호작용 실행이 안된 경우
 			if (rightClickTimer >= rightClickHoldTime && !ableInterection)
 			{
 				ableInterection = true;
-				interactionItem = "YourInteraction";  // 원하는 상호작용 항목 문자열로 수정하세요.
+				interactionItem = "YourInteraction"; // 원하는 문자열로 수정 가능
 				Debug.Log("Able interaction triggered! " + interactionItem);
-				// 3초 도달 후 추가 처리가 필요하면 여기에 구현 (예: 게이지 애니메이션 고정 등)
+				// 3초 도달 후 게이지는 더 이상 진행되지 않도록 처리할 수 있음
 				isRightClickHeld = false;
 			}
 		}
 
 		if (Input.GetMouseButtonUp(1))
 		{
+			// 우클릭 해제 시 타이머와 상태 초기화
 			isRightClickHeld = false;
 			rightClickTimer = 0f;
-			if (radialGaugeImage != null)
-			{
-				radialGaugeImage.fillAmount = 0f;
-			}
+			// (옵션) 생성한 게이지 객체가 있다면 제거
 		}
 
 		// --- 선택된 오브젝트가 있을 경우 이동 처리 ---
@@ -112,7 +106,7 @@ public class ObjectManager : MonoBehaviour {
 			Clamping();
 		}
 
-		// 오브젝트 파괴 감지: 파괴되고 아직 WellDestroyed() 호출 안했을 경우 1회만 실행
+		// 오브젝트 파괴 감지: 파괴되고 아직 WellDestroyed()를 호출하지 않았다면 1회만 실행
 		if (selected == null && !wellDestroyedCalled)
 		{
 			wellDestroyedCalled = true;
@@ -121,6 +115,7 @@ public class ObjectManager : MonoBehaviour {
 		}
 	}
 
+	// 좌클릭 감지: 오브젝트 선택 및 드래그 시작
 	void FindLeftClick()
 	{
 		RaycastHit hit;
@@ -130,16 +125,23 @@ public class ObjectManager : MonoBehaviour {
 		{
 			if (hit.transform != null)
 			{
-				selected = hit.transform.gameObject;
+				selected = hit.transform.gameObject; // 클릭한 오브젝트 저장
 				Debug.Log("Selected Object: " + selected.name);
+
+				// 드래그 시작 설정
 				isDragging = true;
 				selectedTag = selected.tag;
+
+				// 마우스 이전 위치 초기화
 				lastMousePosition = Input.mousePosition;
+
+				// 새 오브젝트 선택 시 WellDestroyed 호출 플래그 초기화
 				wellDestroyedCalled = false;
 			}
 		}
 	}
 
+	// 좌클릭 해제 감지
 	void LostLeftClick()
 	{
 		if (isDragging)
@@ -150,6 +152,7 @@ public class ObjectManager : MonoBehaviour {
 		}
 	}
 
+	// 드래그 이동 처리
 	void DragMove()
 	{
 		Plane dragPlane = new Plane(Vector3.up, selected.transform.position);
@@ -165,6 +168,7 @@ public class ObjectManager : MonoBehaviour {
 		lastMousePosition = selected.transform.position;
 	}
 
+	// WASD 키 이동 처리
 	void WASDMove()
 	{
 		if (Input.GetKeyDown("w"))
@@ -189,6 +193,7 @@ public class ObjectManager : MonoBehaviour {
 		}
 	}
 
+	// 오브젝트 위치 제한
 	void Clamping()
 	{
 		Vector3 pos = selected.transform.position;
@@ -197,18 +202,41 @@ public class ObjectManager : MonoBehaviour {
 		selected.transform.position = latestPos = pos;
 	}
 
+	// 올바른 위치에 도달했는지 검사하는 함수
 	bool WellDestroyed()
 	{
 		Debug.Log($"{lastMousePosition.x} {lastMousePosition.y} {lastMousePosition.z}");
+		// 선택된 태그에 따라 검사
 		if (selectedTag == "NC" || selectedTag == "SC")
 		{
-			return lastMousePosition.x <= washMaxX && lastMousePosition.x >= washMinX &&
-				   lastMousePosition.z <= washMaxZ && lastMousePosition.z >= washMinZ;
+			if (lastMousePosition.x <= washMaxX && lastMousePosition.x >= washMinX &&
+				lastMousePosition.z <= washMaxZ && lastMousePosition.z >= washMinZ)
+				return true;
+			else
+				return false;
 		}
 		else
 		{
-			return lastMousePosition.x <= trashMaxX && lastMousePosition.x >= trashMinX &&
-				   lastMousePosition.z <= trashMaxZ && lastMousePosition.z >= trashMinZ;
+			if (lastMousePosition.x <= trashMaxX && lastMousePosition.x >= trashMinX &&
+				lastMousePosition.z <= trashMaxZ && lastMousePosition.z >= trashMinZ)
+				return true;
+			else
+				return false;
+		}
+	}
+
+	// OnGUI를 이용해 임시로 원형 게이지의 진행률을 표시 (실제 프로젝트 시 Canvas/UI 사용 권장)
+	private void OnGUI()
+	{
+		if (isRightClickHeld)
+		{
+			float gaugeSize = 100;
+			float posX = Screen.width - gaugeSize - 10;
+			float posY = Screen.height - gaugeSize - 10;
+			float fill = Mathf.Clamp01(rightClickTimer / rightClickHoldTime);
+
+			// 간단한 박스로 현재 게이지 채워진 정도를 표시
+			GUI.Box(new Rect(posX, posY, gaugeSize, gaugeSize), $"Fill: {(fill * 100):0}%");
 		}
 	}
 }
