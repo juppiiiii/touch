@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -53,11 +54,18 @@ public class GameManager : MonoBehaviour
     private Coroutine currentTimerCoroutine;
     private Coroutine interactionGaugeCoroutine;  // 상호작용 게이지 채우기 코루틴
     private Coroutine erosionGaugeCoroutine;      // 침식 게이지 채우기 코루틴
+    private NightEventManager nightEventManager;   // NightEventManager 참조 추가
+    #endregion
+
+    #region 이벤트
+    public event Action OnNightStarted;
+    public event Action OnDayStarted;
     #endregion
 
     #region 게임 진행 관련 메서드
     void Start()
     {
+        nightEventManager.Initialize(this);
     }
 
     public void StartWave()
@@ -89,6 +97,10 @@ public class GameManager : MonoBehaviour
             StopCoroutine(currentTimerCoroutine);
         }
         currentTimerCoroutine = StartCoroutine(GameTimer(DAY_DURATION));
+
+        // 낮 시작 이벤트 호출
+        OnDayStarted?.Invoke();
+        Debug.Log("낮 시작");
     }
 
     public void StartNight()
@@ -100,6 +112,10 @@ public class GameManager : MonoBehaviour
         }
         float duration = (CurrentWave == 2) ? NIGHT_DURATION_WAVE2 : NIGHT_DURATION;
         currentTimerCoroutine = StartCoroutine(GameTimer(duration));
+        
+        // 밤 시작 이벤트 호출
+        OnNightStarted?.Invoke();
+        Debug.Log("밤 시작");
     }
 
     private IEnumerator GameTimer(float duration)
@@ -121,10 +137,20 @@ public class GameManager : MonoBehaviour
     {
         if (CurrentWave == 6 && IsNight)
         {
+            // NightEventManager에 밤 종료 알림
+            if (nightEventManager != null)
+            {
+                nightEventManager.OnNightEnd();
+            }
             EndGame();
         }
         else if (IsNight)
         {
+            // NightEventManager에 밤 종료 알림
+            if (nightEventManager != null)
+            {
+                nightEventManager.OnNightEnd();
+            }
             CurrentWave++;
             StartWave();
         }
