@@ -2342,7 +2342,6 @@ MonoBehaviour:
   objectManager: {fileID: 1190581503}
   manager: {fileID: 1607382451}
   obj: {fileID: 449053449}
-  ableStack: 1
 --- !u!1 &458582800
 GameObject:
   m_ObjectHideFlags: 0
@@ -2919,7 +2918,6 @@ MonoBehaviour:
   objectManager: {fileID: 1190581503}
   manager: {fileID: 1607382451}
   obj: {fileID: 598922662}
-  ableStack: 1
 --- !u!1 &600118475
 GameObject:
   m_ObjectHideFlags: 0
@@ -3678,7 +3676,7 @@ GameObject:
   - component: {fileID: 841200342}
   - component: {fileID: 841200343}
   m_Layer: 3
-  m_Name: FOHoverDetector
+  m_Name: FO
   m_TagString: FO
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3693,7 +3691,7 @@ Transform:
   m_GameObject: {fileID: 841200340}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 2.49, y: 0.13, z: -7.85}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3948,7 +3946,6 @@ MonoBehaviour:
   objectManager: {fileID: 1190581503}
   manager: {fileID: 1607382451}
   obj: {fileID: 862492967}
-  ableStack: 1
 --- !u!1 &881667264
 GameObject:
   m_ObjectHideFlags: 0
@@ -5406,7 +5403,6 @@ MonoBehaviour:
   objectManager: {fileID: 1190581503}
   manager: {fileID: 1190581502}
   obj: {fileID: 1258829035}
-  ableStack: 1
 --- !u!65 &1258829041
 BoxCollider:
   m_ObjectHideFlags: 0

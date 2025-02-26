@@ -8,10 +8,14 @@ public class STControl : MonoBehaviour {
 	private float highlightOutLineWidth = 0.03f;
 	public GameObject obj;
 
+<<<<<<< Updated upstream
 	//  ½×±â °¡´ÉÇÑ ¿ÀºêÁ§Æ®¿¡°Ô ºÎ¿©µÇ´Â ¼Ó¼º
 	public bool ableStack = true;
 
 	/// ¾²·¹±âÅë°ú ¼¼Å¹±âÀÇ ¿µ¿ª
+=======
+	/// ì“°ë ˆê¸°í†µê³¼ ì„¸íƒê¸°ì˜ ì˜ì—­
+>>>>>>> Stashed changes
 	private float washMinX = 0;
 	private float washMaxX = 10;
 	private float washMinZ = -20;
