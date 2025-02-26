@@ -8,15 +8,19 @@ public class NCControl : MonoBehaviour
 	private float originOutLineWidth;
 	private float highlightOutLineWidth = 0.03f;
     public GameObject obj;
-	//washing 과 trash 의 위치는 병합되고서 실제 washing과 trash의 위치에 맞춰 변동되어야 함. ObjectManager에도 동일한 코드가 있으므로 수정이 필요하면 그쪽도 수정을 해주어야함.
-	public float washMinX = 0;
-	public float washMaxX = 10;
-	public float washMinZ = -20;
-	public float washMaxZ = -10;
-	public float trashMinX = 10;
-	public float trashMaxX = 20;
-	public float trashMinZ = -10;
-	public float trashMaxZ = 0;
+
+	//  쌓기 가능한 오브젝트에게 부여되는 속성
+	public bool ableStack = true;
+	
+	/// 쓰레기통과 세탁기의 영역
+	private float washMinX = 0;
+	private float washMaxX = 10;
+	private float washMinZ = -20;
+	private float washMaxZ = -10;
+	private float trashMinX = 10;
+	private float trashMaxX = 20;
+	private float trashMinZ = -10;
+	private float trashMaxZ = 0;
 
 	void Start()
 	{
@@ -31,7 +35,7 @@ public class NCControl : MonoBehaviour
 	{
 		DestroyNC();
 		Vector3 pos = obj.transform.position;
-		if (objectManager.selectedTag == null)
+		if (!objectManager.leftHold)
 		{
 			//정리가 잘된 경우: 오브젝트 제거(NC기준)
 			if (pos.x <= washMaxX && pos.x >= washMinX && pos.z <= washMaxZ && pos.z >= washMinZ)
@@ -54,13 +58,13 @@ public class NCControl : MonoBehaviour
 	void OnMouseOver()
 	{
 		material.SetFloat("_OutlineWidth", highlightOutLineWidth);
-		Debug.Log("마우스 감지. 현재 테두리 두께: " + material.GetFloat("_OutlineWidth"));
+		//Debug.Log("마우스 감지. 현재 테두리 두께: " + material.GetFloat("_OutlineWidth"));
 	}
 
 	void OnMouseExit()
 	{
 		material.SetFloat("_OutlineWidth", originOutLineWidth);
-		Debug.Log("마우스 감지 종료. 현재 테두리 두께: " + material.GetFloat("_OutlineWidth"));
+		//Debug.Log("마우스 감지 종료. 현재 테두리 두께: " + material.GetFloat("_OutlineWidth"));
 	}
 
 	void DestroyNC()
