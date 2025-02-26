@@ -1,46 +1,46 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class FOControl : MonoBehaviour {
 	private Material material;
 
 	void Start()
 	{
-		// ¿ÀºêÁ§Æ®ÀÇ Material º¹Á¦ÇÏ±â 
+		// ì˜¤ë¸Œì íŠ¸ì˜ Material ë³µì œí•˜ê¸° 
 		Renderer rend = GetComponent<Renderer>();
 		material = new Material(rend.material);
 		rend.material = material;
 
-		// µÚ ¿ÀºêÁ§Æ® ¼±ÅÃÀ» À§ÇØ ºÎ¸ğ´Â ·¹ÀÌÄ³½ºÆ® ¹«½Ã
+		// ë’¤ ì˜¤ë¸Œì íŠ¸ ì„ íƒì„ ìœ„í•´ ë¶€ëª¨ëŠ” ë ˆì´ìºìŠ¤íŠ¸ ë¬´ì‹œ
 		gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
 
-		// ½ÃÀÛ ½Ã ºÒÅõ¸í ¸ğµå Àû¿ë
+		// ì‹œì‘ ì‹œ ë¶ˆíˆ¬ëª… ëª¨ë“œ ì ìš©
 		SetOpaqueMode();
 		Color initColor = material.color;
 		initColor.a = 1f;
 		material.color = initColor;
 	}
 
-	// ÀÚ½ÄÀÇ FOHoverDetector°¡ È£ÃâÇÒ ¸Ş¼­µå
+	// ìì‹ì˜ FOHoverDetectorê°€ í˜¸ì¶œí•  ë©”ì„œë“œ
 	public void HandleMouseOver()
 	{
 		SetTransparentMode();
 		Color color = material.color;
-		color.a = 0.3f; // ¹İÅõ¸íµµ
+		color.a = 0.3f; // ë°˜íˆ¬ëª…ë„
 		material.color = color;
-		//Debug.Log("¸¶¿ì½º ¿À¹ö: Åõ¸í ¸ğµå È°¼ºÈ­, ÇöÀç ¾ËÆÄ: " + material.color.a);
+		//Debug.Log("ë§ˆìš°ìŠ¤ ì˜¤ë²„: íˆ¬ëª… ëª¨ë“œ í™œì„±í™”, í˜„ì¬ ì•ŒíŒŒ: " + material.color.a);
 	}
 
 	public void HandleMouseExit()
 	{
-		// ¸¶¿ì½º°¡ ¹ş¾î³ª¸é ºÒÅõ¸í ¸ğµå º¹¿ø
+		// ë§ˆìš°ìŠ¤ê°€ ë²—ì–´ë‚˜ë©´ ë¶ˆíˆ¬ëª… ëª¨ë“œ ë³µì›
 		Color color = material.color;
 		color.a = 1f;
 		material.color = color;
 		SetOpaqueMode();
-		//Debug.Log("¸¶¿ì½º Á¾·á: ºÒÅõ¸í ¸ğµå º¹¿ø, ÇöÀç ¾ËÆÄ: " + material.color.a);
+		//Debug.Log("ë§ˆìš°ìŠ¤ ì¢…ë£Œ: ë¶ˆíˆ¬ëª… ëª¨ë“œ ë³µì›, í˜„ì¬ ì•ŒíŒŒ: " + material.color.a);
 	}
 
-	// Åõ¸í È¿°ú ¼³Á¤
+	// íˆ¬ëª… íš¨ê³¼ ì„¤ì •
 	void SetTransparentMode()
 	{
 		material.SetFloat("_Mode", 3);
@@ -53,7 +53,7 @@ public class FOControl : MonoBehaviour {
 		material.renderQueue = 3000;
 	}
 
-	// ºÒÅõ¸í È¿°ú ¼³Á¤
+	// ë¶ˆíˆ¬ëª… íš¨ê³¼ ì„¤ì •
 	void SetOpaqueMode()
 	{
 		material.SetFloat("_Mode", 0);

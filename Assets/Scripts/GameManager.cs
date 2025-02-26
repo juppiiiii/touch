@@ -53,7 +53,6 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        StartWave();
     }
 
     public void StartWave()
@@ -141,7 +140,7 @@ public class GameManager : MonoBehaviour
     private void PrintCurrentState()
     {
         string timeOfDay = IsNight ? "밤" : "낮";
-        string pauseState = isPaused ? "일시정지" : "진행중";
+        string pauseState = isPaused ? "타이머 일시정지" : "타이머 진행중";
         Debug.Log($"[게임 상태] {CurrentWave}웨이브 / {timeOfDay} / {pauseState}");
         Debug.Log($"[타이머] 경과 시간: {TimerElapsed:F1}초");
     }
@@ -178,7 +177,7 @@ public class GameManager : MonoBehaviour
 
     // 타이머 일시정지
     public void PauseTimer()
-    {
+    {   
         isPaused = true;
     }
 
@@ -186,6 +185,27 @@ public class GameManager : MonoBehaviour
     public void ResumeTimer()
     {
         isPaused = false;
+    }
+
+    // 상호작용 게이지 초기화
+    public void ResetInteractionGauge()
+    {
+        InteractionGauge = 0f;
+        StopFillingInteractionGauge();
+    }
+
+    // 침식 게이지 초기화
+    public void ResetErosionGauge()
+    {
+        ErosionGauge = 0f;
+        StopFillingErosionGauge();
+    }
+
+    // 모든 게이지 초기화
+    public void ResetAllGauges()
+    {
+        ResetInteractionGauge();
+        ResetErosionGauge();
     }
 
     // 상호작용 게이지 채우기 코루틴
@@ -219,6 +239,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // 침식 게이지 채우기 코루틴
     private IEnumerator FillErosionGauge(float duration, float amount)
     {
         WaitForSeconds wait = new WaitForSeconds(0.1f);
