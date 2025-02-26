@@ -25,10 +25,16 @@ public class GameManager : MonoBehaviour
     #region 상수
     private const float DAY_DURATION = 90f;
     private const float NIGHT_DURATION = 60f;
-    private const float SCENARIO_DURATION = 30f;
     private const float NIGHT_DURATION_WAVE2 = 90f;
+    private const float PREPARATION_TIME = 3f;  // 준비 시간 추가
     private const float MAX_INTERACTION_GAUGE = 100f;  // 상호작용 게이지 최댓값
     private const float MAX_EROSION_GAUGE = 180f;      // 침식 게이지 최댓값
+
+    // 각 웨이브별 아이의 나이
+    private const int WAVE1_AGE = 4;
+    private const int WAVE2_AGE = 7;
+    private const int WAVE3_AGE = 12;
+    private const int WAVE4_AGE = 16;
     #endregion
 
     #region 프로퍼티
@@ -67,35 +73,26 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         nightEventManager.Initialize(this);
+        CurrentWave = 1;  // 웨이브 1로 초기화
+        StartWave();
     }
 
     public void StartWave()
     {   
-        if (CurrentWave == 0) {
-            CurrentWave = 1;
-        }
-
-        if (CurrentWave == 1 || CurrentWave == 6)
-        {
-            StartScenario();
-        }
-        else
-        {
-            StartDay();
-        }
-    }
-
-    private void StartScenario()
-    {
-        if (currentTimerCoroutine != null)
-        {
-            StopCoroutine(currentTimerCoroutine);
-        }
-        currentTimerCoroutine = StartCoroutine(GameTimer(SCENARIO_DURATION));
+        ResetAllGauges();  // 새로운 웨이브 시작 시 게이지 초기화
+        StartDay();
     }
 
     public void StartDay()
     {
+        StartCoroutine(PrepareForDay());
+    }
+
+    private IEnumerator PrepareForDay()
+    {
+        Debug.Log("낮 준비 시간");
+        yield return new WaitForSeconds(PREPARATION_TIME);
+        
         IsNight = false;
         if (currentTimerCoroutine != null)
         {
@@ -103,13 +100,20 @@ public class GameManager : MonoBehaviour
         }
         currentTimerCoroutine = StartCoroutine(GameTimer(DAY_DURATION));
 
-        // 낮 시작 이벤트 호출
         OnNightEnded?.Invoke();
         Debug.Log("낮 시작");
     }
 
     public void StartNight()
     {
+        StartCoroutine(PrepareForNight());
+    }
+
+    private IEnumerator PrepareForNight()
+    {
+        Debug.Log("밤 준비 시간");
+        yield return new WaitForSeconds(PREPARATION_TIME);
+        
         IsNight = true;
         if (currentTimerCoroutine != null)
         {
@@ -118,7 +122,6 @@ public class GameManager : MonoBehaviour
         float duration = (CurrentWave == 2) ? NIGHT_DURATION_WAVE2 : NIGHT_DURATION;
         currentTimerCoroutine = StartCoroutine(GameTimer(duration));
         
-        // 밤 시작 이벤트 호출
         OnNightStarted?.Invoke();
         Debug.Log("밤 시작");
     }
@@ -140,7 +143,7 @@ public class GameManager : MonoBehaviour
 
     private void OnTimeOver()
     {
-        if (CurrentWave == 6 && IsNight)
+        if (CurrentWave == 4 && IsNight)
         {
             // NightEventManager에 밤 종료 알림
             if (nightEventManager != null)
@@ -237,6 +240,19 @@ public class GameManager : MonoBehaviour
     public void ResumeTimer()
     {
         isPaused = false;
+    }
+
+    // 현재 웨이브의 아이 나이 반환
+    public int GetCurrentChildAge()
+    {
+        return CurrentWave switch
+        {
+            1 => WAVE1_AGE,
+            2 => WAVE2_AGE,
+            3 => WAVE3_AGE,
+            4 => WAVE4_AGE,
+            _ => WAVE1_AGE // 기본값
+        };
     }
     #endregion
 
