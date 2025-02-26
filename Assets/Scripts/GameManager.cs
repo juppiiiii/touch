@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     private const float DAY_DURATION = 90f;
     private const float NIGHT_DURATION = 60f;
     private const float NIGHT_DURATION_WAVE2 = 90f;
+    private const float PREPARATION_TIME = 3f;  // 준비 시간 추가
     private const float MAX_INTERACTION_GAUGE = 100f;  // 상호작용 게이지 최댓값
     private const float MAX_EROSION_GAUGE = 180f;      // 침식 게이지 최댓값
 
@@ -72,15 +73,26 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         nightEventManager.Initialize(this);
+        CurrentWave = 1;  // 웨이브 1로 초기화
+        StartWave();
     }
 
     public void StartWave()
     {   
+        ResetAllGauges();  // 새로운 웨이브 시작 시 게이지 초기화
         StartDay();
     }
 
     public void StartDay()
     {
+        StartCoroutine(PrepareForDay());
+    }
+
+    private IEnumerator PrepareForDay()
+    {
+        Debug.Log("낮 준비 시간");
+        yield return new WaitForSeconds(PREPARATION_TIME);
+        
         IsNight = false;
         if (currentTimerCoroutine != null)
         {
@@ -88,13 +100,20 @@ public class GameManager : MonoBehaviour
         }
         currentTimerCoroutine = StartCoroutine(GameTimer(DAY_DURATION));
 
-        // 낮 시작 이벤트 호출
         OnNightEnded?.Invoke();
         Debug.Log("낮 시작");
     }
 
     public void StartNight()
     {
+        StartCoroutine(PrepareForNight());
+    }
+
+    private IEnumerator PrepareForNight()
+    {
+        Debug.Log("밤 준비 시간");
+        yield return new WaitForSeconds(PREPARATION_TIME);
+        
         IsNight = true;
         if (currentTimerCoroutine != null)
         {
@@ -103,7 +122,6 @@ public class GameManager : MonoBehaviour
         float duration = (CurrentWave == 2) ? NIGHT_DURATION_WAVE2 : NIGHT_DURATION;
         currentTimerCoroutine = StartCoroutine(GameTimer(duration));
         
-        // 밤 시작 이벤트 호출
         OnNightStarted?.Invoke();
         Debug.Log("밤 시작");
     }
