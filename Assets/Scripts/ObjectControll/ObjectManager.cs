@@ -1,6 +1,6 @@
+using System.Runtime.Serialization;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;  // UI 사용 시
 
 public class ObjectManager : MonoBehaviour {
 	private bool isCorrect = true;
@@ -10,6 +10,9 @@ public class ObjectManager : MonoBehaviour {
 	private Vector3 latestPos;
 	public string selectedTag;
 	private Camera mainCamera;
+
+	public GameObject gm;
+	public GameManager gameManager;
 
 	// 이동 가능 영역 한계
 	public float maxZ = -1;
@@ -30,67 +33,24 @@ public class ObjectManager : MonoBehaviour {
 	// WellDestroyed가 1회만 호출되도록 제어하는 플래그 변수
 	private bool wellDestroyedCalled = false;
 
-	// ============================
 	// 우클릭 길게 누르기 위한 변수들
-	// ============================
 	public bool ableInterection = false;           // 3초 동안 우클릭 유지 시 true가 됨
-	public string interactionItem = "";             // 상호작용 실행 항목을 알리기 위한 문자열 변수
+	public string interactionWith = "";             // 상호작용 실행 항목을 알리기 위한 문자열 변수
 	private float rightClickTimer = 0f;             // 우클릭 지속시간 체크용 타이머
 	public float rightClickHoldTime = 3f;           // 3초가 되어야 효과 발생
 	private bool isRightClickHeld = false;          // 현재 우클릭이 유지되고 있는지 여부
 
-	// UI를 사용해 원형 게이지를 표시할 경우, 아래 변수들을 이용할 수 있음 (선택사항)
-	// public Image circularGaugeImage;
-
 	private void Start()
 	{
 		mainCamera = Camera.main;
+		gm = GameObject.Find("GameObject");
+		gameManager = gm.GetComponent<GameManager>();
 	}
 
 	private void Update()
 	{
-		// --- 마우스 좌클릭 처리 ---
-		if (Input.GetMouseButtonDown(0))
-		{
-			FindLeftClick();
-		}
-		if (Input.GetMouseButtonUp(0))
-		{
-			LostLeftClick();
-		}
-
-		// --- 마우스 우클릭 길게 누르기 처리 ---
-		if (Input.GetMouseButtonDown(1))
-		{
-			isRightClickHeld = true;
-			rightClickTimer = 0f;
-			// (옵션) 만약 UI prefab을 사용한다면 여기서 원형 게이지 객체를 생성할 수 있음.
-		}
-
-		if (isRightClickHeld)
-		{
-			rightClickTimer += Time.deltaTime;
-			// (옵션) UI Image를 사용하는 경우, 아래와 같이 채워진 정도를 업데이트 가능:
-			// circularGaugeImage.fillAmount = rightClickTimer / rightClickHoldTime;
-
-			// 3초 이상 눌렀고 아직 상호작용 실행이 안된 경우
-			if (rightClickTimer >= rightClickHoldTime && !ableInterection)
-			{
-				ableInterection = true;
-				interactionItem = "YourInteraction"; // 원하는 문자열로 수정 가능
-				Debug.Log("Able interaction triggered! " + interactionItem);
-				// 3초 도달 후 게이지는 더 이상 진행되지 않도록 처리할 수 있음
-				isRightClickHeld = false;
-			}
-		}
-
-		if (Input.GetMouseButtonUp(1))
-		{
-			// 우클릭 해제 시 타이머와 상태 초기화
-			isRightClickHeld = false;
-			rightClickTimer = 0f;
-			// (옵션) 생성한 게이지 객체가 있다면 제거
-		}
+		LeftControl();
+		RightControl();
 
 		// --- 선택된 오브젝트가 있을 경우 이동 처리 ---
 		if (selected != null)
@@ -115,6 +75,19 @@ public class ObjectManager : MonoBehaviour {
 		}
 	}
 
+	void LeftControl()
+	{
+		// 마우스 좌클릭 처리
+		if (Input.GetMouseButtonDown(0))
+		{
+			FindLeftClick();
+		}
+		if (Input.GetMouseButtonUp(0))
+		{
+			LostLeftClick();
+		}
+	}
+
 	// 좌클릭 감지: 오브젝트 선택 및 드래그 시작
 	void FindLeftClick()
 	{
@@ -126,7 +99,7 @@ public class ObjectManager : MonoBehaviour {
 			if (hit.transform != null)
 			{
 				selected = hit.transform.gameObject; // 클릭한 오브젝트 저장
-				Debug.Log("Selected Object: " + selected.name);
+				//Debug.Log("Selected Object: " + selected.name); // 디버깅용
 
 				// 드래그 시작 설정
 				isDragging = true;
@@ -193,6 +166,70 @@ public class ObjectManager : MonoBehaviour {
 		}
 	}
 
+	//마우스 우클릭 제어
+	void RightControl()
+	{
+		if (Input.GetMouseButton(1))
+			FindRightClick();
+
+		// 마우스 우클릭 길게 누르기 처리, selected가 있어야 의미가 있음.
+		if (Input.GetMouseButtonDown(1) && selected != null)
+		{
+			isRightClickHeld = true;
+			rightClickTimer = 0f;
+			// 여기서 원형 게이지 객체를 생성할 수 있음.
+			gameManager.StartFillingInteractionGauge(3, 3.3f);
+			
+		}
+
+		if (isRightClickHeld)
+		{
+			rightClickTimer += Time.deltaTime;
+
+			// 3초 이상 눌렀고 아직 상호작용 실행이 안된 경우
+			if (rightClickTimer >= rightClickHoldTime && !ableInterection)
+			{
+				interactionWith = $"inter_{selected.name}";
+				Debug.Log($"inter_{selected.name}");
+				ableInterection = true;
+				// 3초 도달 후 게이지는 더 이상 진행되지 않음
+				isRightClickHeld = false;
+			}
+		}
+
+		if (Input.GetMouseButtonUp(1))
+		{
+			// 우클릭 해제 시 타이머와 상태 초기화
+			isRightClickHeld = false;
+			rightClickTimer = 0f;
+			interactionWith = "";
+			ableInterection = false;
+			Debug.Log($"gauge : {gameManager.InteractionGauge}");
+		}
+	}
+
+	void FindRightClick()
+	{
+		RaycastHit hit;
+		Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+
+		if (Physics.Raycast(ray, out hit))
+		{
+			if (hit.transform != null)
+			{
+				selected = hit.transform.gameObject; // 클릭한 오브젝트 저장
+				//Debug.Log("Selected Object: " + selected.name); // 디버깅용
+
+				// 마우스 이전 위치 초기화
+				lastMousePosition = Input.mousePosition;
+			}
+			else
+			{
+				selected = null;
+			}
+		}
+	}
+
 	// 오브젝트 위치 제한
 	void Clamping()
 	{
@@ -222,21 +259,6 @@ public class ObjectManager : MonoBehaviour {
 				return true;
 			else
 				return false;
-		}
-	}
-
-	// OnGUI를 이용해 임시로 원형 게이지의 진행률을 표시 (실제 프로젝트 시 Canvas/UI 사용 권장)
-	private void OnGUI()
-	{
-		if (isRightClickHeld)
-		{
-			float gaugeSize = 100;
-			float posX = Screen.width - gaugeSize - 10;
-			float posY = Screen.height - gaugeSize - 10;
-			float fill = Mathf.Clamp01(rightClickTimer / rightClickHoldTime);
-
-			// 간단한 박스로 현재 게이지 채워진 정도를 표시
-			GUI.Box(new Rect(posX, posY, gaugeSize, gaugeSize), $"Fill: {(fill * 100):0}%");
 		}
 	}
 }

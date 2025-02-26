@@ -54,7 +54,7 @@ public class NCControl : MonoBehaviour
 	void OnMouseOver()
 	{
 		material.SetFloat("_OutlineWidth", highlightOutLineWidth);
-		Debug.Log("마우스 감지. 현재 테두리 두께: " + material.GetFloat("_OutlineWidth"));
+		//Debug.Log("마우스 감지. 현재 테두리 두께: " + material.GetFloat("_OutlineWidth"));
 	}
 
 	void OnMouseExit()
