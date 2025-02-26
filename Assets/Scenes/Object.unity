@@ -2954,7 +2954,7 @@ GameObject:
   - component: {fileID: 641290821}
   - component: {fileID: 641290820}
   - component: {fileID: 641290822}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BFLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3002,9 +3002,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: 178291327
+  m_SortingLayer: 2
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: a7d6975f3221cb84fac61595eda457c6, type: 3}
   m_Color: {r: 0.7499999, g: 0.7499999, b: 0.7499999, a: 1}
   m_FlipX: 0
@@ -4946,13 +4946,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1291045106}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.31598538, y: -0.3596048, z: 0.13088542, w: 0.8681629}
-  m_LocalPosition: {x: 23.45, y: 21.63, z: -20.4}
+  m_LocalRotation: {x: 0.19996412, y: -0.3736123, z: 0.08282785, w: 0.90198}
+  m_LocalPosition: {x: 20, y: 11, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 40, y: -45, z: 0}
+  m_LocalEulerAnglesHint: {x: 25, y: -45, z: 0}
 --- !u!1 &1296620512
 GameObject:
   m_ObjectHideFlags: 0
@@ -5983,6 +5983,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a690608191fb842da850ff2d18de3f32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nightEventManager: {fileID: 0}
+  interactionGauge: 0
+  erosionGauge: 0
 --- !u!4 &1607382453
 Transform:
   m_ObjectHideFlags: 0
@@ -6209,7 +6212,7 @@ GameObject:
   - component: {fileID: 1857322564}
   - component: {fileID: 1857322563}
   - component: {fileID: 1857322565}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BFRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6257,9 +6260,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: 178291327
+  m_SortingLayer: 2
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: a7d6975f3221cb84fac61595eda457c6, type: 3}
   m_Color: {r: 0.7499999, g: 0.7499999, b: 0.7499999, a: 1}
   m_FlipX: 0
