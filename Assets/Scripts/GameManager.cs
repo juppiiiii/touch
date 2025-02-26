@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        StartWave();
+        
     }
 
     public void StartWave()
@@ -178,7 +178,7 @@ public class GameManager : MonoBehaviour
 
     // 타이머 일시정지
     public void PauseTimer()
-    {
+    {   
         isPaused = true;
     }
 
