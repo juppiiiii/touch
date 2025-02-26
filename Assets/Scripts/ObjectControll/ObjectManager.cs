@@ -1,10 +1,46 @@
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;  // UI 사용 시
 
 public class ObjectManager : MonoBehaviour {
+	private bool isCorrect = true;
 	public GameObject selected;
 	private bool isDragging = false;
 	private Vector3 lastMousePosition;
+	private Vector3 latestPos;
+	public string selectedTag;
 	private Camera mainCamera;
+
+	// 이동 가능 영역 한계
+	public float maxZ = -1;
+	public float minZ = -20.5f;
+	public float minX = 1;
+	public float maxX = 20.5f;
+
+	// 쓰레기통과 세탁기의 영역
+	public float washMinX = 0;
+	public float washMaxX = 10;
+	public float washMinZ = -20;
+	public float washMaxZ = -10;
+	public float trashMinX = 10;
+	public float trashMaxX = 20;
+	public float trashMinZ = -10;
+	public float trashMaxZ = 0;
+
+	// WellDestroyed가 1회만 호출되도록 제어하는 플래그 변수
+	private bool wellDestroyedCalled = false;
+
+	// ============================
+	// 우클릭 길게 누르기 위한 변수들
+	// ============================
+	public bool ableInterection = false;           // 3초 동안 우클릭 유지 시 true가 됨
+	public string interactionItem = "";             // 상호작용 실행 항목을 알리기 위한 문자열 변수
+	private float rightClickTimer = 0f;             // 우클릭 지속시간 체크용 타이머
+	public float rightClickHoldTime = 3f;           // 3초가 되어야 효과 발생
+	private bool isRightClickHeld = false;          // 현재 우클릭이 유지되고 있는지 여부
+
+	// UI를 사용해 원형 게이지를 표시할 경우, 아래 변수들을 이용할 수 있음 (선택사항)
+	// public Image circularGaugeImage;
 
 	private void Start()
 	{
@@ -13,104 +49,194 @@ public class ObjectManager : MonoBehaviour {
 
 	private void Update()
 	{
-		// 마우스 좌클릭 감지
+		// --- 마우스 좌클릭 처리 ---
 		if (Input.GetMouseButtonDown(0))
 		{
-			RaycastHit hit;
-			Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-
-			if (Physics.Raycast(ray, out hit))
-			{
-				if (hit.transform != null)
-				{
-					selected = hit.transform.gameObject; // 클릭한 오브젝트 저장
-					Debug.Log("Selected Object: " + selected.name);
-
-					// 드래그 시작을 위한 설정
-					isDragging = true;
-
-					// 마우스 이전 위치 초기화
-					lastMousePosition = Input.mousePosition;
-				}
-			}
+			FindLeftClick();
 		}
-
-		// 마우스 좌클릭 해제 감지
 		if (Input.GetMouseButtonUp(0))
 		{
-			if (isDragging)
+			LostLeftClick();
+		}
+
+		// --- 마우스 우클릭 길게 누르기 처리 ---
+		if (Input.GetMouseButtonDown(1))
+		{
+			isRightClickHeld = true;
+			rightClickTimer = 0f;
+			// (옵션) 만약 UI prefab을 사용한다면 여기서 원형 게이지 객체를 생성할 수 있음.
+		}
+
+		if (isRightClickHeld)
+		{
+			rightClickTimer += Time.deltaTime;
+			// (옵션) UI Image를 사용하는 경우, 아래와 같이 채워진 정도를 업데이트 가능:
+			// circularGaugeImage.fillAmount = rightClickTimer / rightClickHoldTime;
+
+			// 3초 이상 눌렀고 아직 상호작용 실행이 안된 경우
+			if (rightClickTimer >= rightClickHoldTime && !ableInterection)
 			{
-				isDragging = false;
-				Debug.Log("드래그 종료");
+				ableInterection = true;
+				interactionItem = "YourInteraction"; // 원하는 문자열로 수정 가능
+				Debug.Log("Able interaction triggered! " + interactionItem);
+				// 3초 도달 후 게이지는 더 이상 진행되지 않도록 처리할 수 있음
+				isRightClickHeld = false;
 			}
 		}
 
-		// 선택된 오브젝트가 있을 때
+		if (Input.GetMouseButtonUp(1))
+		{
+			// 우클릭 해제 시 타이머와 상태 초기화
+			isRightClickHeld = false;
+			rightClickTimer = 0f;
+			// (옵션) 생성한 게이지 객체가 있다면 제거
+		}
+
+		// --- 선택된 오브젝트가 있을 경우 이동 처리 ---
 		if (selected != null)
 		{
-			// 드래그 이동 처리
 			if (isDragging)
 			{
-				// 현재 마우스 위치
-				Vector3 currentMousePosition = Input.mousePosition;
-
-				// 마우스 이동량 계산
-				Vector3 deltaMousePosition = currentMousePosition - lastMousePosition;
-
-				// 화면 좌표계에서 월드 좌표계로 변환
-				Vector3 worldDelta = ScreenToWorldDelta(deltaMousePosition);
-
-				// 오브젝트 위치 업데이트
-				selected.transform.position += worldDelta;
-
-				// 마우스 이전 위치 업데이트
-				lastMousePosition = currentMousePosition;
+				DragMove();
 			}
 			else
 			{
-				// WASD 이동 처리 (드래그 중이 아닐 때)
-				if (Input.GetKeyDown("w"))
-				{
-					Vector3 locate = selected.transform.position;
-					selected.transform.position = new Vector3(locate.x, locate.y, locate.z + 1);
-				}
-				if (Input.GetKeyDown("a"))
-				{
-					Vector3 locate = selected.transform.position;
-					selected.transform.position = new Vector3(locate.x - 1, locate.y, locate.z);
-				}
-				if (Input.GetKeyDown("s"))
-				{
-					Vector3 locate = selected.transform.position;
-					selected.transform.position = new Vector3(locate.x, locate.y, locate.z - 1);
-				}
-				if (Input.GetKeyDown("d"))
-				{
-					Vector3 locate = selected.transform.position;
-					selected.transform.position = new Vector3(locate.x + 1, locate.y, locate.z);
-				}
+				WASDMove();
+			}
+			Clamping();
+		}
+
+		// 오브젝트 파괴 감지: 파괴되고 아직 WellDestroyed()를 호출하지 않았다면 1회만 실행
+		if (selected == null && !wellDestroyedCalled)
+		{
+			wellDestroyedCalled = true;
+			isCorrect = WellDestroyed();
+			Debug.Log("WellDestroyed 결과: " + isCorrect);
+		}
+	}
+
+	// 좌클릭 감지: 오브젝트 선택 및 드래그 시작
+	void FindLeftClick()
+	{
+		RaycastHit hit;
+		Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+
+		if (Physics.Raycast(ray, out hit))
+		{
+			if (hit.transform != null)
+			{
+				selected = hit.transform.gameObject; // 클릭한 오브젝트 저장
+				Debug.Log("Selected Object: " + selected.name);
+
+				// 드래그 시작 설정
+				isDragging = true;
+				selectedTag = selected.tag;
+
+				// 마우스 이전 위치 초기화
+				lastMousePosition = Input.mousePosition;
+
+				// 새 오브젝트 선택 시 WellDestroyed 호출 플래그 초기화
+				wellDestroyedCalled = false;
 			}
 		}
 	}
 
-	// 화면 좌표계의 이동량을 월드 좌표계의 이동량으로 변환하는 함수
-	Vector3 ScreenToWorldDelta(Vector3 screenDelta)
+	// 좌클릭 해제 감지
+	void LostLeftClick()
 	{
-		// 오브젝트의 현재 위치를 화면 좌표로 변환
-		Vector3 screenPosition = mainCamera.WorldToScreenPoint(selected.transform.position);
+		if (isDragging)
+		{
+			isDragging = false;
+			selectedTag = null;
+			Debug.Log("드래그 종료");
+		}
+	}
 
-		// 새로운 화면 좌표 계산
-		Vector3 newScreenPosition = screenPosition + screenDelta;
+	// 드래그 이동 처리
+	void DragMove()
+	{
+		Plane dragPlane = new Plane(Vector3.up, selected.transform.position);
+		Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
-		// 새로운 화면 좌표를 월드 좌표로 변환
-		Vector3 newWorldPosition = mainCamera.ScreenToWorldPoint(newScreenPosition);
+		if (dragPlane.Raycast(ray, out float enter))
+		{
+			Vector3 hitPoint = ray.GetPoint(enter);
+			Vector3 worldDelta = hitPoint - selected.transform.position;
+			worldDelta.y = 0f;
+			selected.transform.position += worldDelta;
+		}
+		lastMousePosition = selected.transform.position;
+	}
 
-		// 월드 좌표계에서의 이동량 계산
-		Vector3 worldDelta = newWorldPosition - selected.transform.position;
+	// WASD 키 이동 처리
+	void WASDMove()
+	{
+		if (Input.GetKeyDown("w"))
+		{
+			Vector3 locate = selected.transform.position;
+			selected.transform.position = new Vector3(locate.x, locate.y, locate.z + 1);
+		}
+		if (Input.GetKeyDown("a"))
+		{
+			Vector3 locate = selected.transform.position;
+			selected.transform.position = new Vector3(locate.x - 1, locate.y, locate.z);
+		}
+		if (Input.GetKeyDown("s"))
+		{
+			Vector3 locate = selected.transform.position;
+			selected.transform.position = new Vector3(locate.x, locate.y, locate.z - 1);
+		}
+		if (Input.GetKeyDown("d"))
+		{
+			Vector3 locate = selected.transform.position;
+			selected.transform.position = new Vector3(locate.x + 1, locate.y, locate.z);
+		}
+	}
 
-		// y축 이동을 없애고, z축 이동으로 대체 (마우스 y 이동을 z축 이동으로 매핑)
-		worldDelta.y = 0f;
+	// 오브젝트 위치 제한
+	void Clamping()
+	{
+		Vector3 pos = selected.transform.position;
+		pos.x = Mathf.Clamp(pos.x, minX, maxX);
+		pos.z = Mathf.Clamp(pos.z, minZ, maxZ);
+		selected.transform.position = latestPos = pos;
+	}
 
-		return worldDelta;
+	// 올바른 위치에 도달했는지 검사하는 함수
+	bool WellDestroyed()
+	{
+		Debug.Log($"{lastMousePosition.x} {lastMousePosition.y} {lastMousePosition.z}");
+		// 선택된 태그에 따라 검사
+		if (selectedTag == "NC" || selectedTag == "SC")
+		{
+			if (lastMousePosition.x <= washMaxX && lastMousePosition.x >= washMinX &&
+				lastMousePosition.z <= washMaxZ && lastMousePosition.z >= washMinZ)
+				return true;
+			else
+				return false;
+		}
+		else
+		{
+			if (lastMousePosition.x <= trashMaxX && lastMousePosition.x >= trashMinX &&
+				lastMousePosition.z <= trashMaxZ && lastMousePosition.z >= trashMinZ)
+				return true;
+			else
+				return false;
+		}
+	}
+
+	// OnGUI를 이용해 임시로 원형 게이지의 진행률을 표시 (실제 프로젝트 시 Canvas/UI 사용 권장)
+	private void OnGUI()
+	{
+		if (isRightClickHeld)
+		{
+			float gaugeSize = 100;
+			float posX = Screen.width - gaugeSize - 10;
+			float posY = Screen.height - gaugeSize - 10;
+			float fill = Mathf.Clamp01(rightClickTimer / rightClickHoldTime);
+
+			// 간단한 박스로 현재 게이지 채워진 정도를 표시
+			GUI.Box(new Rect(posX, posY, gaugeSize, gaugeSize), $"Fill: {(fill * 100):0}%");
+		}
 	}
 }

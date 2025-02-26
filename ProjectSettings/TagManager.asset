@@ -4,7 +4,11 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Bar
+  - NC
+  - NT
+  - SC
+  - ST
+  - FO
   layers:
   - Default
   - TransparentFX
