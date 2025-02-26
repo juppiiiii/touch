@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // 싱글톤 인스턴스
+    #region 싱글톤
     public static GameManager Instance { get; private set; }
 
     private void Awake()
@@ -17,21 +17,22 @@ public class GameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);  // 씬 전환시에도 유지
     }
+    #endregion
 
-    // 게임 상수
+    #region 상수
     private const float DAY_DURATION = 90f;
     private const float NIGHT_DURATION = 60f;
     private const float SCENARIO_DURATION = 30f;
     private const float NIGHT_DURATION_WAVE2 = 90f;
     private const float MAX_INTERACTION_GAUGE = 100f;  // 상호작용 게이지 최댓값
     private const float MAX_EROSION_GAUGE = 180f;      // 침식 게이지 최댓값
+    #endregion
 
-    // 게임 변수, 프로퍼티, 가져다 쓰는 메서드
+    #region 프로퍼티
     public int CurrentWave { get; private set; } = 1;    
     public float TimerElapsed { get; private set; }
     public bool IsNight { get; private set; }
 
-    // 게임 변수, 프로퍼티, 업데이트 가능
     private float interactionGauge = 0f;
     public float InteractionGauge
     {
@@ -45,12 +46,16 @@ public class GameManager : MonoBehaviour
         get => erosionGauge;
         set => erosionGauge = Mathf.Clamp(value, 0f, MAX_EROSION_GAUGE);
     }
+    #endregion
 
+    #region 프라이빗 변수
     private bool isPaused = false;
     private Coroutine currentTimerCoroutine;
     private Coroutine interactionGaugeCoroutine;  // 상호작용 게이지 채우기 코루틴
     private Coroutine erosionGaugeCoroutine;      // 침식 게이지 채우기 코루틴
+    #endregion
 
+    #region 게임 진행 관련 메서드
     void Start()
     {
     }
@@ -97,8 +102,6 @@ public class GameManager : MonoBehaviour
         currentTimerCoroutine = StartCoroutine(GameTimer(duration));
     }
 
-    // 기존 WaitForSeconds를 사용한 초 단위 업데이트 대신,
-    // Time.deltaTime을 이용해 매 프레임마다 타이머를 업데이트합니다.
     private IEnumerator GameTimer(float duration)
     {
         TimerElapsed = 0f;  // 타이머 초기화
@@ -135,8 +138,9 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("게임 종료");
     }
+    #endregion
 
-    // 현재 게임 상태를 출력하는 메서드
+    #region 디버그 및 
     private void PrintCurrentState()
     {
         string timeOfDay = IsNight ? "밤" : "낮";
@@ -145,6 +149,7 @@ public class GameManager : MonoBehaviour
         Debug.Log($"[타이머] 경과 시간: {TimerElapsed:F1}초");
     }
 
+    
     // Update 호출 시, I 키를 누르면 현재 상태를 출력
     void Update()
     {
@@ -167,8 +172,24 @@ public class GameManager : MonoBehaviour
                 Debug.Log("타이머 일시정지");
             }
         }
-    }
 
+        // 패널티 테스트
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            ReduceTimer(5f);
+            Debug.Log("패널티 적용");
+        }
+
+        // 스페이스바 누르면 밤으로 이동
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            StartNight();
+            Debug.Log("밤으로 이동");
+        }
+    }
+    #endregion
+
+    #region 상태 관리
     // 다른 매니저에서 타이머 경과시간을 가져다 쓰고 싶다면 아래 메서드를 사용
     public float GetTimerElapsed()
     {
@@ -186,22 +207,21 @@ public class GameManager : MonoBehaviour
     {
         isPaused = false;
     }
+    #endregion
 
-    // 상호작용 게이지 초기화
+    #region 게이지 관리
     public void ResetInteractionGauge()
     {
         InteractionGauge = 0f;
         StopFillingInteractionGauge();
     }
 
-    // 침식 게이지 초기화
     public void ResetErosionGauge()
     {
         ErosionGauge = 0f;
         StopFillingErosionGauge();
     }
 
-    // 모든 게이지 초기화
     public void ResetAllGauges()
     {
         ResetInteractionGauge();
@@ -269,10 +289,12 @@ public class GameManager : MonoBehaviour
             erosionGaugeCoroutine = null;
         }
     }
+    #endregion
 
-    // 패널티 함수
+    #region 패널티
     public void ReduceTimer(float amount)
     {
         TimerElapsed = Mathf.Max(TimerElapsed - amount, 0f);
     }
+    #endregion
 }
