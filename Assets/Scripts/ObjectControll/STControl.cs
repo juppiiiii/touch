@@ -8,8 +8,7 @@ public class STControl : MonoBehaviour {
 	private float highlightOutLineWidth = 0.03f;
 	public GameObject obj;
 
-	//  쌓기 가능한 오브젝트에게 부여되는 속성
-	public bool ableStack = true;
+
 
 	/// 쓰레기통과 세탁기의 영역
 	private float washMinX = 0;

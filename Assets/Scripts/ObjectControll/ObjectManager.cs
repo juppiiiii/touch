@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using Unity.VisualScripting;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjectManager : MonoBehaviour {
@@ -13,7 +14,9 @@ public class ObjectManager : MonoBehaviour {
 	private Camera mainCamera;
 	public bool leftHold = false;
 
-	//게임매니저
+	//쌓기 가능한 물건을 미리 정해둠
+	private List<string> stackAble = new List<string>(){ "CleanBed", "Bookcase", "LowBookcase", "WrappedBox", "WrappedSB", "BottleWater", "OpenedBook", "FO", "NT"};
+
 	public GameObject gm;
 	public GameManager gameManager;
 
@@ -260,7 +263,6 @@ public class ObjectManager : MonoBehaviour {
 		selected.transform.position = latestPos = pos;
 	}
 
-
 	//오브젝트의 겹침 방지
 	void ResolveOverlaps()
 	{
@@ -300,8 +302,7 @@ public class ObjectManager : MonoBehaviour {
 
 			if (isOverlapping)
 			{
-				// 쌓기가 가능한 경우(어떻게 접근할지 고민중)
-				if (false)
+				if (stackAble.Contains(selected.name) && stackAble.Contains(other.name))
 				{
 					Debug.Log(distance);
 					Vector3 dist = new Vector3(selected.transform.localScale.x - other.transform.localScale.x, other.transform.localScale.z, selected.transform.localScale.z - other.transform.localScale.z);
