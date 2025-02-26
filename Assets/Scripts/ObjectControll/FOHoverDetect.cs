@@ -1,7 +1,7 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class FOHoverDetect : MonoBehaviour {
-	// ºÎ¸ğ ½ºÅ©¸³Æ® ÂüÁ¶ (Inspector¿¡¼­ ÇÒ´çÇÏ°Å³ª Start¿¡¼­ ÀÚµ¿À¸·Î Ã£±â)
+	// ë¶€ëª¨ ìŠ¤í¬ë¦½íŠ¸ ì°¸ì¡° (Inspectorì—ì„œ í• ë‹¹í•˜ê±°ë‚˜ Startì—ì„œ ìë™ìœ¼ë¡œ ì°¾ê¸°)
 	public FOControl parentControl;
 
 	void OnMouseOver()

@@ -1,4 +1,4 @@
-using System.Runtime.Serialization;
+ï»¿using System.Runtime.Serialization;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -13,17 +13,17 @@ public class ObjectManager : MonoBehaviour {
 	private Camera mainCamera;
 	public bool leftHold = false;
 
-	//°ÔÀÓ¸Å´ÏÀú
+	//ê²Œì„ë§¤ë‹ˆì €
 	public GameObject gm;
 	public GameManager gameManager;
 
-	// ÀÌµ¿ °¡´É ¿µ¿ª ÇÑ°è
+	// ì´ë™ ê°€ëŠ¥ ì˜ì—­ í•œê³„
 	private float maxZ = -0.5f;
 	private float minZ = -19.5f;
 	private float minX = 0.5f;
 	private float maxX = 19.5f;
 
-	// ¾²·¹±âÅë°ú ¼¼Å¹±âÀÇ ¿µ¿ª
+	// ì“°ë ˆê¸°í†µê³¼ ì„¸íƒê¸°ì˜ ì˜ì—­
 	private float washMinX = 0;
 	private float washMaxX = 10;
 	private float washMinZ = -20;
@@ -33,15 +33,15 @@ public class ObjectManager : MonoBehaviour {
 	private float trashMinZ = -10;
 	private float trashMaxZ = 0;
 
-	// WellDestroyed°¡ 1È¸¸¸ È£ÃâµÇµµ·Ï Á¦¾îÇÏ´Â ÇÃ·¡±× º¯¼ö
+	// WellDestroyedê°€ 1íšŒë§Œ í˜¸ì¶œë˜ë„ë¡ ì œì–´í•˜ëŠ” í”Œë˜ê·¸ ë³€ìˆ˜
 	private bool wellDestroyedCalled = false;
 
-	// ¿ìÅ¬¸¯ ±æ°Ô ´©¸£±â À§ÇÑ º¯¼öµé
-	public bool ableInterection = false;           // 3ÃÊ µ¿¾È ¿ìÅ¬¸¯ À¯Áö ½Ã true°¡ µÊ
-	public string interactionWith = "";             // »óÈ£ÀÛ¿ë ½ÇÇà Ç×¸ñÀ» ¾Ë¸®±â À§ÇÑ ¹®ÀÚ¿­ º¯¼ö
-	private float rightClickTimer = 0f;             // ¿ìÅ¬¸¯ Áö¼Ó½Ã°£ Ã¼Å©¿ë Å¸ÀÌ¸Ó
-	public float rightClickHoldTime = 3f;           // 3ÃÊ°¡ µÇ¾î¾ß È¿°ú ¹ß»ı
-	private bool isRightClickHeld = false;          // ÇöÀç ¿ìÅ¬¸¯ÀÌ À¯ÁöµÇ°í ÀÖ´ÂÁö ¿©ºÎ
+	// ìš°í´ë¦­ ê¸¸ê²Œ ëˆ„ë¥´ê¸° ìœ„í•œ ë³€ìˆ˜ë“¤
+	public bool ableInterection = false;           // 3ì´ˆ ë™ì•ˆ ìš°í´ë¦­ ìœ ì§€ ì‹œ trueê°€ ë¨
+	public string interactionWith = "";             // ìƒí˜¸ì‘ìš© ì‹¤í–‰ í•­ëª©ì„ ì•Œë¦¬ê¸° ìœ„í•œ ë¬¸ìì—´ ë³€ìˆ˜
+	private float rightClickTimer = 0f;             // ìš°í´ë¦­ ì§€ì†ì‹œê°„ ì²´í¬ìš© íƒ€ì´ë¨¸
+	public float rightClickHoldTime = 3f;           // 3ì´ˆê°€ ë˜ì–´ì•¼ íš¨ê³¼ ë°œìƒ
+	private bool isRightClickHeld = false;          // í˜„ì¬ ìš°í´ë¦­ì´ ìœ ì§€ë˜ê³  ìˆëŠ”ì§€ ì—¬ë¶€
 
 	private void Start()
 	{
@@ -52,39 +52,39 @@ public class ObjectManager : MonoBehaviour {
 
 	private void Update()
 	{
-		//³·¿¡¸¸ ¸¶¿ì½º ÀÌµ¿ÀÌ °¡´ÉÇÏµµ·Ï ÇÑÁ¤.
-		//if (!gameManager.IsNight) >> ³·ÀÌ ¹İ¿µµÉ ¶§ºÎÅÍ Àû¿ëÇÏ±æ...
+		//ë‚®ì—ë§Œ ë§ˆìš°ìŠ¤ ì´ë™ì´ ê°€ëŠ¥í•˜ë„ë¡ í•œì •.
+		//if (!gameManager.IsNight) >> ë‚®ì´ ë°˜ì˜ë  ë•Œë¶€í„° ì ìš©í•˜ê¸¸...
 		{
 			LeftControl();
 			RightControl();
 
-			//¼±ÅÃµÈ ¿ÀºêÁ§Æ®°¡ ÀÖÀ» °æ¿ì ÀÌµ¿ Ã³¸®
+			//ì„ íƒëœ ì˜¤ë¸Œì íŠ¸ê°€ ìˆì„ ê²½ìš° ì´ë™ ì²˜ë¦¬
 			if (selected != null)
 			{
 				if (isDragging)
 				{
 					DragMove();
 				}
-				/*else >> ¹ã¿¡ ¿òÁ÷ÀÌ´Â Àå³­°¨µéÀ» À§ÇÑ ÀÌµ¿. ¿Å±æ ¿¹Á¤
+				/*else >> ë°¤ì— ì›€ì§ì´ëŠ” ì¥ë‚œê°ë“¤ì„ ìœ„í•œ ì´ë™. ì˜®ê¸¸ ì˜ˆì •
 				{
 					WASDMove();
 				}*/
 				Clamping();
 			}
 
-			// ¿ÀºêÁ§Æ® ÆÄ±« °¨Áö: ÆÄ±«µÇ°í ¾ÆÁ÷ WellDestroyed()¸¦ È£ÃâÇÏÁö ¾Ê¾Ò´Ù¸é 1È¸¸¸ ½ÇÇà
+			// ì˜¤ë¸Œì íŠ¸ íŒŒê´´ ê°ì§€: íŒŒê´´ë˜ê³  ì•„ì§ WellDestroyed()ë¥¼ í˜¸ì¶œí•˜ì§€ ì•Šì•˜ë‹¤ë©´ 1íšŒë§Œ ì‹¤í–‰
 			if (selected == null && !wellDestroyedCalled)
 			{
 				wellDestroyedCalled = true;
 				isCorrect = WellDestroyed();
-				Debug.Log("WellDestroyed °á°ú: " + isCorrect);
+				Debug.Log("WellDestroyed ê²°ê³¼: " + isCorrect);
 			}
 		}
 	}
 
 	void LeftControl()
 	{
-		// ¸¶¿ì½º ÁÂÅ¬¸¯ Ã³¸®
+		// ë§ˆìš°ìŠ¤ ì¢Œí´ë¦­ ì²˜ë¦¬
 		if (Input.GetMouseButtonDown(0))
 		{
 			FindLeftClick();
@@ -95,13 +95,13 @@ public class ObjectManager : MonoBehaviour {
 		}
 	}
 
-	// ÁÂÅ¬¸¯ °¨Áö: ¿ÀºêÁ§Æ® ¼±ÅÃ ¹× µå·¡±× ½ÃÀÛ
+	// ì¢Œí´ë¦­ ê°ì§€: ì˜¤ë¸Œì íŠ¸ ì„ íƒ ë° ë“œë˜ê·¸ ì‹œì‘
 	void FindLeftClick()
 	{
 		RaycastHit hit;
 
 		int ignoreLayers = LayerMask.GetMask("Ignore Raycast", "Hover");
-		int layerMask = ~ignoreLayers;  // À§ µÎ ·¹ÀÌ¾î¸¦ Á¦¿ÜÇÑ ¸ğµç ·¹ÀÌ¾î
+		int layerMask = ~ignoreLayers;  // ìœ„ ë‘ ë ˆì´ì–´ë¥¼ ì œì™¸í•œ ëª¨ë“  ë ˆì´ì–´
 
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit[] hits = Physics.RaycastAll(ray, Mathf.Infinity, layerMask);
@@ -110,20 +110,20 @@ public class ObjectManager : MonoBehaviour {
 		{
 			if (hit.transform != null)
 			{
-				selected = hit.transform.gameObject; // Å¬¸¯ÇÑ ¿ÀºêÁ§Æ® ÀúÀå
-				//Debug.Log("Selected Object: " + selected.name); // µğ¹ö±ë¿ë
+				selected = hit.transform.gameObject; // í´ë¦­í•œ ì˜¤ë¸Œì íŠ¸ ì €ì¥
+				//Debug.Log("Selected Object: " + selected.name); // ë””ë²„ê¹…ìš©
 
-				// µå·¡±× ½ÃÀÛ ¼³Á¤-> tag·Î ¿Å±æ ¼ö ÀÖ´Â ¹°°ÇÀÎÁö ÆÇº°
+				// ë“œë˜ê·¸ ì‹œì‘ ì„¤ì •-> tagë¡œ ì˜®ê¸¸ ìˆ˜ ìˆëŠ” ë¬¼ê±´ì¸ì§€ íŒë³„
 				if (selected.tag != "FO")
 				{
 					isDragging = true;
 					selectedTag = selected.tag;
 					leftHold = true;
 
-					// ¸¶¿ì½º ÀÌÀü À§Ä¡ ÃÊ±âÈ­
+					// ë§ˆìš°ìŠ¤ ì´ì „ ìœ„ì¹˜ ì´ˆê¸°í™”
 					lastMousePosition = Input.mousePosition;
 
-					// »õ ¿ÀºêÁ§Æ® ¼±ÅÃ ½Ã WellDestroyed È£Ãâ ÇÃ·¡±× ÃÊ±âÈ­
+					// ìƒˆ ì˜¤ë¸Œì íŠ¸ ì„ íƒ ì‹œ WellDestroyed í˜¸ì¶œ í”Œë˜ê·¸ ì´ˆê¸°í™”
 					wellDestroyedCalled = false;
 				}
 				
@@ -131,18 +131,19 @@ public class ObjectManager : MonoBehaviour {
 		}
 	}
 
-	// ÁÂÅ¬¸¯ ÇØÁ¦ °¨Áö
+	// ì¢Œí´ë¦­ í•´ì œ ê°ì§€
 	void LostLeftClick()
 	{
 		if (isDragging)
 		{
 			isDragging = false;
 			leftHold = false;
-			Debug.Log("µå·¡±× Á¾·á");
+			Debug.Log("ë“œë˜ê·¸ ì¢…ë£Œ");
+			ResolveOverlaps();
 		}
 	}
 
-	// µå·¡±× ÀÌµ¿ Ã³¸®
+	// ë“œë˜ê·¸ ì´ë™ ì²˜ë¦¬
 	void DragMove()
 	{
 		Plane dragPlane = new Plane(Vector3.up, selected.transform.position);
@@ -158,7 +159,7 @@ public class ObjectManager : MonoBehaviour {
 		lastMousePosition = selected.transform.position;
 	}
 
-	// WASD Å° ÀÌµ¿ Ã³¸®(Àå³­°¨ ÇÑÁ¤.)
+	// WASD í‚¤ ì´ë™ ì²˜ë¦¬(ì¥ë‚œê° í•œì •.)
 	void WASDMove()
 	{
 		if (Input.GetKeyDown("w"))
@@ -183,18 +184,18 @@ public class ObjectManager : MonoBehaviour {
 		}
 	}
 
-	//¸¶¿ì½º ¿ìÅ¬¸¯ Á¦¾î
+	//ë§ˆìš°ìŠ¤ ìš°í´ë¦­ ì œì–´
 	void RightControl()
 	{
 		if (Input.GetMouseButton(1))
 			FindRightClick();
 
-		// ¸¶¿ì½º ¿ìÅ¬¸¯ ±æ°Ô ´©¸£±â Ã³¸®, selected°¡ ÀÖ¾î¾ß ÀÇ¹Ì°¡ ÀÖÀ½.
+		// ë§ˆìš°ìŠ¤ ìš°í´ë¦­ ê¸¸ê²Œ ëˆ„ë¥´ê¸° ì²˜ë¦¬, selectedê°€ ìˆì–´ì•¼ ì˜ë¯¸ê°€ ìˆìŒ.
 		if (Input.GetMouseButtonDown(1) && selected != null)
 		{
 			isRightClickHeld = true;
 			rightClickTimer = 0f;
-			// ¿©±â¼­ ¿øÇü °ÔÀÌÁö °´Ã¼¸¦ »ı¼ºÇÒ ¼ö ÀÖÀ½.
+			// ì—¬ê¸°ì„œ ì›í˜• ê²Œì´ì§€ ê°ì²´ë¥¼ ìƒì„±í•  ìˆ˜ ìˆìŒ.
 			gameManager.StartFillingInteractionGauge(3, 3.3f);
 			
 		}
@@ -203,25 +204,26 @@ public class ObjectManager : MonoBehaviour {
 		{
 			rightClickTimer += Time.deltaTime;
 
-			// 3ÃÊ ÀÌ»ó ´­·¶°í ¾ÆÁ÷ »óÈ£ÀÛ¿ë ½ÇÇàÀÌ ¾ÈµÈ °æ¿ì
+			// 3ì´ˆ ì´ìƒ ëˆŒë €ê³  ì•„ì§ ìƒí˜¸ì‘ìš© ì‹¤í–‰ì´ ì•ˆëœ ê²½ìš°
 			if (rightClickTimer >= rightClickHoldTime && !ableInterection)
 			{
 				interactionWith = $"inter_{selected.name}";
 				Debug.Log($"inter_{selected.name}");
 				ableInterection = true;
-				// 3ÃÊ µµ´Ş ÈÄ °ÔÀÌÁö´Â ´õ ÀÌ»ó ÁøÇàµÇÁö ¾ÊÀ½
+				// 3ì´ˆ ë„ë‹¬ í›„ ê²Œì´ì§€ëŠ” ë” ì´ìƒ ì§„í–‰ë˜ì§€ ì•ŠìŒ
 				isRightClickHeld = false;
 			}
 		}
 
 		if (Input.GetMouseButtonUp(1))
 		{
-			// ¿ìÅ¬¸¯ ÇØÁ¦ ½Ã Å¸ÀÌ¸Ó¿Í »óÅÂ ÃÊ±âÈ­
+			// ìš°í´ë¦­ í•´ì œ ì‹œ íƒ€ì´ë¨¸ì™€ ìƒíƒœ ì´ˆê¸°í™”
 			isRightClickHeld = false;
 			rightClickTimer = 0f;
 			interactionWith = "";
 			ableInterection = false;
 			Debug.Log($"gauge : {gameManager.InteractionGauge}");
+			gameManager.ResetInteractionGauge();
 		}
 	}
 
@@ -230,7 +232,7 @@ public class ObjectManager : MonoBehaviour {
 		RaycastHit hit;
 
 		int ignoreLayers = LayerMask.GetMask("Ignore Raycast", "Hover");
-		int layerMask = ~ignoreLayers;  // À§ µÎ ·¹ÀÌ¾î¸¦ Á¦¿ÜÇÑ ¸ğµç ·¹ÀÌ¾î
+		int layerMask = ~ignoreLayers;  // ìœ„ ë‘ ë ˆì´ì–´ë¥¼ ì œì™¸í•œ ëª¨ë“  ë ˆì´ì–´
 
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit[] hits = Physics.RaycastAll(ray, Mathf.Infinity, layerMask);
@@ -239,20 +241,17 @@ public class ObjectManager : MonoBehaviour {
 		{
 			if (hit.transform != null)
 			{
-				selected = hit.transform.gameObject; // Å¬¸¯ÇÑ ¿ÀºêÁ§Æ® ÀúÀå
-				//Debug.Log("Selected Object: " + selected.name); // µğ¹ö±ë¿ë
+				selected = hit.transform.gameObject; // í´ë¦­í•œ ì˜¤ë¸Œì íŠ¸ ì €ì¥
+													 //Debug.Log("Selected Object: " + selected.name); // ë””ë²„ê¹…ìš©
 
-				// ¸¶¿ì½º ÀÌÀü À§Ä¡ ÃÊ±âÈ­
+				// ë§ˆìš°ìŠ¤ ì´ì „ ìœ„ì¹˜ ì´ˆê¸°í™”
 				lastMousePosition = Input.mousePosition;
 			}
-			else
-			{
-				selected = null;
-			}
 		}
+		else selected = null;
 	}
 
-	// ¿ÀºêÁ§Æ® À§Ä¡ Á¦ÇÑ
+	// ì˜¤ë¸Œì íŠ¸ ìœ„ì¹˜ ì œí•œ
 	void Clamping()
 	{
 		Vector3 pos = selected.transform.position;
@@ -261,11 +260,74 @@ public class ObjectManager : MonoBehaviour {
 		selected.transform.position = latestPos = pos;
 	}
 
-	// ¿Ã¹Ù¸¥ À§Ä¡¿¡ µµ´ŞÇß´ÂÁö °Ë»çÇÏ´Â ÇÔ¼ö
+
+	//ì˜¤ë¸Œì íŠ¸ì˜ ê²¹ì¹¨ ë°©ì§€
+	void ResolveOverlaps()
+	{
+		// selected ì˜¤ë¸Œì íŠ¸ê°€ ë°˜ë“œì‹œ Colliderë¥¼ ê°€ì§€ê³  ìˆì–´ì•¼ í•¨
+		Collider selectedCollider = selected.GetComponent<Collider>();
+		if (selectedCollider == null)
+		{
+			return;
+		}
+			
+
+		// selectedì˜ í˜„ì¬ ìœ„ì¹˜ì—ì„œ ê²¹ì¹˜ëŠ” ë‹¤ë¥¸ Colliderë“¤ì„ ì°¾ìŒ
+		Collider[] overlappingColliders = Physics.OverlapBox(
+			selectedCollider.bounds.center,
+			selectedCollider.bounds.extents,
+			selected.transform.rotation);
+
+		// ê° ê²¹ì¹˜ëŠ” ì˜¤ë¸Œì íŠ¸ì— ëŒ€í•´ ë¶„ë¦¬ ë²¡í„°ë¥¼ ê³„ì‚°
+		foreach (Collider other in overlappingColliders)
+		{
+			if (other.gameObject == selected)
+				continue; // ìê¸° ìì‹ ì€ ì œì™¸
+
+			Vector3 direction;
+			//Debug.Log($"other : {other.transform.position.x} {other.transform.position.y} {other.transform.position.z}");
+			float distance;
+			// ë‘ Colliderê°€ ê²¹ì¹˜ëŠ”ì§€ ê²€ì‚¬í•˜ê³ , ê²¹ì¹¨ ì •ë„ë¥¼ ê³„ì‚°
+			bool isOverlapping = Physics.ComputePenetration(
+				selectedCollider,
+				selected.transform.position,
+				selected.transform.rotation,
+				other,
+				other.transform.position,
+				other.transform.rotation,
+				out direction,
+				out distance);
+
+			if (isOverlapping)
+			{
+				// ìŒ“ê¸°ê°€ ê°€ëŠ¥í•œ ê²½ìš°(ì–´ë–»ê²Œ ì ‘ê·¼í• ì§€ ê³ ë¯¼ì¤‘)
+				if (false)
+				{
+					Debug.Log(distance);
+					Vector3 dist = new Vector3(selected.transform.localScale.x - other.transform.localScale.x, other.transform.localScale.z, selected.transform.localScale.z - other.transform.localScale.z);
+					Vector3 gap = new Vector3(selected.transform.position.x - other.transform.position.x, 0, selected.transform.position.z - other.transform.position.z);
+					Debug.Log($"other : {direction.x} {direction.y} {direction.z}");
+					// direction(ë²•ì„ )ì™€ distanceë¥¼ ì´ìš©í•´ selected ì˜¤ë¸Œì íŠ¸ë¥¼ ë°€ì–´ëƒ„
+					selected.transform.position += (dist - gap) * (distance + 1f);
+				}
+				//ìŒ“ê¸°ê°€ ë¶ˆê°€ëŠ¥í•œ ê²½ìš° - ì˜†ìœ¼ë¡œ ë°€ì–´ë‚¸ë‹¤.(ê²¹ì¹˜ì§€ ì•Šë„ë¡)
+				else
+				{
+					Vector3 gap = new Vector3(selected.transform.position.x - other.transform.position.x, 0, selected.transform.position.z - other.transform.position.z);Debug.Log($"{gap.x}, {gap.z}");
+					Vector3 dist = -gap.x < gap.z ? new Vector3(other.transform.localScale.x, 0, 0) : new Vector3(0, 0, -other.transform.localScale.y);
+					
+					Debug.Log($"other : {direction.x} {direction.y} {direction.z}");
+					// direction(ë²•ì„ )ì™€ distanceë¥¼ ì´ìš©í•´ selected ì˜¤ë¸Œì íŠ¸ë¥¼ ë°€ì–´ëƒ„
+					selected.transform.position += (dist - gap) * (distance + 1f);
+				}
+			}
+		}
+	}
+	// ì˜¬ë°”ë¥¸ ìœ„ì¹˜ì— ë„ë‹¬í–ˆëŠ”ì§€ ê²€ì‚¬í•˜ëŠ” í•¨ìˆ˜
 	bool WellDestroyed()
 	{
 		Debug.Log($"{lastMousePosition.x} {lastMousePosition.y} {lastMousePosition.z}");
-		// ¼±ÅÃµÈ ÅÂ±×¿¡ µû¶ó °Ë»ç
+		// ì„ íƒëœ íƒœê·¸ì— ë”°ë¼ ê²€ì‚¬
 		if (selectedTag == "NC" || selectedTag == "SC")
 		{
 			if (lastMousePosition.x <= washMaxX && lastMousePosition.x >= washMinX &&

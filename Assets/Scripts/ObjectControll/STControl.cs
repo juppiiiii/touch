@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class STControl : MonoBehaviour {
 	public ObjectManager objectManager;
@@ -8,10 +8,10 @@ public class STControl : MonoBehaviour {
 	private float highlightOutLineWidth = 0.03f;
 	public GameObject obj;
 
-	//  ½×±â °¡´ÉÇÑ ¿ÀºêÁ§Æ®¿¡°Ô ºÎ¿©µÇ´Â ¼Ó¼º
+	//  ìŒ“ê¸° ê°€ëŠ¥í•œ ì˜¤ë¸Œì íŠ¸ì—ê²Œ ë¶€ì—¬ë˜ëŠ” ì†ì„±
 	public bool ableStack = true;
 
-	/// ¾²·¹±âÅë°ú ¼¼Å¹±âÀÇ ¿µ¿ª
+	/// ì“°ë ˆê¸°í†µê³¼ ì„¸íƒê¸°ì˜ ì˜ì—­
 	private float washMinX = 0;
 	private float washMaxX = 10;
 	private float washMinZ = -20;
@@ -23,7 +23,7 @@ public class STControl : MonoBehaviour {
 
 	void Start()
 	{
-		// ¿ÀºêÁ§Æ®ÀÇ Material º¹Á¦ÇÏ±â
+		// ì˜¤ë¸Œì íŠ¸ì˜ Material ë³µì œí•˜ê¸°
 		material = new Material(GetComponent<Renderer>().material);
 		GetComponent<Renderer>().material = material;
 		originOutLineWidth = material.GetFloat("_OutlineWidth");
@@ -36,18 +36,18 @@ public class STControl : MonoBehaviour {
 		Vector3 pos = obj.transform.position;
 		if (!objectManager.leftHold)
 		{
-			//Á¤¸®°¡ ÀßµÈ °æ¿ì: ¿ÀºêÁ§Æ® Á¦°Å(NT±âÁØ)
+			//ì •ë¦¬ê°€ ì˜ëœ ê²½ìš°: ì˜¤ë¸Œì íŠ¸ ì œê±°(NTê¸°ì¤€)
 			if (pos.x <= trashMaxX && pos.x >= trashMinX && pos.z <= trashMaxZ && pos.z >= trashMinZ)
 			{
 				Destroy(gameObject);
 				obj = null;
 				return;
 			}
-			//Á¤¸®°¡ Àß¸øµÈ °æ¿ì - ¿ÀºêÁ§Æ® Á¦°Å(»ç½Ç ÇÏ´Â ÀÏ ¶È°°Àºµ¥ º¸±â ¾îÁö·¯¿ö¼­, È¤½Ã ´Ù¸¥ ±â´ÉÀÌ »ı±æ ¼ö ÀÖÀ¸¹Ç·Î µû·Î ºĞ¸®)
+			//ì •ë¦¬ê°€ ì˜ëª»ëœ ê²½ìš° - ì˜¤ë¸Œì íŠ¸ ì œê±°(ì‚¬ì‹¤ í•˜ëŠ” ì¼ ë˜‘ê°™ì€ë° ë³´ê¸° ì–´ì§€ëŸ¬ì›Œì„œ, í˜¹ì‹œ ë‹¤ë¥¸ ê¸°ëŠ¥ì´ ìƒê¸¸ ìˆ˜ ìˆìœ¼ë¯€ë¡œ ë”°ë¡œ ë¶„ë¦¬)
 
 			if (pos.x <= washMaxX && pos.x >= washMinX && pos.z <= washMaxZ && pos.z >= washMinZ)
 			{
-				//¿ÀºêÁ§Æ® Á¦°Å ¹× obj null·Î º¯°æ
+				//ì˜¤ë¸Œì íŠ¸ ì œê±° ë° obj nullë¡œ ë³€ê²½
 				Destroy(gameObject);
 				obj = null;
 				return;
@@ -58,13 +58,13 @@ public class STControl : MonoBehaviour {
 	void OnMouseOver()
 	{
 		material.SetFloat("_OutlineWidth", highlightOutLineWidth);
-		//Debug.Log("¸¶¿ì½º °¨Áö. ÇöÀç Å×µÎ¸® µÎ²²: " + material.GetFloat("_OutlineWidth"));
+		//Debug.Log("ë§ˆìš°ìŠ¤ ê°ì§€. í˜„ì¬ í…Œë‘ë¦¬ ë‘ê»˜: " + material.GetFloat("_OutlineWidth"));
 	}
 
 	void OnMouseExit()
 	{
 		material.SetFloat("_OutlineWidth", originOutLineWidth);
-		//Debug.Log("¸¶¿ì½º °¨Áö Á¾·á. ÇöÀç Å×µÎ¸® µÎ²²: " + material.GetFloat("_OutlineWidth"));
+		//Debug.Log("ë§ˆìš°ìŠ¤ ê°ì§€ ì¢…ë£Œ. í˜„ì¬ í…Œë‘ë¦¬ ë‘ê»˜: " + material.GetFloat("_OutlineWidth"));
 	}
 
 	void DestroyNC()
