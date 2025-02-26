@@ -53,7 +53,6 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        
     }
 
     public void StartWave()
@@ -141,7 +140,7 @@ public class GameManager : MonoBehaviour
     private void PrintCurrentState()
     {
         string timeOfDay = IsNight ? "밤" : "낮";
-        string pauseState = isPaused ? "일시정지" : "진행중";
+        string pauseState = isPaused ? "타이머 일시정지" : "타이머 진행중";
         Debug.Log($"[게임 상태] {CurrentWave}웨이브 / {timeOfDay} / {pauseState}");
         Debug.Log($"[타이머] 경과 시간: {TimerElapsed:F1}초");
     }
