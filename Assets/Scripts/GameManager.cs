@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     private const float NIGHT_DURATION = 60f;
     private const float SCENARIO_DURATION = 30f;
     private const float NIGHT_DURATION_WAVE2 = 90f;
+    private const float MAX_INTERACTION_GAUGE = 100f;  // 상호작용 게이지 최댓값
+    private const float MAX_EROSION_GAUGE = 180f;      // 침식 게이지 최댓값
 
     // 게임 변수, 프로퍼티, 가져다 쓰는 메서드
     public int CurrentWave { get; private set; } = 1;    
@@ -30,11 +32,24 @@ public class GameManager : MonoBehaviour
     public bool IsNight { get; private set; }
 
     // 게임 변수, 프로퍼티, 업데이트 가능
-    public float SanityGauge { get; set; } = 100f;
-    public float EndingGauge { get; set; } = 0f;
+    private float interactionGauge = 0f;
+    public float InteractionGauge
+    {
+        get => interactionGauge;
+        set => interactionGauge = Mathf.Clamp(value, 0f, MAX_INTERACTION_GAUGE);
+    }
+
+    private float erosionGauge = 0f;
+    public float ErosionGauge
+    {
+        get => erosionGauge;
+        set => erosionGauge = Mathf.Clamp(value, 0f, MAX_EROSION_GAUGE);
+    }
 
     private bool isPaused = false;
     private Coroutine currentTimerCoroutine;
+    private Coroutine interactionGaugeCoroutine;  // 상호작용 게이지 채우기 코루틴
+    private Coroutine erosionGaugeCoroutine;      // 침식 게이지 채우기 코루틴
 
     void Start()
     {
@@ -171,5 +186,72 @@ public class GameManager : MonoBehaviour
     public void ResumeTimer()
     {
         isPaused = false;
+    }
+
+    // 상호작용 게이지 채우기 코루틴
+    private IEnumerator FillInteractionGauge(float duration, float amount)
+    {
+        WaitForSeconds wait = new WaitForSeconds(0.1f);
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {   
+            InteractionGauge += amount;
+            elapsed += Time.deltaTime;
+            yield return wait;
+        }
+    }
+
+    public void StartFillingInteractionGauge(float duration, float amount)
+    {
+        if (interactionGaugeCoroutine != null)
+        {
+            StopCoroutine(interactionGaugeCoroutine);
+        }
+        interactionGaugeCoroutine = StartCoroutine(FillInteractionGauge(duration, amount));
+    }
+
+    public void StopFillingInteractionGauge()
+    {
+        if (interactionGaugeCoroutine != null)
+        {
+            StopCoroutine(interactionGaugeCoroutine);
+            interactionGaugeCoroutine = null;
+        }
+    }
+
+    private IEnumerator FillErosionGauge(float duration, float amount)
+    {
+        WaitForSeconds wait = new WaitForSeconds(0.1f);
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            ErosionGauge += amount;
+            elapsed += Time.deltaTime;
+            yield return wait;
+        }
+    }
+
+    public void StartFillingErosionGauge(float duration, float amount)
+    {
+        if (erosionGaugeCoroutine != null)
+        {
+            StopCoroutine(erosionGaugeCoroutine);
+        }
+        erosionGaugeCoroutine = StartCoroutine(FillErosionGauge(duration, amount));
+    }
+
+    public void StopFillingErosionGauge()
+    {
+        if (erosionGaugeCoroutine != null)
+        {
+            StopCoroutine(erosionGaugeCoroutine);
+            erosionGaugeCoroutine = null;
+        }
+    }
+
+    // 패널티 함수
+    public void ReduceTimer(float amount)
+    {
+        TimerElapsed = Mathf.Max(TimerElapsed - amount, 0f);
     }
 }

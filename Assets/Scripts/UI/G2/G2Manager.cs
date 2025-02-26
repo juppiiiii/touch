@@ -20,11 +20,12 @@ public class G2Manager : MonoBehaviour
     public int failScore = 3;    // 실패 기준 시도 횟수 (tryScore 기준)
 
     private int sScore = 0; // 성공 점수
-    private int tryScore = 0; // 실패 점수 (기존 fScore 대신 사용)
+    private int tryScore = 0; // 실패 점수
     private KeyCode currentKey; // 현재 입력해야 할 키
 
     private bool isBreak = false; // 성공 또는 실패 시 중단
     private bool isProcessing = false; // 키 입력 중인지 확인
+    private bool hasReducedTooSmall = false; // NowScale 체크 후 중복 실행 방지
 
     void Start()
     {
@@ -37,7 +38,7 @@ public class G2Manager : MonoBehaviour
         if (qwerDisplayImage != null)
             qwerDisplayImage.sprite = null; // 시작 시 기본 이미지 비우기
 
-        StartGame(); // 🔹 게임 시작 시 자동으로 랜덤 스프라이트 설정
+        StartGame(); // 게임 시작 시 랜덤 스프라이트 설정
     }
 
     void Update()
@@ -45,6 +46,17 @@ public class G2Manager : MonoBehaviour
         if (circleReducer.IsMoving())
         {
             circleReducer.Reduce();
+        }
+
+        if (circleReducer.NowScale() <= 1.1f && !hasReducedTooSmall)
+        {
+            tryScore++;
+            hasReducedTooSmall = true; // 중복 실행 방지
+            StartCoroutine(HandleKeyPress());
+        }
+        else if (circleReducer.NowScale() > 1.1f)
+        {
+            hasReducedTooSmall = false; // 크기가 다시 커지면 다시 체크 가능하도록 설정
         }
 
         if (!isProcessing && !isBreak) 
@@ -72,17 +84,16 @@ public class G2Manager : MonoBehaviour
 
     void StartGame()
     {
-        SetRandomKey(); // 🔹 게임 시작 시 랜덤 스프라이트 설정
+        SetRandomKey(); // 게임 시작 시 랜덤 스프라이트 설정
     }
 
     void SetRandomKey()
     {
         if (qwerSprites.Length > 0)
         {
-            int randomIndex = Random.Range(0, qwerSprites.Length); // 🔹 랜덤 스프라이트 선택
+            int randomIndex = Random.Range(0, qwerSprites.Length); // 랜덤 스프라이트 선택
             qwerDisplayImage.sprite = qwerSprites[randomIndex];
 
-            // 🔹 해당 스프라이트에 맞는 키 설정
             switch (randomIndex)
             {
                 case 0: currentKey = KeyCode.Q; break;
@@ -92,7 +103,21 @@ public class G2Manager : MonoBehaviour
                 default: currentKey = KeyCode.None; break;
             }
 
-            Debug.Log("입력해야 할 키: " + currentKey);
+            RandomizeQWERPosition(); // 🔹 QWER 이미지 위치 랜덤 변경
+        }
+    }
+
+    void RandomizeQWERPosition()
+    {
+        if (qwerDisplayImage != null)
+        {
+            RectTransform rectTransform = qwerDisplayImage.rectTransform;
+
+            // UI 내에서 랜덤한 위치 설정 (예: 화면 중앙에서 ±200px 범위 내)
+            float randomX = Random.Range(-200f, 200f);
+            float randomY = Random.Range(-150f, 150f);
+
+            rectTransform.anchoredPosition = new Vector2(randomX, randomY);
         }
     }
 
@@ -101,13 +126,12 @@ public class G2Manager : MonoBehaviour
         if (Input.GetKeyDown(currentKey)) // 올바른 키 입력 시
         {
             isProcessing = true;
-            Debug.Log("올바른 키 입력: " + currentKey);
             ProcessKeyPress();
         }
         else // 잘못된 키 입력 시 실패 처리
         {
             tryScore++;
-            Debug.Log("잘못된 키 입력! 실패 점수 증가: " + tryScore);
+            StartCoroutine(HandleKeyPress());
         }
     }
 
@@ -120,13 +144,8 @@ public class G2Manager : MonoBehaviour
             if (circleColl.isCircleHit())
             {
                 sScore += 1;
-                Debug.Log("현재 점수: " + sScore);
             }
             circleColl.ResetCollision();
-        }
-        else
-        {
-            Debug.Log("Miss! 실패 점수 증가");
         }
 
         StartCoroutine(HandleKeyPress());
@@ -142,7 +161,7 @@ public class G2Manager : MonoBehaviour
         if (!isBreak)
         {
             circleReducer.ResetCircle();
-            SetRandomKey(); // 🔹 원이 초기화되면 새로운 랜덤 키 설정
+            SetRandomKey(); // 원이 초기화되면 새로운 랜덤 키 설정
         }
 
         isProcessing = false;
@@ -150,7 +169,6 @@ public class G2Manager : MonoBehaviour
 
     IEnumerator Success()
     {
-        Debug.Log("Success");
         isProcessing = true;
         circleReducer.StopReduce();
         successCircle.gameObject.SetActive(true);
@@ -162,13 +180,12 @@ public class G2Manager : MonoBehaviour
 
         isBreak = false;
         circleReducer.ResetCircle();
-        SetRandomKey(); // 🔹 성공 후 새로운 키 설정
+        SetRandomKey(); // 성공 후 새로운 키 설정
         isProcessing = false;
     }
 
     IEnumerator Fail()
     {
-        Debug.Log("Fail");
         isProcessing = true;
         circleReducer.StopReduce();
         failCircle.gameObject.SetActive(true);
@@ -180,7 +197,7 @@ public class G2Manager : MonoBehaviour
 
         isBreak = false;
         circleReducer.ResetCircle();
-        SetRandomKey(); // 🔹 실패 후 새로운 키 설정
+        SetRandomKey(); // 실패 후 새로운 키 설정
         isProcessing = false;
     }
 }
