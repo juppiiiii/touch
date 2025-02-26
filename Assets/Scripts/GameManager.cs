@@ -187,6 +187,27 @@ public class GameManager : MonoBehaviour
         isPaused = false;
     }
 
+    // 상호작용 게이지 초기화
+    public void ResetInteractionGauge()
+    {
+        InteractionGauge = 0f;
+        StopFillingInteractionGauge();
+    }
+
+    // 침식 게이지 초기화
+    public void ResetErosionGauge()
+    {
+        ErosionGauge = 0f;
+        StopFillingErosionGauge();
+    }
+
+    // 모든 게이지 초기화
+    public void ResetAllGauges()
+    {
+        ResetInteractionGauge();
+        ResetErosionGauge();
+    }
+
     // 상호작용 게이지 채우기 코루틴
     private IEnumerator FillInteractionGauge(float duration, float amount)
     {
@@ -218,6 +239,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // 침식 게이지 채우기 코루틴
     private IEnumerator FillErosionGauge(float duration, float amount)
     {
         WaitForSeconds wait = new WaitForSeconds(0.1f);
