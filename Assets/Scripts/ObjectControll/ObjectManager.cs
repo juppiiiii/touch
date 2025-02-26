@@ -10,25 +10,26 @@ public class ObjectManager : MonoBehaviour {
 	private Vector3 latestPos;
 	public string selectedTag;
 	private Camera mainCamera;
+	public bool leftHold = false;
 
 	public GameObject gm;
 	public GameManager gameManager;
 
 	// 이동 가능 영역 한계
-	public float maxZ = -1;
-	public float minZ = -20.5f;
-	public float minX = 1;
-	public float maxX = 20.5f;
+	private float maxZ = -0.5f;
+	private float minZ = -19.5f;
+	private float minX = 0.5f;
+	private float maxX = 19.5f;
 
 	// 쓰레기통과 세탁기의 영역
-	public float washMinX = 0;
-	public float washMaxX = 10;
-	public float washMinZ = -20;
-	public float washMaxZ = -10;
-	public float trashMinX = 10;
-	public float trashMaxX = 20;
-	public float trashMinZ = -10;
-	public float trashMaxZ = 0;
+	private float washMinX = 0;
+	private float washMaxX = 10;
+	private float washMinZ = -20;
+	private float washMaxZ = -10;
+	private float trashMinX = 10;
+	private float trashMaxX = 20;
+	private float trashMinZ = -10;
+	private float trashMaxZ = 0;
 
 	// WellDestroyed가 1회만 호출되도록 제어하는 플래그 변수
 	private bool wellDestroyedCalled = false;
@@ -104,6 +105,7 @@ public class ObjectManager : MonoBehaviour {
 				// 드래그 시작 설정
 				isDragging = true;
 				selectedTag = selected.tag;
+				leftHold = true;
 
 				// 마우스 이전 위치 초기화
 				lastMousePosition = Input.mousePosition;
@@ -120,7 +122,7 @@ public class ObjectManager : MonoBehaviour {
 		if (isDragging)
 		{
 			isDragging = false;
-			selectedTag = null;
+			leftHold = false;
 			Debug.Log("드래그 종료");
 		}
 	}
@@ -141,7 +143,7 @@ public class ObjectManager : MonoBehaviour {
 		lastMousePosition = selected.transform.position;
 	}
 
-	// WASD 키 이동 처리
+	// WASD 키 이동 처리(장난감 한정.)
 	void WASDMove()
 	{
 		if (Input.GetKeyDown("w"))
