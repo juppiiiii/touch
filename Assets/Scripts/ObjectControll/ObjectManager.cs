@@ -3,6 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public class ObjectManager : MonoBehaviour {
+	//
 	private bool isCorrect = true;
 	public GameObject selected;
 	private bool isDragging = false;
@@ -12,6 +13,7 @@ public class ObjectManager : MonoBehaviour {
 	private Camera mainCamera;
 	public bool leftHold = false;
 
+	//게임매니저
 	public GameObject gm;
 	public GameManager gameManager;
 
@@ -50,29 +52,33 @@ public class ObjectManager : MonoBehaviour {
 
 	private void Update()
 	{
-		LeftControl();
-		RightControl();
-
-		// --- 선택된 오브젝트가 있을 경우 이동 처리 ---
-		if (selected != null)
+		//낮에만 마우스 이동이 가능하도록 한정.
+		//if (!gameManager.IsNight) >> 낮이 반영될 때부터 적용하길...
 		{
-			if (isDragging)
-			{
-				DragMove();
-			}
-			else
-			{
-				WASDMove();
-			}
-			Clamping();
-		}
+			LeftControl();
+			RightControl();
 
-		// 오브젝트 파괴 감지: 파괴되고 아직 WellDestroyed()를 호출하지 않았다면 1회만 실행
-		if (selected == null && !wellDestroyedCalled)
-		{
-			wellDestroyedCalled = true;
-			isCorrect = WellDestroyed();
-			Debug.Log("WellDestroyed 결과: " + isCorrect);
+			//선택된 오브젝트가 있을 경우 이동 처리
+			if (selected != null)
+			{
+				if (isDragging)
+				{
+					DragMove();
+				}
+				/*else >> 밤에 움직이는 장난감들을 위한 이동. 옮길 예정
+				{
+					WASDMove();
+				}*/
+				Clamping();
+			}
+
+			// 오브젝트 파괴 감지: 파괴되고 아직 WellDestroyed()를 호출하지 않았다면 1회만 실행
+			if (selected == null && !wellDestroyedCalled)
+			{
+				wellDestroyedCalled = true;
+				isCorrect = WellDestroyed();
+				Debug.Log("WellDestroyed 결과: " + isCorrect);
+			}
 		}
 	}
 
@@ -93,25 +99,34 @@ public class ObjectManager : MonoBehaviour {
 	void FindLeftClick()
 	{
 		RaycastHit hit;
-		Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
-		if (Physics.Raycast(ray, out hit))
+		int ignoreLayers = LayerMask.GetMask("Ignore Raycast", "Hover");
+		int layerMask = ~ignoreLayers;  // 위 두 레이어를 제외한 모든 레이어
+
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit[] hits = Physics.RaycastAll(ray, Mathf.Infinity, layerMask);
+
+		if (hits.Length > 0 && Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
 		{
 			if (hit.transform != null)
 			{
 				selected = hit.transform.gameObject; // 클릭한 오브젝트 저장
 				//Debug.Log("Selected Object: " + selected.name); // 디버깅용
 
-				// 드래그 시작 설정
-				isDragging = true;
-				selectedTag = selected.tag;
-				leftHold = true;
+				// 드래그 시작 설정-> tag로 옮길 수 있는 물건인지 판별
+				if (selected.tag != "FO")
+				{
+					isDragging = true;
+					selectedTag = selected.tag;
+					leftHold = true;
 
-				// 마우스 이전 위치 초기화
-				lastMousePosition = Input.mousePosition;
+					// 마우스 이전 위치 초기화
+					lastMousePosition = Input.mousePosition;
 
-				// 새 오브젝트 선택 시 WellDestroyed 호출 플래그 초기화
-				wellDestroyedCalled = false;
+					// 새 오브젝트 선택 시 WellDestroyed 호출 플래그 초기화
+					wellDestroyedCalled = false;
+				}
+				
 			}
 		}
 	}
@@ -213,9 +228,14 @@ public class ObjectManager : MonoBehaviour {
 	void FindRightClick()
 	{
 		RaycastHit hit;
-		Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
-		if (Physics.Raycast(ray, out hit))
+		int ignoreLayers = LayerMask.GetMask("Ignore Raycast", "Hover");
+		int layerMask = ~ignoreLayers;  // 위 두 레이어를 제외한 모든 레이어
+
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit[] hits = Physics.RaycastAll(ray, Mathf.Infinity, layerMask);
+
+		if (hits.Length > 0 && Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
 		{
 			if (hit.transform != null)
 			{
