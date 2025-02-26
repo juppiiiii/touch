@@ -3,7 +3,9 @@ using UnityEngine;
 using System;
 
 public class GameManager : MonoBehaviour
-{
+{   
+    [SerializeField] private NightEventManager nightEventManager;
+
     #region 싱글톤
     public static GameManager Instance { get; private set; }
 
@@ -30,18 +32,18 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region 프로퍼티
-    public int CurrentWave { get; private set; } = 1;    
+    public int CurrentWave { get; private set; }
     public float TimerElapsed { get; private set; }
     public bool IsNight { get; private set; }
 
-    private float interactionGauge = 0f;
+    [SerializeField] private float interactionGauge = 0f;
     public float InteractionGauge
     {
         get => interactionGauge;
         set => interactionGauge = Mathf.Clamp(value, 0f, MAX_INTERACTION_GAUGE);
     }
 
-    private float erosionGauge = 0f;
+    [SerializeField]private float erosionGauge = 0f;
     public float ErosionGauge
     {
         get => erosionGauge;
@@ -54,7 +56,6 @@ public class GameManager : MonoBehaviour
     private Coroutine currentTimerCoroutine;
     private Coroutine interactionGaugeCoroutine;  // 상호작용 게이지 채우기 코루틴
     private Coroutine erosionGaugeCoroutine;      // 침식 게이지 채우기 코루틴
-    private NightEventManager nightEventManager;   // NightEventManager 참조 추가
     #endregion
 
     #region 이벤트
@@ -69,7 +70,11 @@ public class GameManager : MonoBehaviour
     }
 
     public void StartWave()
-    {
+    {   
+        if (CurrentWave == 0) {
+            CurrentWave = 1;
+        }
+
         if (CurrentWave == 1 || CurrentWave == 6)
         {
             StartScenario();
