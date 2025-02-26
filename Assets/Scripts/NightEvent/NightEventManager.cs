@@ -35,8 +35,8 @@ public class NightEventManager : MonoBehaviour
     // public으로 변경하여 GameManager에서 접근 가능하도록 함
     public void Initialize(GameManager gameManager)
     {
-        gameManager.OnNightStarted += StartNightEvents;
-        gameManager.OnDayStarted += StopAllNightEvents;
+        //gameManager.OnNightStarted += StartNightEvents;
+        //gameManager.OnDayStarted += StopAllNightEvents;
     }
 
     public void StartNightEvents()

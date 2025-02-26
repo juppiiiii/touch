@@ -162,7 +162,7 @@ public class ObjectManager : MonoBehaviour {
 		lastMousePosition = selected.transform.position;
 	}
 
-	// WASD 키 이동 처리(장난감 한정.)
+	// WASD 키 이동 처리(장난감 한정. 이동은 별도 구현 하여야 할 덧)
 	void WASDMove()
 	{
 		if (Input.GetKeyDown("w"))
