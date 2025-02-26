@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;  // UI »ç¿ë ½Ã
 
 public class ObjectManager : MonoBehaviour {
-	private bool isCorrect;
+	private bool isCorrect = true;
 	public GameObject selected;
 	private bool isDragging = false;
 	private Vector3 lastMousePosition;
