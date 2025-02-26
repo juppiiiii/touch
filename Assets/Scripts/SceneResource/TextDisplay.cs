@@ -15,11 +15,11 @@ public class TextTypingEffect : MonoBehaviour
     private int currentIndex = 0;  // 현재 출력 중인 문장 인덱스
     private bool isTyping = false;  // 타이핑 중인지 체크
 
-    public GameManager gameManager;
+    // public GameManager gameManager;
 
     void Start()
     {
-        gameManager.PauseTimer();
+        // GameManager.Instance.PauseTimer();
 
         // 텍스트 파일을 한 줄씩 저장
         if (textFile != null)
@@ -64,8 +64,13 @@ public class TextTypingEffect : MonoBehaviour
         {
             // 🔹 마지막 문장이 끝났다면 Canvas 서서히 사라지기 실행!
             Debug.Log("마지막 문장 도달! Canvas 서서히 사라짐.");
-            canvasFadeOut.StartFadeOut();
-            gameManager.ResumeTimer();
+
+            if (canvasFadeOut != null)
+            {
+                // 🔥 CanvasFadeOut 오브젝트 활성화
+                canvasFadeOut.gameObject.SetActive(true);
+                canvasFadeOut.StartFadeOut(); // 이제 Coroutine 실행 가능!
+            }
         }
     }
 
