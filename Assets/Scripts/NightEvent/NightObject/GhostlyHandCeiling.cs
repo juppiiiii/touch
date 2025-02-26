@@ -11,7 +11,7 @@ public class GhostlyHandCeiling : GhostlyHand
     protected override void Awake()
     {
         base.Awake();
-        advanceSpeed = 8;
+        forwardSpeed = 8;
         retreatSpeed = 15;
 
         waitTime = 10f;
@@ -25,11 +25,11 @@ public class GhostlyHandCeiling : GhostlyHand
     {
         // 손길이 활성화되면 전진 상태로 시작
         Activate();
-        CurrentHandState = HandState.Advancing;
+        CurrentHandState = HandState.Forwarding;
         
         // 전진 페이즈
-        float advanceTime = Random.Range(2f, 4f);
-        yield return StartCoroutine(AdvancePhase(advanceTime));
+        float forwardTime = Random.Range(2f, 4f);
+        yield return StartCoroutine(ForwardePhase(forwardTime));
         
         // 천장형: 대기 후 잡기 시도
         yield return new WaitForSeconds(waitTime);
