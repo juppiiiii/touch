@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour
 
     #region 이벤트
     public event Action OnNightStarted;
-    public event Action OnDayStarted;
+    public event Action OnNightEnded;
     #endregion
 
     #region 게임 진행 관련 메서드
@@ -99,7 +99,7 @@ public class GameManager : MonoBehaviour
         currentTimerCoroutine = StartCoroutine(GameTimer(DAY_DURATION));
 
         // 낮 시작 이벤트 호출
-        OnDayStarted?.Invoke();
+        OnNightEnded?.Invoke();
         Debug.Log("낮 시작");
     }
 
@@ -140,7 +140,7 @@ public class GameManager : MonoBehaviour
             // NightEventManager에 밤 종료 알림
             if (nightEventManager != null)
             {
-                nightEventManager.OnNightEnd();
+                nightEventManager.StopAllNightEvents();
             }
             EndGame();
         }
@@ -149,7 +149,7 @@ public class GameManager : MonoBehaviour
             // NightEventManager에 밤 종료 알림
             if (nightEventManager != null)
             {
-                nightEventManager.OnNightEnd();
+                nightEventManager.StopAllNightEvents();
             }
             CurrentWave++;
             StartWave();

@@ -2,29 +2,62 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 이벤트 타입 열거형 추가
+public enum NightEventType
+{
+    EvilSpirit, // 악령
+    GhostlyHand, // 손길
+    Tossing, // 뒤척이기
+    SleepTalking // 잠꼬대
+}
+
+// 이벤트 설정을 위한 구조체들
+[System.Serializable]
+public class EvilSpiritSettings
+{
+    public EvilSpirit normalPrefab;
+    public EvilSpirit hungryPrefab;
+    public float spawnChance = 0.3f;
+    public float spawnInterval = 30f;
+    public float hungrySpawnRate = 0.3f;
+}
+
+[System.Serializable]
+public class GhostlyHandSettings
+{
+    public GhostlyHand sidePrefab;
+    public GhostlyHand ceilingPrefab;
+    public float spawnChance = 0.3f;
+    public float spawnInterval = 45f;
+    public float ceilingSpawnRate = 0.7f;
+}
+
+[System.Serializable]
+public class TossingSettings
+{
+    public float occurrenceChance = 0.2f;
+    public float occurrenceCycle = 60f;
+    public float basePenalty = 2f;
+}
+
+[System.Serializable]
+public class SleepTalkingSettings
+{
+    public float occurrenceChance = 0.15f;
+    public float interval = 90f;
+    public float duration = 10f;
+    public float penaltyTime = 5f;
+}
+
 public class NightEventManager : MonoBehaviour
 {
-    [Header("악령 이벤트 설정")]
-    [SerializeField] private EvilSpirit normalEvilSpiritPrefab;
-    [SerializeField] private EvilSpirit hungryEvilSpiritPrefab;
-    [SerializeField] private float evilSpiritSpawnChance = 0.3f;
-    [SerializeField] private float evilSpiritSpawnInterval = 30f;
+    public event System.Action OnAllEventsCleared;
 
-    [Header("손길 이벤트 설정")]
-    [SerializeField] private GhostlyHand sideHandPrefab;
-    [SerializeField] private GhostlyHand ceilingHandPrefab;
-    [SerializeField] private float handSpawnChance = 0.3f;
-    [SerializeField] private float handSpawnInterval = 45f;
-
-    [Header("뒤척이기 이벤트 설정")]
-    [SerializeField] private float tossingOccurrenceChance = 0.2f;
-    [SerializeField] private float tossingOccurrenceCycle = 60f;
-
-    [Header("잠꼬대 이벤트 설정")]
-    [SerializeField] private float sleepTalkingChance = 0.15f;
-    [SerializeField] private float sleepTalkingInterval = 90f;
-    [SerializeField] private float sleepTalkingDuration = 10f;
-    [SerializeField] private float sleepTalkingPenaltyTime = 5f;
+    [Header("이벤트 설정")]
+    [SerializeField] private EvilSpiritSettings evilSpiritSettings;
+    [SerializeField] private GhostlyHandSettings handSettings;
+    [SerializeField] private TossingSettings tossingSettings;
+    [SerializeField] private SleepTalkingSettings sleepTalkingSettings;
 
     // 활성화된 이벤트들 추적
     private List<NightEvent> activeEvents = new List<NightEvent>();
@@ -32,11 +65,11 @@ public class NightEventManager : MonoBehaviour
     // 코루틴 참조 저장
     private Dictionary<string, Coroutine> eventCoroutines = new Dictionary<string, Coroutine>();
 
-    // public으로 변경하여 GameManager에서 접근 가능하도록 함
+    #region 초기화 및 이벤트 관리
     public void Initialize(GameManager gameManager)
     {
         gameManager.OnNightStarted += StartNightEvents;
-        gameManager.OnDayStarted += StopAllNightEvents;
+        gameManager.OnNightEnded += StopAllNightEvents;
     }
 
     public void StartNightEvents()
@@ -47,10 +80,10 @@ public class NightEventManager : MonoBehaviour
         if (currentWave < 2) return;
 
         // 모든 이벤트 시작 코루틴
-        StartEvilSpiritEvents(currentWave);
-        StartHandEvents(currentWave);
-        StartTossingEvents(currentWave);
-        StartSleepTalkingEvents(currentWave);
+        StartEventRoutine(NightEventType.EvilSpirit, currentWave);
+        StartEventRoutine(NightEventType.GhostlyHand, currentWave);
+        StartEventRoutine(NightEventType.Tossing, currentWave);
+        StartEventRoutine(NightEventType.SleepTalking, currentWave);
     }
 
     public void StopAllNightEvents()
@@ -70,32 +103,76 @@ public class NightEventManager : MonoBehaviour
                 Destroy(nightEvent.gameObject);
         }
         activeEvents.Clear();
+
+        OnAllEventsCleared?.Invoke();
+    }
+    #endregion
+
+    #region 이벤트 생성 및 난이도 조정
+    private void StartEventRoutine(NightEventType eventType, int wave)
+    {
+        switch (eventType)
+        {
+            case NightEventType.EvilSpirit:
+                StartCoroutine(CreateEventSpawnRoutine(
+                    () => SpawnEvilSpirit(wave),
+                    GetScaledChance(evilSpiritSettings.spawnChance, wave),
+                    GetScaledInterval(evilSpiritSettings.spawnInterval, wave),
+                    eventType));
+                break;
+            case NightEventType.GhostlyHand:
+                StartCoroutine(CreateEventSpawnRoutine(
+                    () => SpawnGhostlyHand(wave),
+                    GetScaledChance(handSettings.spawnChance, wave),
+                    GetScaledInterval(handSettings.spawnInterval, wave),
+                    eventType));
+                break;
+            case NightEventType.Tossing:
+                StartCoroutine(CreateEventSpawnRoutine(
+                    TriggerTossingEvent,
+                    tossingSettings.occurrenceChance,
+                    tossingSettings.occurrenceCycle,
+                    eventType));
+                break;
+            case NightEventType.SleepTalking:
+                StartCoroutine(CreateEventSpawnRoutine(
+                    () => StartSleepTalkingEvents(wave),
+                    GetScaledChance(sleepTalkingSettings.occurrenceChance, wave),
+                    GetScaledInterval(sleepTalkingSettings.interval, wave),
+                    eventType));
+                break;
+        }
     }
 
-    #region 악령 이벤트
-    private void StartEvilSpiritEvents(int wave)
-    {   
-        eventCoroutines["EvilSpirit"] = StartCoroutine(EvilSpiritSpawnRoutine(spawnChance, spawnInterval, wave));
-    }
-
-    private IEnumerator EvilSpiritSpawnRoutine(float chance, float interval, int wave)
+    private IEnumerator CreateEventSpawnRoutine(System.Action spawnAction, float chance, float interval, NightEventType eventType)
     {
         while (GameManager.Instance.IsNight)
         {
             yield return new WaitForSeconds(interval);
-            
             if (Random.value <= chance)
             {
-                SpawnEvilSpirit(wave);
+                spawnAction();
             }
         }
     }
 
+    private float GetScaledChance(float baseChance, int wave)
+    {
+        return Mathf.Min(baseChance + (wave - 2) * 0.1f, 1f);
+    }
+
+    private float GetScaledInterval(float baseInterval, int wave)
+    {
+        return Mathf.Max(baseInterval - (wave - 2) * 2f, baseInterval * 0.5f);
+    }
+    #endregion
+
+    #region 악령 이벤트
     private void SpawnEvilSpirit(int wave)
     {
         bool isHungry = Random.value > 0.7f;
         
-        EvilSpirit prefabToSpawn = isHungry ? hungryEvilSpiritPrefab : normalEvilSpiritPrefab;
+        EvilSpirit prefabToSpawn = isHungry ? evilSpiritSettings.hungryPrefab : evilSpiritSettings.normalPrefab;
         EvilSpirit spawnedSpirit = Instantiate(prefabToSpawn);
         
         activeEvents.Add(spawnedSpirit);
@@ -105,30 +182,12 @@ public class NightEventManager : MonoBehaviour
     #endregion
 
     #region 손길 이벤트
-    private void StartHandEvents(int wave)
-    {
-        eventCoroutines["GhostlyHand"] = StartCoroutine(HandSpawnRoutine(handSpawnChance, handSpawnInterval, wave));
-    }
-
-    private IEnumerator HandSpawnRoutine(float chance, float interval, int wave)
-    {
-        while (GameManager.Instance.IsNight)
-        {
-            yield return new WaitForSeconds(interval);
-            
-            if (Random.value <= chance)
-            {
-                SpawnGhostlyHand(wave);
-            }
-        }
-    }
-
     private void SpawnGhostlyHand(int wave)
     {
         // 천장형과 측면형 중 랜덤 선택
-        bool isCeilingType = Random.value < 0.7f;
+        bool isCeilingType = Random.value < handSettings.ceilingSpawnRate;
         
-        GhostlyHand prefabToSpawn = isCeilingType ? ceilingHandPrefab : sideHandPrefab;
+        GhostlyHand prefabToSpawn = isCeilingType ? handSettings.ceilingPrefab : handSettings.sidePrefab;
         GhostlyHand spawnedHand = Instantiate(prefabToSpawn);
         
         activeEvents.Add(spawnedHand);
@@ -138,24 +197,6 @@ public class NightEventManager : MonoBehaviour
     #endregion
 
     #region 뒤척이기 이벤트
-    private void StartTossingEvents(int wave)
-    {
-        eventCoroutines["Tossing"] = StartCoroutine(TossingRoutine(occurrenceChance, occurrenceCycle));
-    }
-
-    private IEnumerator TossingRoutine(float chance, float cycle)
-    {
-        while (GameManager.Instance.IsNight)
-        {
-            yield return new WaitForSeconds(cycle);
-            
-            if (Random.value <= chance)
-            {
-                TriggerTossingEvent();
-            }
-        }
-    }
-
     private void TriggerTossingEvent()
     {
         Debug.Log("뒤척이기 이벤트 발생!");
@@ -163,30 +204,17 @@ public class NightEventManager : MonoBehaviour
         // 예: 카메라 흔들림, 화면 효과, 소리 등
         
         // 예시: 타이머 감소 페널티
-        GameManager.Instance.ReduceTimer(2f);
+        GameManager.Instance.ReduceTimer(tossingSettings.basePenalty);
     }
     #endregion
 
     #region 잠꼬대 이벤트
     private void StartSleepTalkingEvents(int wave)
     {
-        eventCoroutines["SleepTalking"] = StartCoroutine(SleepTalkingRoutine(occurrenceChance, interval, wave));
-    }
-
-    private IEnumerator SleepTalkingRoutine(float chance, float interval, int wave)
-    {
-        while (GameManager.Instance.IsNight)
-        {
-            yield return new WaitForSeconds(interval);
-            
-            if (Random.value <= chance)
-            {
-                float duration = sleepTalkingDuration + (wave - 2);
-                float penalty = sleepTalkingPenaltyTime + (wave - 2);
-                
-                StartCoroutine(ActivateSleepTalking(duration, penalty));
-            }
-        }
+        float duration = sleepTalkingSettings.duration + (wave - 2);
+        float penalty = sleepTalkingSettings.penaltyTime + (wave - 2);
+        
+        StartCoroutine(ActivateSleepTalking(duration, penalty));
     }
 
     private IEnumerator ActivateSleepTalking(float duration, float penaltyTime)
@@ -209,6 +237,7 @@ public class NightEventManager : MonoBehaviour
     }
     #endregion
 
+    #region 유틸리티
     private void RemoveActiveEvent(NightEvent nightEvent)
     {
         if (activeEvents.Contains(nightEvent))
@@ -216,4 +245,5 @@ public class NightEventManager : MonoBehaviour
             activeEvents.Remove(nightEvent);
         }
     }
+    #endregion
 }
