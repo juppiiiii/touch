@@ -27,7 +27,7 @@ public class FOControl : MonoBehaviour {
 		Color color = material.color;
 		color.a = 0.3f; // 반투명도
 		material.color = color;
-		//Debug.Log("마우스 오버: 투명 모드 활성화, 현재 알파: " + material.color.a);
+		Debug.Log("마우스 오버: 투명 모드 활성화, 현재 알파: " + material.color.a);
 	}
 
 	public void HandleMouseExit()
@@ -37,7 +37,7 @@ public class FOControl : MonoBehaviour {
 		color.a = 1f;
 		material.color = color;
 		SetOpaqueMode();
-		//Debug.Log("마우스 종료: 불투명 모드 복원, 현재 알파: " + material.color.a);
+		Debug.Log("마우스 종료: 불투명 모드 복원, 현재 알파: " + material.color.a);
 	}
 
 	// 투명 효과 설정
