@@ -10,6 +10,7 @@ public class TextTypingEffect : MonoBehaviour
     public Button nextButton;  // 다음 문장 버튼
     public float typingSpeed = 0.05f; // 글자 타이핑 속도
     public CanvasFadeOut canvasFadeOut; // Canvas 서서히 사라지는 스크립트
+    public GameStartFadeOut gameStartFadeOut;
 
     private List<string> sentences;  // 문장 리스트
     private int currentIndex = 0;  // 현재 출력 중인 문장 인덱스
@@ -70,6 +71,13 @@ public class TextTypingEffect : MonoBehaviour
                 // 🔥 CanvasFadeOut 오브젝트 활성화
                 canvasFadeOut.gameObject.SetActive(true);
                 canvasFadeOut.StartFadeOut(); // 이제 Coroutine 실행 가능!
+            }
+
+            else if (gameStartFadeOut != null)
+            {
+                // 🔥 CanvasFadeOut 오브젝트 활성화
+                gameStartFadeOut.gameObject.SetActive(true);
+                gameStartFadeOut.StartFadeOut(); // 이제 Coroutine 실행 가능!
             }
         }
     }
