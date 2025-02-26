@@ -11,6 +11,8 @@ public class NightTextManager : MonoBehaviour
     public Button nextButton; // 다음 문장 버튼
     public string jsonFileName = "NightText.json"; // JSON 파일 이름
 
+    public CanvasFadeOut canvasFadeOut; // Canvas 서서히 사라지는 스크립트
+
     private List<string> nightMessages;
     private int currentMessageIndex = 0;
     private bool isDisplaying = false;
@@ -101,6 +103,7 @@ public class NightTextManager : MonoBehaviour
         nextButton.gameObject.SetActive(false);
         GameManager.Instance.ResumeTimer(); // 타이머 재개
         isDisplaying = false;
+        canvasFadeOut.StartFadeOut();
     }
 }
 
