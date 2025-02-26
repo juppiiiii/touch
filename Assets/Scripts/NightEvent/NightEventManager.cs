@@ -74,11 +74,7 @@ public class NightEventManager : MonoBehaviour
 
     #region 악령 이벤트
     private void StartEvilSpiritEvents(int wave)
-    {
-        // 웨이브에 따라 난이도 조정
-        float spawnChance = evilSpiritSpawnChance * (1 + (wave - 2) * 0.1f);
-        float spawnInterval = Mathf.Max(evilSpiritSpawnInterval - (wave - 2) * 5f, 15f);
-        
+    {   
         eventCoroutines["EvilSpirit"] = StartCoroutine(EvilSpiritSpawnRoutine(spawnChance, spawnInterval, wave));
     }
 
@@ -129,7 +125,7 @@ public class NightEventManager : MonoBehaviour
 
     private void SpawnGhostlyHand(int wave)
     {
-        // 천장형과 측면형 중 랜덤 선택 (웨이브가 높을수록 천장형 확률 증가)
+        // 천장형과 측면형 중 랜덤 선택
         bool isCeilingType = Random.value < 0.7f;
         
         GhostlyHand prefabToSpawn = isCeilingType ? ceilingHandPrefab : sideHandPrefab;
@@ -144,10 +140,6 @@ public class NightEventManager : MonoBehaviour
     #region 뒤척이기 이벤트
     private void StartTossingEvents(int wave)
     {
-        // 웨이브에 따라 난이도 조정
-        float occurrenceChance = tossingOccurrenceChance * (1 + (wave - 2) * 0.1f);
-        float occurrenceCycle = Mathf.Max(tossingOccurrenceCycle - (wave - 2) * 5f, 30f);
-        
         eventCoroutines["Tossing"] = StartCoroutine(TossingRoutine(occurrenceChance, occurrenceCycle));
     }
 
@@ -178,10 +170,6 @@ public class NightEventManager : MonoBehaviour
     #region 잠꼬대 이벤트
     private void StartSleepTalkingEvents(int wave)
     {
-        // 웨이브에 따라 난이도 조정
-        float occurrenceChance = sleepTalkingChance * (1 + (wave - 2) * 0.1f);
-        float interval = Mathf.Max(sleepTalkingInterval - (wave - 2) * 10f, 45f);
-        
         eventCoroutines["SleepTalking"] = StartCoroutine(SleepTalkingRoutine(occurrenceChance, interval, wave));
     }
 
