@@ -19,7 +19,7 @@ TagManager:
   - Hover
   - Water
   - UI
-  - Wall
+  - Background
   - 
   - 
   - 
@@ -52,8 +52,9 @@ TagManager:
   - name: Ignore Raycast
     uniqueID: 2572577245
     locked: 0
-  - name: Wall
+  - name: Background
     uniqueID: 178291327
     locked: 0
   m_RenderingLayers:
   - Default
+  - Background
