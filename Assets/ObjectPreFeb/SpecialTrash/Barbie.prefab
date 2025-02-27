@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 1183396907539257577}
   m_Layer: 0
   m_Name: Barbie
-  m_TagString: ST
+  m_TagString: CannotMove
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

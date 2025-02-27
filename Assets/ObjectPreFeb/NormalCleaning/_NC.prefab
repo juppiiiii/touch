@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 260914574759058219}
   m_Layer: 0
   m_Name: NC
-  m_TagString: NC
+  m_TagString: CannotMove
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

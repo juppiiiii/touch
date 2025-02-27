@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 4711624799706938383}
   m_Layer: 0
   m_Name: Snack
-  m_TagString: NT
+  m_TagString: CannotMove
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

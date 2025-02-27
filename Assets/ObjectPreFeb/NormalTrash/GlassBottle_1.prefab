@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7105083088551288222}
   - component: {fileID: 890438564681163789}
   - component: {fileID: 1589791105226419495}
+  - component: {fileID: 6650545995907579188}
   m_Layer: 0
   m_Name: GlassBottle_1
   m_TagString: NT
@@ -109,6 +110,21 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &6650545995907579188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4236568419933640335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9895d0f6141fbc1479672e9a84fad7d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectManager: {fileID: 0}
+  manager: {fileID: 0}
+  obj: {fileID: 4236568419933640335}
 --- !u!1 &4539595550589795263
 GameObject:
   m_ObjectHideFlags: 0
@@ -160,7 +176,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4539595550589795263}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

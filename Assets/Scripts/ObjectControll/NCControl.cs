@@ -4,9 +4,6 @@ public class NCControl : MonoBehaviour
 {
 	public ObjectManager objectManager;
 	public GameObject manager;
-	private Material material;
-	private float originOutLineWidth;
-	private float highlightOutLineWidth = 0.03f;
     public GameObject obj;
 	
 	/// 쓰레기통과 세탁기의 영역
@@ -21,16 +18,11 @@ public class NCControl : MonoBehaviour
 
 	void Start()
 	{
-		// 오브젝트의 Material 복제하기
-		material = new Material(GetComponent<Renderer>().material);
-		GetComponent<Renderer>().material = material;
-		originOutLineWidth = material.GetFloat("_OutlineWidth");
 		manager = GameObject.Find("ObjectManager");
 		objectManager = manager.GetComponent<ObjectManager>();
 	}
 	private void Update()
 	{
-		DestroyNC();
 		Vector3 pos = obj.transform.position;
 		if (!objectManager.leftHold)
 		{
@@ -49,27 +41,6 @@ public class NCControl : MonoBehaviour
 				obj = null;
 				return;
 			}
-		}
-	}
-
-	void OnMouseOver()
-	{
-		material.SetFloat("_OutlineWidth", highlightOutLineWidth);
-		//Debug.Log("마우스 감지. 현재 테두리 두께: " + material.GetFloat("_OutlineWidth"));
-	}
-
-	void OnMouseExit()
-	{
-		material.SetFloat("_OutlineWidth", originOutLineWidth);
-		//Debug.Log("마우스 감지 종료. 현재 테두리 두께: " + material.GetFloat("_OutlineWidth"));
-	}
-
-	void DestroyNC()
-	{
-		if (Input.GetKeyDown("x"))
-		{
-			Destroy(gameObject);
-			obj = null;
 		}
 	}
 }

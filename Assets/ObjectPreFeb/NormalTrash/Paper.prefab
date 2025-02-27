@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6028143213548255540}
   m_Layer: 0
   m_Name: Paper
-  m_TagString: NT
+  m_TagString: CannotMove
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
