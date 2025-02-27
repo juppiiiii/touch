@@ -4,31 +4,30 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 
-public class DayTextManager : MonoBehaviour
+public class SecondDayClear : MonoBehaviour
 {
     public GameObject textCanvas; // 텍스트 출력용 캔버스
     public Text displayText; // 텍스트 UI
     public Button nextButton; // 다음 문장 버튼
-    public Image backGround; // 뒷 배경
-    public string jsonFileName = "DayText.json"; // 낮 대사 JSON 파일
+    public string jsonFileName = "SecondDayClear.json"; // JSON 파일 이름
 
     public CanvasFadeOut canvasFadeOut; // Canvas 서서히 사라지는 스크립트
+    public FinishNightFadeOut finishNightFadeOut;
 
-    private List<string> dayMessages;
+    private List<string> nightMessages;
     private int currentMessageIndex = 0;
     private bool isDisplaying = false;
-    private bool hasDayTriggered = false;
+    private bool hasNightTriggered = false;
     private Coroutine typingCoroutine;
 
     void Start()
     {
         LoadTextFromJson();
-        textCanvas.SetActive(true); // 처음에는 비활성화
+        textCanvas.SetActive(true); // Canvas는 활성화하되 내부 UI는 숨김
         displayText.gameObject.SetActive(false);
         nextButton.gameObject.SetActive(false);
-        backGround.gameObject.SetActive(false);
         nextButton.onClick.AddListener(DisplayNextMessage);
-        StartCoroutine(CheckDayRoutine());
+        StartCoroutine(CheckNightRoutine());
     }
 
     void LoadTextFromJson()
@@ -38,7 +37,7 @@ public class DayTextManager : MonoBehaviour
         {
             string jsonContent = File.ReadAllText(filePath);
             TextData data = JsonUtility.FromJson<TextData>(jsonContent);
-            dayMessages = new List<string>(data.messages);
+            nightMessages = new List<string>(data.messages);
         }
         else
         {
@@ -46,44 +45,42 @@ public class DayTextManager : MonoBehaviour
         }
     }
 
-    IEnumerator CheckDayRoutine()
+    IEnumerator CheckNightRoutine()
     {
         while (true)
         {
             yield return new WaitForSeconds(1f);
 
-            // 낮이 되었고, 첫 번째 낮(웨이브 1)이 아니라면 Canvas를 띄운다
-            if (!GameManager.Instance.IsNight && !hasDayTriggered && GameManager.Instance.CurrentWave > 1)
+            // 밤이 되었고, 웨이브 2 이상이며, 아직 트리거되지 않았다면 실행
+            if (GameManager.Instance.IsNight && !hasNightTriggered && GameManager.Instance.CurrentWave > 1)
             {
-                hasDayTriggered = true; // 낮 이벤트 한 번만 실행
+                hasNightTriggered = true; // 밤 이벤트 한 번만 실행
                 isDisplaying = true;
                 StartDialogue();
             }
-            else if (GameManager.Instance.IsNight)
+            else if (!GameManager.Instance.IsNight)
             {
-                hasDayTriggered = false; // 밤이 되면 다시 초기화
+                hasNightTriggered = false; // 낮이 되면 다시 초기화
             }
         }
     }
 
     void StartDialogue()
     {
-        // textCanvas.SetActive(true);
         currentMessageIndex = 0;
         displayText.gameObject.SetActive(true);
         nextButton.gameObject.SetActive(true);
-        backGround.gameObject.SetActive(true);
         DisplayNextMessage();
     }
 
     public void DisplayNextMessage()
     {
-        if (currentMessageIndex < dayMessages.Count)
+        if (currentMessageIndex < nightMessages.Count)
         {
             if (typingCoroutine != null)
                 StopCoroutine(typingCoroutine);
 
-            typingCoroutine = StartCoroutine(TypeTextEffect(dayMessages[currentMessageIndex]));
+            typingCoroutine = StartCoroutine(TypeTextEffect(nightMessages[currentMessageIndex]));
             currentMessageIndex++;
         }
         else
@@ -98,23 +95,23 @@ public class DayTextManager : MonoBehaviour
         foreach (char letter in message.ToCharArray())
         {
             displayText.text += letter;
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(0.05f); // 한 글자씩 출력 속도 조절
         }
     }
 
     void EndDialogue()
     {
-        // textCanvas.SetActive(false);
         displayText.gameObject.SetActive(false);
         nextButton.gameObject.SetActive(false);
-        backGround.gameObject.SetActive(false);
+        // GameManager.Instance.ResumeTimer(); // 타이머 재개
         isDisplaying = false;
-        canvasFadeOut.StartFadeOut();
+        // canvasFadeOut.StartFadeOut();
+        finishNightFadeOut.StartFadeOut();
     }
 }
 
 [System.Serializable]
-public class TextDataes
+public class TextDataSecondDayClear
 {
-    public string[] message;
+    public string[] messages;
 }
