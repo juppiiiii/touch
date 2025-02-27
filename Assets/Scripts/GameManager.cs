@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {   
@@ -23,12 +24,26 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region 상수
-    private const float DAY_DURATION = 90f;
-    private const float NIGHT_DURATION = 60f;
-    private const float NIGHT_DURATION_WAVE2 = 90f;
     private const float PREPARATION_TIME = 3f;  // 준비 시간 추가
     private const float MAX_INTERACTION_GAUGE = 100f;  // 상호작용 게이지 최댓값
     private const float MAX_EROSION_GAUGE = 180f;      // 침식 게이지 최댓값
+
+    // 웨이브별 시간 설정을 위한 딕셔너리
+    private readonly Dictionary<int, float> waveDayDurations = new Dictionary<int, float>()
+    {
+        { 1, 30f },  // 웨이브 1 낮 시간
+        { 2, 30f },  // 웨이브 2 낮 시간
+        { 3, 30f },  // 웨이브 3 낮 시간
+        { 4, 30f }   // 웨이브 4 낮 시간
+    };
+
+    private readonly Dictionary<int, float> waveNightDurations = new Dictionary<int, float>()
+    {
+        { 1, 30f },  // 웨이브 1 밤 시간
+        { 2, 30f },  // 웨이브 2 밤 시간
+        { 3, 30f },  // 웨이브 3 밤 시간
+        { 4, 30f }   // 웨이브 4 밤 시간
+    };
 
     // 각 웨이브별 아이의 나이
     private const int WAVE1_AGE = 4;
@@ -370,10 +385,11 @@ public class GameManager : MonoBehaviour
             StopCoroutine(currentTimerCoroutine);
         }
         ResumeTimer();
-        currentTimerCoroutine = StartCoroutine(GameTimer(DAY_DURATION));
+        float duration = waveDayDurations[CurrentWave];
+        currentTimerCoroutine = StartCoroutine(GameTimer(duration));
 
         OnNightEnded?.Invoke();
-        Debug.Log("낮 시작");
+        Debug.Log($"낮 시작 (지속시간: {duration}초)");
     }
 
     public void FinishNightPreparation()
@@ -383,11 +399,11 @@ public class GameManager : MonoBehaviour
             StopCoroutine(currentTimerCoroutine);
         }
         ResumeTimer();
-        float duration = (CurrentWave == 2) ? NIGHT_DURATION_WAVE2 : NIGHT_DURATION;
+        float duration = waveNightDurations[CurrentWave];
         currentTimerCoroutine = StartCoroutine(GameTimer(duration));
         
         OnNightStarted?.Invoke();
-        Debug.Log("밤 시작");
+        Debug.Log($"밤 시작 (지속시간: {duration}초)");
     }
     #endregion
 
