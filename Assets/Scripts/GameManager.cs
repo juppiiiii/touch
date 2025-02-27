@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {   
@@ -23,12 +24,26 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region 상수
-    private const float DAY_DURATION = 90f;
-    private const float NIGHT_DURATION = 60f;
-    private const float NIGHT_DURATION_WAVE2 = 90f;
     private const float PREPARATION_TIME = 3f;  // 준비 시간 추가
     private const float MAX_INTERACTION_GAUGE = 100f;  // 상호작용 게이지 최댓값
     private const float MAX_EROSION_GAUGE = 180f;      // 침식 게이지 최댓값
+
+    // 웨이브별 시간 설정을 위한 딕셔너리
+    private readonly Dictionary<int, float> waveDayDurations = new Dictionary<int, float>()
+    {
+        { 1, 30f },  // 웨이브 1 낮 시간
+        { 2, 30f },  // 웨이브 2 낮 시간
+        { 3, 30f },  // 웨이브 3 낮 시간
+        { 4, 30f }   // 웨이브 4 낮 시간
+    };
+
+    private readonly Dictionary<int, float> waveNightDurations = new Dictionary<int, float>()
+    {
+        { 1, 30f },  // 웨이브 1 밤 시간
+        { 2, 30f },  // 웨이브 2 밤 시간
+        { 3, 30f },  // 웨이브 3 밤 시간
+        { 4, 30f }   // 웨이브 4 밤 시간
+    };
 
     // 각 웨이브별 아이의 나이
     private const int WAVE1_AGE = 4;
@@ -96,6 +111,7 @@ public class GameManager : MonoBehaviour
         TimerElapsed = 0f;
         
         StartCoroutine(PrepareForDay());
+        IsNight = false;
     }
 
     private IEnumerator PrepareForDay()
@@ -116,7 +132,7 @@ public class GameManager : MonoBehaviour
         
         // 타이머 초기화
         TimerElapsed = 0f;
-        
+
         StartCoroutine(PrepareForNight());
         IsNight = true;
     }
@@ -130,16 +146,16 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator GameTimer(float duration)
     {
-        TimerElapsed = 0f;  // 타이머 초기화
-        while (TimerElapsed < duration)
+        TimerElapsed = duration;  // 시작 시간을 최대값으로 설정
+        while (TimerElapsed > 0)  // 0보다 클 때까지 실행
         {
-            if (!isPaused)  // 일시정지 상태가 아닐 때만 시간이 흐름
+            if (!isPaused)
             {
-                TimerElapsed += Time.deltaTime;
+                TimerElapsed -= Time.deltaTime;
             }
             yield return null;
         }
-        TimerElapsed = duration;
+        TimerElapsed = 0f;  // 음수 방지
         OnTimeOver();
     }
 
@@ -182,7 +198,7 @@ public class GameManager : MonoBehaviour
         string timeOfDay = IsNight ? "밤" : "낮";
         string pauseState = isPaused ? "타이머 일시정지" : "타이머 진행중";
         Debug.Log($"[게임 상태] {CurrentWave}웨이브 / {timeOfDay} / {pauseState}");
-        Debug.Log($"[타이머] 경과 시간: {TimerElapsed:F1}초");
+        Debug.Log($"[타이머] 남은 시간: {TimerElapsed:F1}초");
     }
 
     
@@ -216,11 +232,28 @@ public class GameManager : MonoBehaviour
             Debug.Log("패널티 적용");
         }
 
-        // 스페이스바 누르면 밤으로 이동
-        if (Input.GetKeyDown(KeyCode.Space))
+        // 스페이스바 누르면 낮/밤 전환 (디버그용)
+        if (Input.GetKeyDown(KeyCode.Return))
         {
-            StartNight();
-            Debug.Log("밤으로 이동");
+            if (IsNight)
+            {
+                if (CurrentWave < 4)
+                {
+                    CurrentWave++;
+                    StartWave();
+                    Debug.Log($"웨이브 {CurrentWave}의 낮으로 이동");
+                }
+                else
+                {
+                    EndGame();
+                    Debug.Log("게임 종료");
+                }
+            }
+            else
+            {
+                StartNight();
+                Debug.Log("밤으로 이동");
+            }
         }
 
         // E키 누르면 현재 준비시간 종료
@@ -240,7 +273,7 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region 상태 관리
-    // 다른 매니저에서 타이머 경과시간을 가져다 쓰고 싶다면 아래 메서드를 사용
+    // 다른 매니저에서 남은 시간을 가져다 쓰고 싶다면 아래 메서드를 사용
     public float GetTimerElapsed()
     {
         return TimerElapsed;
@@ -364,29 +397,30 @@ public class GameManager : MonoBehaviour
     #region 낮/밤 준비 종료 메서드
     public void FinishDayPreparation()
     {
-        IsNight = false;
         if (currentTimerCoroutine != null)
         {
             StopCoroutine(currentTimerCoroutine);
         }
-        currentTimerCoroutine = StartCoroutine(GameTimer(DAY_DURATION));
+        ResumeTimer();
+        float duration = waveDayDurations[CurrentWave];
+        currentTimerCoroutine = StartCoroutine(GameTimer(duration));
 
         OnNightEnded?.Invoke();
-        Debug.Log("낮 시작");
+        Debug.Log($"낮 시작 (지속시간: {duration}초)");
     }
 
     public void FinishNightPreparation()
     {
-        IsNight = true;
         if (currentTimerCoroutine != null)
         {
             StopCoroutine(currentTimerCoroutine);
         }
-        float duration = (CurrentWave == 2) ? NIGHT_DURATION_WAVE2 : NIGHT_DURATION;
+        ResumeTimer();
+        float duration = waveNightDurations[CurrentWave];
         currentTimerCoroutine = StartCoroutine(GameTimer(duration));
         
         OnNightStarted?.Invoke();
-        Debug.Log("밤 시작");
+        Debug.Log($"밤 시작 (지속시간: {duration}초)");
     }
     #endregion
 
