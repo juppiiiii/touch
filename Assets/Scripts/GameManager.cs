@@ -95,8 +95,7 @@ public class GameManager : MonoBehaviour
     }
 
     public void StartWave()
-    {   
-        ResetAllGauges();  // 새로운 웨이브 시작 시 게이지 초기화
+    {
         StartDay();
     }
 
@@ -108,17 +107,8 @@ public class GameManager : MonoBehaviour
     private IEnumerator PrepareForDay()
     {
         Debug.Log("낮 준비 시간");
-        yield return new WaitForSeconds(PREPARATION_TIME);
-        
-        IsNight = false;
-        if (currentTimerCoroutine != null)
-        {
-            StopCoroutine(currentTimerCoroutine);
-        }
-        currentTimerCoroutine = StartCoroutine(GameTimer(DAY_DURATION));
-
-        OnNightEnded?.Invoke();
-        Debug.Log("낮 시작");
+        // 자동 대기 시간 제거
+        yield break;
     }
 
     public void StartNight()
@@ -129,18 +119,8 @@ public class GameManager : MonoBehaviour
     private IEnumerator PrepareForNight()
     {
         Debug.Log("밤 준비 시간");
-        yield return new WaitForSeconds(PREPARATION_TIME);
-        
-        IsNight = true;
-        if (currentTimerCoroutine != null)
-        {
-            StopCoroutine(currentTimerCoroutine);
-        }
-        float duration = (CurrentWave == 2) ? NIGHT_DURATION_WAVE2 : NIGHT_DURATION;
-        currentTimerCoroutine = StartCoroutine(GameTimer(duration));
-        
-        OnNightStarted?.Invoke();
-        Debug.Log("밤 시작");
+        // 자동 대기 시간 제거
+        yield break;
     }
 
     private IEnumerator GameTimer(float duration)
@@ -236,6 +216,20 @@ public class GameManager : MonoBehaviour
         {
             StartNight();
             Debug.Log("밤으로 이동");
+        }
+
+        // E키 누르면 현재 준비시간 종료
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            if (IsNight)
+            {
+                FinishNightPreparation();
+            }
+            else
+            {
+                FinishDayPreparation();
+            }
+            Debug.Log("준비 시간 종료");
         }
     }
     #endregion
@@ -359,6 +353,35 @@ public class GameManager : MonoBehaviour
     public void ReduceTimer(float amount)
     {
         TimerElapsed = Mathf.Max(TimerElapsed - amount, 0f);
+    }
+    #endregion
+
+    #region 낮/밤 준비 종료 메서드
+    public void FinishDayPreparation()
+    {
+        IsNight = false;
+        if (currentTimerCoroutine != null)
+        {
+            StopCoroutine(currentTimerCoroutine);
+        }
+        currentTimerCoroutine = StartCoroutine(GameTimer(DAY_DURATION));
+
+        OnNightEnded?.Invoke();
+        Debug.Log("낮 시작");
+    }
+
+    public void FinishNightPreparation()
+    {
+        IsNight = true;
+        if (currentTimerCoroutine != null)
+        {
+            StopCoroutine(currentTimerCoroutine);
+        }
+        float duration = (CurrentWave == 2) ? NIGHT_DURATION_WAVE2 : NIGHT_DURATION;
+        currentTimerCoroutine = StartCoroutine(GameTimer(duration));
+        
+        OnNightStarted?.Invoke();
+        Debug.Log("밤 시작");
     }
     #endregion
 }
