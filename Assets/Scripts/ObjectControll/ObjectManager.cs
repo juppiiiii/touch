@@ -15,9 +15,6 @@ public class ObjectManager : MonoBehaviour {
 	//쌓기 가능한 물건을 미리 정해둠
 	private List<string> stackAble = new List<string>(){ "CleanBed", "Bookcase", "LowBookcase", "WrappedBox", "WrappedSB", "BottleWater", "OpenedBook", "FO", "NT"};
 
-	public GameObject gm;
-	public GameManager gameManager;
-
 	// 이동 가능 영역 한계
 	private float maxZ = -0.5f;
 	private float minZ = -19.5f;
@@ -47,14 +44,12 @@ public class ObjectManager : MonoBehaviour {
 	private void Start()
 	{
 		mainCamera = Camera.main;
-		//gm = GameObject.Find("GameObject");
-		//gameManager = gm.GetComponent<GameManager>();
 	}
 
 	private void Update()
 	{
 		//낮에만 마우스 이동이 가능하도록 한정.
-		if (!gameManager.IsNight)
+		if (!GameManager.Instance.IsNight)
 		{
 			LeftControl();
 			RightControl();
@@ -167,7 +162,7 @@ public class ObjectManager : MonoBehaviour {
 			isRightClickHeld = true;
 			rightClickTimer = 0f;
 			// 여기서 원형 게이지 객체를 생성할 수 있음.
-			gameManager.StartFillingInteractionGauge(3, 3.3f);
+			GameManager.Instance.StartFillingInteractionGauge(3, 3.3f);
 			
 		}
 
@@ -193,8 +188,8 @@ public class ObjectManager : MonoBehaviour {
 			rightClickTimer = 0f;
 			interactionWith = "";
 			ableInterection = false;
-			Debug.Log($"gauge : {gameManager.InteractionGauge}");
-			gameManager.ResetInteractionGauge();
+			Debug.Log($"gauge : {GameManager.Instance.InteractionGauge}");
+			GameManager.Instance.ResetInteractionGauge();
 		}
 	}
 
