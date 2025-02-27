@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class GameStartFadeOut : MonoBehaviour
+public class FinishDayFadeOut : MonoBehaviour
 {
     public CanvasGroup canvasGroup; // 현재 Canvas의 CanvasGroup
     public float fadeDuration = 1f; // 서서히 사라지는 시간
@@ -26,7 +26,7 @@ public class GameStartFadeOut : MonoBehaviour
         // 🔹 현재 Canvas 완전히 사라지면 비활성화
         canvasGroup.gameObject.SetActive(false);
         
-        GameManager.Instance.StartWave();
+        GameManager.Instance.FinishDayPreparation();
         
         // 🔹 다음 Canvas가 있다면, 활성화 후 페이드인 효과 적용
         if (nextCanvas != null)
