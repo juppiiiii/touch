@@ -4,13 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 
-public class DayTextManager : MonoBehaviour
+public class SecondNightClear : MonoBehaviour
 {
     public GameObject textCanvas; // 텍스트 출력용 캔버스
     public Text displayText; // 텍스트 UI
     public Button nextButton; // 다음 문장 버튼
     public Image backGround; // 뒷 배경
-    public string jsonFileName = "DayText.json"; // 낮 대사 JSON 파일
+    public string jsonFileName = "SecondNightClear.json"; // 낮 대사 JSON 파일
 
     public CanvasFadeOut canvasFadeOut; // Canvas 서서히 사라지는 스크립트
 
@@ -26,7 +26,7 @@ public class DayTextManager : MonoBehaviour
         textCanvas.SetActive(true); // 처음에는 비활성화
         displayText.gameObject.SetActive(false);
         nextButton.gameObject.SetActive(false);
-        backGround.gameObject.SetActive(false);
+        // backGround.gameObject.SetActive(false);
         nextButton.onClick.AddListener(DisplayNextMessage);
         StartCoroutine(CheckDayRoutine());
     }
@@ -53,7 +53,7 @@ public class DayTextManager : MonoBehaviour
             yield return new WaitForSeconds(1f);
 
             // 낮이 되었고, 첫 번째 낮(웨이브 1)이 아니라면 Canvas를 띄운다
-            if (!GameManager.Instance.IsNight && !hasDayTriggered && GameManager.Instance.CurrentWave > 1)
+            if (!GameManager.Instance.IsNight && !hasDayTriggered && GameManager.Instance.CurrentWave > 2)
             {
                 hasDayTriggered = true; // 낮 이벤트 한 번만 실행
                 isDisplaying = true;
@@ -68,11 +68,11 @@ public class DayTextManager : MonoBehaviour
 
     void StartDialogue()
     {
-        // textCanvas.SetActive(true);
+        textCanvas.SetActive(true);
         currentMessageIndex = 0;
         displayText.gameObject.SetActive(true);
         nextButton.gameObject.SetActive(true);
-        backGround.gameObject.SetActive(true);
+        // backGround.gameObject.SetActive(true);
         DisplayNextMessage();
     }
 
@@ -107,14 +107,14 @@ public class DayTextManager : MonoBehaviour
         // textCanvas.SetActive(false);
         displayText.gameObject.SetActive(false);
         nextButton.gameObject.SetActive(false);
-        backGround.gameObject.SetActive(false);
+        // backGround.gameObject.SetActive(false);
         isDisplaying = false;
         canvasFadeOut.StartFadeOut();
     }
 }
 
 [System.Serializable]
-public class TextDataes
+public class TextDataSecondNightClear
 {
     public string[] message;
 }
