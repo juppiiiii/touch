@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,27 +10,27 @@ public class ToyMovement : MonoBehaviour {
 	public string selectedTag;
 	private Camera mainCamera;
 	public bool leftHold = false;
-	// ÀÔ·ÂÀÌ ¹«½ÃµÇ´Â »óÅÂ ¿©ºÎ
+	// ì…ë ¥ì´ ë¬´ì‹œë˜ëŠ” ìƒíƒœ ì—¬ë¶€
 	private bool disabled = false;
 
-	// ÀÔ·Â ºñÈ°¼ºÈ­ Áö¼Ó ½Ã°£ (ÃÊ)
+	// ì…ë ¥ ë¹„í™œì„±í™” ì§€ì† ì‹œê°„ (ì´ˆ)
 	public float disableDuration = 5.0f;
 
-	// ÀÌµ¿ ¼Óµµ (À¯´Ö/ÃÊ)
+	// ì´ë™ ì†ë„ (ìœ ë‹›/ì´ˆ)
 	public float moveSpeed = 5f;
-	// Ãæµ¹ °¨Áö ½Ã ¿©À¯¸¦ ÁÖ±â À§ÇÑ °Å¸®
+	// ì¶©ëŒ ê°ì§€ ì‹œ ì—¬ìœ ë¥¼ ì£¼ê¸° ìœ„í•œ ê±°ë¦¬
 	public float collisionMargin = 0.1f;
 
 	public GameObject gm;
 	public GameManager gameManager;
 
-	// ÀÌµ¿ °¡´É ¿µ¿ª ÇÑ°è
+	// ì´ë™ ê°€ëŠ¥ ì˜ì—­ í•œê³„
 	private float maxZ = -0.5f;
 	private float minZ = -19.5f;
 	private float minX = 0.5f;
 	private float maxX = 19.5f;
 
-	// ¾²·¹±âÅë°ú ¼¼Å¹±âÀÇ ¿µ¿ª
+	// ì“°ë ˆê¸°í†µê³¼ ì„¸íƒê¸°ì˜ ì˜ì—­
 	private float washMinX = 0;
 	private float washMaxX = 10;
 	private float washMinZ = -20;
@@ -40,15 +40,15 @@ public class ToyMovement : MonoBehaviour {
 	private float trashMinZ = -10;
 	private float trashMaxZ = 0;
 
-	// WellDestroyed°¡ 1È¸¸¸ È£ÃâµÇµµ·Ï Á¦¾îÇÏ´Â ÇÃ·¡±× º¯¼ö
+	// WellDestroyedê°€ 1íšŒë§Œ í˜¸ì¶œë˜ë„ë¡ ì œì–´í•˜ëŠ” í”Œë˜ê·¸ ë³€ìˆ˜
 	private bool wellDestroyedCalled = false;
 
-	// ¿ìÅ¬¸¯ ±æ°Ô ´©¸£±â À§ÇÑ º¯¼öµé
-	public bool ableInterection = false;           // 3ÃÊ µ¿¾È ¿ìÅ¬¸¯ À¯Áö ½Ã true°¡ µÊ
-	public string interactionWith = "";             // »óÈ£ÀÛ¿ë ½ÇÇà Ç×¸ñÀ» ¾Ë¸®±â À§ÇÑ ¹®ÀÚ¿­ º¯¼ö
-	private float rightClickTimer = 0f;             // ¿ìÅ¬¸¯ Áö¼Ó½Ã°£ Ã¼Å©¿ë Å¸ÀÌ¸Ó
-	public float rightClickHoldTime = 3f;           // 3ÃÊ°¡ µÇ¾î¾ß È¿°ú ¹ß»ı
-	private bool isRightClickHeld = false;          // ÇöÀç ¿ìÅ¬¸¯ÀÌ À¯ÁöµÇ°í ÀÖ´ÂÁö ¿©ºÎ
+	// ìš°í´ë¦­ ê¸¸ê²Œ ëˆ„ë¥´ê¸° ìœ„í•œ ë³€ìˆ˜ë“¤
+	public bool ableInterection = false;           // 3ì´ˆ ë™ì•ˆ ìš°í´ë¦­ ìœ ì§€ ì‹œ trueê°€ ë¨
+	public string interactionWith = "";             // ìƒí˜¸ì‘ìš© ì‹¤í–‰ í•­ëª©ì„ ì•Œë¦¬ê¸° ìœ„í•œ ë¬¸ìì—´ ë³€ìˆ˜
+	private float rightClickTimer = 0f;             // ìš°í´ë¦­ ì§€ì†ì‹œê°„ ì²´í¬ìš© íƒ€ì´ë¨¸
+	public float rightClickHoldTime = 3f;           // 3ì´ˆê°€ ë˜ì–´ì•¼ íš¨ê³¼ ë°œìƒ
+	private bool isRightClickHeld = false;          // í˜„ì¬ ìš°í´ë¦­ì´ ìœ ì§€ë˜ê³  ìˆëŠ”ì§€ ì—¬ë¶€
 
 	private void Start()
 	{
@@ -59,49 +59,49 @@ public class ToyMovement : MonoBehaviour {
 
 	private void Update()
 	{
-		//¹ã¿¡¸¸ ¸¶¿ì½º ÀÌµ¿ÀÌ °¡´ÉÇÏµµ·Ï ÇÑÁ¤.
+		//ë°¤ì—ë§Œ ë§ˆìš°ìŠ¤ ì´ë™ì´ ê°€ëŠ¥í•˜ë„ë¡ í•œì •.
 		//if (gameManager.IsNight)
 		{
-			if (disabled) // ¼Ó¹Ú´çÇÑ °æ¿ì
+			if (disabled) // ì†ë°•ë‹¹í•œ ê²½ìš°
 			{
 				Interrupted(disableDuration);
 			}
 
-			LeftControl(); // ¼Õ±æ Àâ±â ½Ãµµ
+			LeftControl(); // ì†ê¸¸ ì¡ê¸° ì‹œë„
 
-			RightControl(); // Àå³­°¨À» ¼±ÅÃ ½Ãµµ
+			RightControl(); // ì¥ë‚œê°ì„ ì„ íƒ ì‹œë„
 			
-			if (Input.GetKeyDown("q")) //Q¹öÆ° ÀÔ·ÂÀ» ¹ŞÀº °æ¿ì Àå³­°¨ ¼±ÅÃ ÇØÁ¦
+			if (Input.GetKeyDown("q")) //Që²„íŠ¼ ì…ë ¥ì„ ë°›ì€ ê²½ìš° ì¥ë‚œê° ì„ íƒ í•´ì œ
 			{
 				CancelToyCTRL();
 			}
 			
-			if (leftHold) //ÁÂÅ¬¸¯À¸·Î ¼Õ±æ ÀÌ¼Ó µğ¹öÇÁ
+			if (leftHold) //ì¢Œí´ë¦­ìœ¼ë¡œ ì†ê¸¸ ì´ì† ë””ë²„í”„
 			{
 				HoldHand();
 			}
 			
-			if (selected != null) //¼±ÅÃµÈ ¿ÀºêÁ§Æ®°¡ ÀÖÀ» °æ¿ì ÀÌµ¿ °¡´É
+			if (selected != null) //ì„ íƒëœ ì˜¤ë¸Œì íŠ¸ê°€ ìˆì„ ê²½ìš° ì´ë™ ê°€ëŠ¥
 			{
 				WASDMovement();
 			}
 		}
 	}
 
-	void LeftControl() // ¼Õ±æ ÀÌµ¿ Áö¿¬
+	void LeftControl() // ì†ê¸¸ ì´ë™ ì§€ì—°
 	{
-		// ¸¶¿ì½º ÁÂÅ¬¸¯ Ã³¸®
+		// ë§ˆìš°ìŠ¤ ì¢Œí´ë¦­ ì²˜ë¦¬
 		if (Input.GetMouseButtonDown(0))
 		{
-			FindLeftClick(); // ¼Õ±æÀÇ ÀÌµ¿À» Áö¿¬½ÃÅ°´Â µ¿ÀÛ
+			FindLeftClick(); // ì†ê¸¸ì˜ ì´ë™ì„ ì§€ì—°ì‹œí‚¤ëŠ” ë™ì‘
 		}
 		if (Input.GetMouseButtonUp(0))
 		{
-			LostLeftClick(); // ÀÌµ¿ Áö¿¬ Á¾·á
+			LostLeftClick(); // ì´ë™ ì§€ì—° ì¢…ë£Œ
 		}
 	}
 
-	// ÁÂÅ¬¸¯ °¨Áö: ¼Õ±æ ¿©ºÎ ÆÇº° & ¼Õ±æÀÌ µé¾î¿Í ÀÖ´Â °æ¿ì ÇØ´ç ¼Õ±æ ¼Óµµ 30% ÀúÇÏ
+	// ì¢Œí´ë¦­ ê°ì§€: ì†ê¸¸ ì—¬ë¶€ íŒë³„ & ì†ê¸¸ì´ ë“¤ì–´ì™€ ìˆëŠ” ê²½ìš° í•´ë‹¹ ì†ê¸¸ ì†ë„ 30% ì €í•˜
 	void FindLeftClick()
 	{
 		RaycastHit hit;
@@ -109,29 +109,29 @@ public class ToyMovement : MonoBehaviour {
 
 		if (Physics.Raycast(ray, out hit) && !leftHold)
 		{
-			if (hit.transform != null && hit.transform.tag == "Hand") // ÅÂ±×·Î ¼Õ±æÀ» ÆÇ´ÜÇÏ·Á°í ÀÌ·¸°Ô ÇÔ.
+			if (hit.transform != null && hit.transform.tag == "Hand") // íƒœê·¸ë¡œ ì†ê¸¸ì„ íŒë‹¨í•˜ë ¤ê³  ì´ë ‡ê²Œ í•¨.
 			{
-				hand = hit.transform.gameObject; // Å¬¸¯ÇÑ ¿ÀºêÁ§Æ® ÀúÀå
-				//Debug.Log("Selected Object: " + selected.name); // µğ¹ö±ë¿ë
+				hand = hit.transform.gameObject; // í´ë¦­í•œ ì˜¤ë¸Œì íŠ¸ ì €ì¥
+				//Debug.Log("Selected Object: " + selected.name); // ë””ë²„ê¹…ìš©
 			}
 		}
 	}
 
-	// ÁÂÅ¬¸¯ ÇØÁ¦ °¨Áö : ¼Õ±æ ¿ÀºêÁ§Æ®¸¦ null·Î ¼³Á¤. ¼Óµµ °¨¼Ò Á¦°Å
+	// ì¢Œí´ë¦­ í•´ì œ ê°ì§€ : ì†ê¸¸ ì˜¤ë¸Œì íŠ¸ë¥¼ nullë¡œ ì„¤ì •. ì†ë„ ê°ì†Œ ì œê±°
 	void LostLeftClick()
 	{
 		if (hand != null)
 		{
 			hand = null;
 			leftHold = false;
-			Debug.Log("¼Õ Àâ±â ÇØÁ¦");
+			Debug.Log("ì† ì¡ê¸° í•´ì œ");
 		}
 	}
 
-	//wasd ¿òÁ÷ÀÓ
+	//wasd ì›€ì§ì„
 	void WASDMovement()
 	{
-		// WASD ÀÔ·ÂÀ» °³º°ÀûÀ¸·Î ÀĞÀ½
+		// WASD ì…ë ¥ì„ ê°œë³„ì ìœ¼ë¡œ ì½ìŒ
 		float horizontal = 0f;
 		if (Input.GetKey(KeyCode.A))
 			horizontal -= 1f;
@@ -144,33 +144,33 @@ public class ToyMovement : MonoBehaviour {
 		if (Input.GetKey(KeyCode.S))
 			vertical -= 1f;
 
-		// ÀÔ·Â º¤ÅÍ »ı¼º (´ë°¢¼± ÀÔ·Â °¡´É)
+		// ì…ë ¥ ë²¡í„° ìƒì„± (ëŒ€ê°ì„  ì…ë ¥ ê°€ëŠ¥)
 		Vector3 inputVector = new Vector3(horizontal, 0, vertical);
 
-		// ÀÔ·ÂµÈ °ªÀÌ ÀÖ´Ù¸é Ã³¸®
+		// ì…ë ¥ëœ ê°’ì´ ìˆë‹¤ë©´ ì²˜ë¦¬
 		if (inputVector != Vector3.zero)
 		{
-			// °¢ Ãà¸¶´Ù ÀÌµ¿ÀÌ °¡´ÉÇÑÁö µ¶¸³ÀûÀ¸·Î È®ÀÎÇÏ¿© allowedMovement¿¡ ´©Àû
+			// ê° ì¶•ë§ˆë‹¤ ì´ë™ì´ ê°€ëŠ¥í•œì§€ ë…ë¦½ì ìœ¼ë¡œ í™•ì¸í•˜ì—¬ allowedMovementì— ëˆ„ì 
 			Vector3 allowedMovement = Vector3.zero;
 			float frameMove = moveSpeed * Time.deltaTime;
 			float checkDistance = frameMove + collisionMargin;
 
-			// ¼öÆò ÀÌµ¿ Ã¼Å© (XÃà)
+			// ìˆ˜í‰ ì´ë™ ì²´í¬ (Xì¶•)
 			if (Mathf.Abs(horizontal) > 0)
 			{
 				Vector3 horizDir = new Vector3(horizontal, 0, 0).normalized;
-				// ÇöÀç À§Ä¡¿¡¼­ ¼öÆò ¹æÇâÀ¸·Î ray¸¦ ½õ´Ï´Ù.
+				// í˜„ì¬ ìœ„ì¹˜ì—ì„œ ìˆ˜í‰ ë°©í–¥ìœ¼ë¡œ rayë¥¼ ì©ë‹ˆë‹¤.
 				if (!Physics.Raycast(transform.position, horizDir, checkDistance))
 				{
 					allowedMovement.x = horizontal;
 				}
 				else
 				{
-					// µğ¹ö±×¿ë:
-					// Debug.Log("¼öÆò ÀÌµ¿ Â÷´Ü: " + horizDir);
+					// ë””ë²„ê·¸ìš©:
+					// Debug.Log("ìˆ˜í‰ ì´ë™ ì°¨ë‹¨: " + horizDir);
 				}
 			}
-			// ¼öÁ÷ ÀÌµ¿ Ã¼Å© (ZÃà)
+			// ìˆ˜ì§ ì´ë™ ì²´í¬ (Zì¶•)
 			if (Mathf.Abs(vertical) > 0)
 			{
 				Vector3 vertDir = new Vector3(0, 0, vertical).normalized;
@@ -180,54 +180,54 @@ public class ToyMovement : MonoBehaviour {
 				}
 				else
 				{
-					// Debug.Log("¼öÁ÷ ÀÌµ¿ Â÷´Ü: " + vertDir);
+					// Debug.Log("ìˆ˜ì§ ì´ë™ ì°¨ë‹¨: " + vertDir);
 				}
 			}
-			// allowedMovement°¡ (1, 0, 1) ¶Ç´Â (-1,0, -1) µî ´ë°¢¼± ÀÔ·ÂÀÌ¸é, Å©±â°¡ ¡î2°¡ µÇ¹Ç·Î
-			// ÀüÃ¼ ÀÌµ¿ ¼Óµµ°¡ Áõ°¡ÇÏ´Â °ÍÀ» ¸·±â À§ÇØ Á¤±ÔÈ­.
+			// allowedMovementê°€ (1, 0, 1) ë˜ëŠ” (-1,0, -1) ë“± ëŒ€ê°ì„  ì…ë ¥ì´ë©´, í¬ê¸°ê°€ âˆš2ê°€ ë˜ë¯€ë¡œ
+			// ì „ì²´ ì´ë™ ì†ë„ê°€ ì¦ê°€í•˜ëŠ” ê²ƒì„ ë§‰ê¸° ìœ„í•´ ì •ê·œí™”.
 			if (allowedMovement.magnitude > 1)
 			{
 				allowedMovement = allowedMovement.normalized;
 			}
 
-			// ÃÖÁ¾ ÀÌµ¿ °ª °è»ê ÈÄ ÀÌµ¿ (World space ±âÁØ)
+			// ìµœì¢… ì´ë™ ê°’ ê³„ì‚° í›„ ì´ë™ (World space ê¸°ì¤€)
 			Vector3 translation = allowedMovement * moveSpeed * Time.deltaTime;
 
 			selected.transform.Translate(translation, Space.World);
 		}
 	}
 
-	//¼ÕÀ» Àâ°í ÀÖÀ¸¸é ¼Óµµ¸¦ ´À¸®°Ô ÇÒ ¼ö ÀÖ´Ù.
-	//ÀÌ°Ç ¾î¶»°Ô Àü´ŞÀÌ ¿À´Â°ÅÁö?
+	//ì†ì„ ì¡ê³  ìˆìœ¼ë©´ ì†ë„ë¥¼ ëŠë¦¬ê²Œ í•  ìˆ˜ ìˆë‹¤.
+	//ì´ê±´ ì–´ë–»ê²Œ ì „ë‹¬ì´ ì˜¤ëŠ”ê±°ì§€?
 	void HoldHand()
 	{
-		//hand gameobjectÀÇ ÀÌµ¿ Á¦ÇÑ
+		//hand gameobjectì˜ ì´ë™ ì œí•œ
 	}
 
-	//¼Õ±æ¿¡ ÀâÈ÷¸é È®·üÀûÀ¸·Î ¹æÇØ¸¦ ¹Ş´Â´Ù.
-	// ¿ÜºÎ¿¡¼­ È£ÃâÇÏ¿© ÀÔ·ÂÀ» ÀÏÁ¤ ½Ã°£ µ¿¾È ¸·´Â ÇÔ¼ö
+	//ì†ê¸¸ì— ì¡íˆë©´ í™•ë¥ ì ìœ¼ë¡œ ë°©í•´ë¥¼ ë°›ëŠ”ë‹¤.
+	// ì™¸ë¶€ì—ì„œ í˜¸ì¶œí•˜ì—¬ ì…ë ¥ì„ ì¼ì • ì‹œê°„ ë™ì•ˆ ë§‰ëŠ” í•¨ìˆ˜
 	public void Interrupted(float duration)
 	{
 		StartCoroutine(DisableInputCoroutine(duration));
 	}
 
-	private IEnumerator DisableInputCoroutine(float duration) // coroutineÀ¸·Î ÀÏÁ¤½Ã°£ ¼Ó¹Ú
+	private IEnumerator DisableInputCoroutine(float duration) // coroutineìœ¼ë¡œ ì¼ì •ì‹œê°„ ì†ë°•
 	{
 		yield return new WaitForSeconds(duration);
 		disabled = false;
 	}
-	//¸¶¿ì½º ¿ìÅ¬¸¯ Á¦¾î
+	//ë§ˆìš°ìŠ¤ ìš°í´ë¦­ ì œì–´
 	void RightControl()
 	{
 		if (Input.GetMouseButton(1))
 			FindRightClick();
 
-		// ¸¶¿ì½º ¿ìÅ¬¸¯ ±æ°Ô ´©¸£±â Ã³¸®, selected°¡ ÀÖ¾î¾ß ÀÇ¹Ì°¡ ÀÖÀ½.
+		// ë§ˆìš°ìŠ¤ ìš°í´ë¦­ ê¸¸ê²Œ ëˆ„ë¥´ê¸° ì²˜ë¦¬, selectedê°€ ìˆì–´ì•¼ ì˜ë¯¸ê°€ ìˆìŒ.
 		if (Input.GetMouseButtonDown(1) && selected != null)
 		{
 			isRightClickHeld = true;
 			rightClickTimer = 0f;
-			// ¿©±â¼­ ¿øÇü °ÔÀÌÁö °´Ã¼¸¦ »ı¼ºÇÒ ¼ö ÀÖÀ½.
+			// ì—¬ê¸°ì„œ ì›í˜• ê²Œì´ì§€ ê°ì²´ë¥¼ ìƒì„±í•  ìˆ˜ ìˆìŒ.
 			gameManager.StartFillingInteractionGauge(3, 3.3f);
 
 		}
@@ -236,20 +236,20 @@ public class ToyMovement : MonoBehaviour {
 		{
 			rightClickTimer += Time.deltaTime;
 
-			// 3ÃÊ ÀÌ»ó ´­·¶°í ¾ÆÁ÷ »óÈ£ÀÛ¿ë ½ÇÇàÀÌ ¾ÈµÈ °æ¿ì
+			// 3ì´ˆ ì´ìƒ ëˆŒë €ê³  ì•„ì§ ìƒí˜¸ì‘ìš© ì‹¤í–‰ì´ ì•ˆëœ ê²½ìš°
 			if (rightClickTimer >= rightClickHoldTime && !ableInterection)
 			{
 				interactionWith = $"inter_{selected.name}";
 				Debug.Log($"inter_{selected.name}");
 				ableInterection = true;
-				// 3ÃÊ µµ´Ş ÈÄ °ÔÀÌÁö´Â ´õ ÀÌ»ó ÁøÇàµÇÁö ¾ÊÀ½
+				// 3ì´ˆ ë„ë‹¬ í›„ ê²Œì´ì§€ëŠ” ë” ì´ìƒ ì§„í–‰ë˜ì§€ ì•ŠìŒ
 				isRightClickHeld = false;
 			}
 		}
 
 		if (Input.GetMouseButtonUp(1))
 		{
-			// ¿ìÅ¬¸¯ ÇØÁ¦ ½Ã Å¸ÀÌ¸Ó¿Í »óÅÂ ÃÊ±âÈ­
+			// ìš°í´ë¦­ í•´ì œ ì‹œ íƒ€ì´ë¨¸ì™€ ìƒíƒœ ì´ˆê¸°í™”
 			isRightClickHeld = false;
 			rightClickTimer = 0f;
 			interactionWith = "";
@@ -259,7 +259,7 @@ public class ToyMovement : MonoBehaviour {
 		}
 	}
 
-	void FindRightClick() // Àå³­°¨ ¿©ºÎ ÆÇº° ÈÄ Àå³­°¨À» ¼±ÅÃÇÑ »óÅÂ·Î º¯°æ
+	void FindRightClick() // ì¥ë‚œê° ì—¬ë¶€ íŒë³„ í›„ ì¥ë‚œê°ì„ ì„ íƒí•œ ìƒíƒœë¡œ ë³€ê²½
 	{
 		RaycastHit hit;
 
@@ -269,13 +269,13 @@ public class ToyMovement : MonoBehaviour {
 		{
 			if (hit.transform != null && hit.transform.tag == "Toy")
 			{
-				selected = hit.transform.gameObject; // Å¬¸¯ÇÑ ¿ÀºêÁ§Æ® ÀúÀå
-				//Debug.Log("Selected Object: " + selected.name); // µğ¹ö±ë¿ë
+				selected = hit.transform.gameObject; // í´ë¦­í•œ ì˜¤ë¸Œì íŠ¸ ì €ì¥
+				//Debug.Log("Selected Object: " + selected.name); // ë””ë²„ê¹…ìš©
 			}
 		}
 	}
 
-	void CancelToyCTRL() // Àå³­°¨ ¼±ÅÃ ÇØÁ¦(ÀÓ½Ã...)
+	void CancelToyCTRL() // ì¥ë‚œê° ì„ íƒ í•´ì œ(ì„ì‹œ...)
 	{
 		if (selected != null)
 		{

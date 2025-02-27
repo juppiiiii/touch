@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class QuadOutlineControl : MonoBehaviour {
 
@@ -11,7 +11,7 @@ public class QuadOutlineControl : MonoBehaviour {
 		Renderer rend = GetComponent<Renderer>();
 		material = new Material(rend.material);
 		rend.material = material;
-		// ¿¹¸¦ µé¾î, 3000¹ø ÀÌ»óÀÇ °ªÀ¸·Î
+		// ì˜ˆë¥¼ ë“¤ì–´, 3000ë²ˆ ì´ìƒì˜ ê°’ìœ¼ë¡œ
 		material.renderQueue = 3100;
 
 		originOutlineWidth = material.GetFloat("_OutlineWidth");
@@ -26,13 +26,13 @@ public class QuadOutlineControl : MonoBehaviour {
 	void OnMouseOver()
 	{
 		material.SetFloat("_OutlineWidth", highlightOutlineWidth);
-		Debug.Log("¸¶¿ì½º ¿À¹ö");
-		// Ãß°¡: Outline ÄÃ·¯³ª, ´Ù¸¥ È¿°ú(¿¹: Emission)µµ ÇÔ²² Á¶ÀıÇÏ¸é ´õ ºû³ª´Â È¿°ú¸¦ ÁÙ ¼ö ÀÖÀ½.
+		Debug.Log("ë§ˆìš°ìŠ¤ ì˜¤ë²„");
+		// ì¶”ê°€: Outline ì»¬ëŸ¬ë‚˜, ë‹¤ë¥¸ íš¨ê³¼(ì˜ˆ: Emission)ë„ í•¨ê»˜ ì¡°ì ˆí•˜ë©´ ë” ë¹›ë‚˜ëŠ” íš¨ê³¼ë¥¼ ì¤„ ìˆ˜ ìˆìŒ.
 	}
 
 	void OnMouseExit()
 	{
-		Debug.Log("¸¶¿ì½º ¾Æ¿ô");
+		Debug.Log("ë§ˆìš°ìŠ¤ ì•„ì›ƒ");
 		material.SetFloat("_OutlineWidth", originOutlineWidth);
 	}
 
