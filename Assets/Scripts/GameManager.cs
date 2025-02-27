@@ -232,11 +232,28 @@ public class GameManager : MonoBehaviour
             Debug.Log("패널티 적용");
         }
 
-        // 스페이스바 누르면 밤으로 이동
-        if (Input.GetKeyDown(KeyCode.Space))
+        // 스페이스바 누르면 낮/밤 전환 (디버그용)
+        if (Input.GetKeyDown(KeyCode.Return))
         {
-            StartNight();
-            Debug.Log("밤으로 이동");
+            if (IsNight)
+            {
+                if (CurrentWave < 4)
+                {
+                    CurrentWave++;
+                    StartWave();
+                    Debug.Log($"웨이브 {CurrentWave}의 낮으로 이동");
+                }
+                else
+                {
+                    EndGame();
+                    Debug.Log("게임 종료");
+                }
+            }
+            else
+            {
+                StartNight();
+                Debug.Log("밤으로 이동");
+            }
         }
 
         // E키 누르면 현재 준비시간 종료
