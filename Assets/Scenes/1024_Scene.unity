@@ -213,7 +213,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2341870
 Transform:
   m_ObjectHideFlags: 0
@@ -1736,7 +1736,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Button
+  m_Text: 
 --- !u!222 &137540435
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4144,7 +4144,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Button
+  m_Text: 
 --- !u!222 &360715337
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -8249,6 +8249,7 @@ MonoBehaviour:
   typingSpeed: 0.05
   canvasFadeOut: {fileID: 0}
   finishDayFadeOut: {fileID: 876400475}
+  finishNightFadeOut: {fileID: 0}
 --- !u!1 &686680092
 GameObject:
   m_ObjectHideFlags: 0
@@ -15314,7 +15315,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1352022538
 Transform:
   m_ObjectHideFlags: 0
@@ -15328,8 +15329,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 285398837}
   - {fileID: 956863050}
+  - {fileID: 285398837}
   m_Father: {fileID: 1894362399}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1353779528
@@ -15602,7 +15603,8 @@ MonoBehaviour:
   nextButton: {fileID: 1478860874}
   typingSpeed: 0.05
   canvasFadeOut: {fileID: 0}
-  finishDayFadeOut: {fileID: 0}
+  finishDayFadeOut: {fileID: 565706520}
+  finishNightFadeOut: {fileID: 0}
 --- !u!1 &1368397751
 GameObject:
   m_ObjectHideFlags: 0
@@ -17278,7 +17280,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1467318893
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17314,8 +17316,9 @@ MonoBehaviour:
   displayText: {fileID: 1854275734}
   nextButton: {fileID: 1640235560}
   typingSpeed: 0.05
-  canvasFadeOut: {fileID: 1458200292}
+  canvasFadeOut: {fileID: 0}
   finishDayFadeOut: {fileID: 0}
+  finishNightFadeOut: {fileID: 0}
 --- !u!1 &1467418615
 GameObject:
   m_ObjectHideFlags: 0
@@ -23750,6 +23753,7 @@ MonoBehaviour:
   typingSpeed: 0.05
   canvasFadeOut: {fileID: 932913582}
   finishDayFadeOut: {fileID: 0}
+  finishNightFadeOut: {fileID: 0}
 --- !u!1 &1887206728
 GameObject:
   m_ObjectHideFlags: 0
@@ -24175,7 +24179,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uD14D\uC2A4"
+  m_Text: 
 --- !u!222 &1896883937
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -24647,7 +24651,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1930017620
 RectTransform:
   m_ObjectHideFlags: 0
@@ -25863,6 +25867,7 @@ MonoBehaviour:
   typingSpeed: 0.05
   canvasFadeOut: {fileID: 1930017621}
   finishDayFadeOut: {fileID: 0}
+  finishNightFadeOut: {fileID: 0}
 --- !u!1 &2050897322
 GameObject:
   m_ObjectHideFlags: 0
@@ -26038,6 +26043,7 @@ MonoBehaviour:
   typingSpeed: 0.05
   canvasFadeOut: {fileID: 1718668652}
   finishDayFadeOut: {fileID: 0}
+  finishNightFadeOut: {fileID: 0}
 --- !u!1 &2062852319
 GameObject:
   m_ObjectHideFlags: 0
