@@ -61,18 +61,27 @@ public class NightEventManager : MonoBehaviour
     // 코루틴 참조 저장
     private Dictionary<string, Coroutine> eventCoroutines = new Dictionary<string, Coroutine>();
 
+    private Child childInstance;
+
     #region 초기화 및 이벤트 관리
     public void Initialize(GameManager gameManager)
     {
         gameManager.OnNightStarted += StartNightEvents;
         gameManager.OnNightEnded += StopAllNightEvents;
+        childInstance = gameManager.GetChildInstance(); // Child 인스턴스 참조 가져오기
     }
 
     public void StartNightEvents()
     {
         int currentWave = GameManager.Instance.CurrentWave;
 
-        // 모든 이벤트 시작 코루틴
+        // 아이 활성화
+        if (childInstance != null)
+        {
+            childInstance.gameObject.SetActive(true);
+        }
+
+        // 기존 이벤트 시작 코드
         StartEventRoutine(NightEventType.EvilSpirit, currentWave);
         StartEventRoutine(NightEventType.GhostlyHand, currentWave);
         StartEventRoutine(NightEventType.Tossing, currentWave);
@@ -81,6 +90,12 @@ public class NightEventManager : MonoBehaviour
 
     public void StopAllNightEvents()
     {
+        // 아이 비활성화
+        if (childInstance != null)
+        {
+            childInstance.gameObject.SetActive(false);
+        }
+
         // 모든 코루틴 정지
         foreach (var coroutine in eventCoroutines.Values)
         {
