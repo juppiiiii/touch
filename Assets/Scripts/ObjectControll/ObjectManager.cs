@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-using Unity.VisualScripting;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjectManager : MonoBehaviour {
@@ -49,18 +47,17 @@ public class ObjectManager : MonoBehaviour {
 	private void Start()
 	{
 		mainCamera = Camera.main;
-		gm = GameObject.Find("GameObject");
-		gameManager = gm.GetComponent<GameManager>();
+		//gm = GameObject.Find("GameObject");
+		//gameManager = gm.GetComponent<GameManager>();
 	}
 
 	private void Update()
 	{
 		//낮에만 마우스 이동이 가능하도록 한정.
-		//if (!gameManager.IsNight) >> 낮이 반영될 때부터 적용하길...
+		if (!gameManager.IsNight)
 		{
 			LeftControl();
 			RightControl();
-
 			//선택된 오브젝트가 있을 경우 이동 처리
 			if (selected != null)
 			{
@@ -68,10 +65,6 @@ public class ObjectManager : MonoBehaviour {
 				{
 					DragMove();
 				}
-				/*else >> 밤에 움직이는 장난감들을 위한 이동. 옮길 예정
-				{
-					WASDMove();
-				}*/
 				Clamping();
 			}
 
@@ -160,31 +153,6 @@ public class ObjectManager : MonoBehaviour {
 			selected.transform.position += worldDelta;
 		}
 		lastMousePosition = selected.transform.position;
-	}
-
-	// WASD 키 이동 처리(장난감 한정. 이동은 별도 구현 하여야 할 덧)
-	void WASDMove()
-	{
-		if (Input.GetKeyDown("w"))
-		{
-			Vector3 locate = selected.transform.position;
-			selected.transform.position = new Vector3(locate.x, locate.y, locate.z + 1);
-		}
-		if (Input.GetKeyDown("a"))
-		{
-			Vector3 locate = selected.transform.position;
-			selected.transform.position = new Vector3(locate.x - 1, locate.y, locate.z);
-		}
-		if (Input.GetKeyDown("s"))
-		{
-			Vector3 locate = selected.transform.position;
-			selected.transform.position = new Vector3(locate.x, locate.y, locate.z - 1);
-		}
-		if (Input.GetKeyDown("d"))
-		{
-			Vector3 locate = selected.transform.position;
-			selected.transform.position = new Vector3(locate.x + 1, locate.y, locate.z);
-		}
 	}
 
 	//마우스 우클릭 제어

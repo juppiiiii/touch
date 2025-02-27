@@ -96,7 +96,7 @@ public class GameManager : MonoBehaviour
 
     public void StartDay()
     {
-        IsNight = false;
+        IsNight = true;
         if (currentTimerCoroutine != null)
         {
             StopCoroutine(currentTimerCoroutine);
