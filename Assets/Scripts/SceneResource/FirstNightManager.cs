@@ -101,7 +101,7 @@ public class NightTextManager : MonoBehaviour
     {
         displayText.gameObject.SetActive(false);
         nextButton.gameObject.SetActive(false);
-        GameManager.Instance.ResumeTimer(); // 타이머 재개
+        // GameManager.Instance.ResumeTimer(); // 타이머 재개
         isDisplaying = false;
         canvasFadeOut.StartFadeOut();
     }
