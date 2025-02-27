@@ -55,6 +55,10 @@ public class NightEventManager : MonoBehaviour
     [SerializeField] private TossingSettings tossingSettings;
     [SerializeField] private SleepTalkingSettings sleepTalkingSettings;
 
+    [Header("Child Prefabs")]
+    [SerializeField] private GameObject toddlerPrefab;    // 1-2웨이브용 아이
+    [SerializeField] private GameObject teenagerPrefab;   // 3-4웨이브용 아이
+
     // 활성화된 이벤트들 추적
     private List<NightEvent> activeEvents = new List<NightEvent>();
     
@@ -75,10 +79,18 @@ public class NightEventManager : MonoBehaviour
     {
         int currentWave = GameManager.Instance.CurrentWave;
 
+        // 현재 웨이브에 맞는 아이 스폰
+        SpawnChild(currentWave);
+
         // 아이 활성화
         if (childInstance != null)
         {
             childInstance.gameObject.SetActive(true);
+        }
+        else
+        {
+            Debug.LogError("Child 인스턴스가 없습니다!");
+            return;
         }
 
         // 기존 이벤트 시작 코드
@@ -268,6 +280,38 @@ public class NightEventManager : MonoBehaviour
         if (activeEvents.Contains(nightEvent))
         {
             activeEvents.Remove(nightEvent);
+        }
+    }
+
+    private void SpawnChild(int currentWave)
+    {
+        // 기존 Child 인스턴스가 있다면 제거
+        if (childInstance != null)
+        {
+            Destroy(childInstance.gameObject);
+        }
+
+        // 웨이브에 따라 적절한 프리팹 선택
+        GameObject prefabToSpawn = (currentWave <= 2) ? toddlerPrefab : teenagerPrefab;
+        
+        if (prefabToSpawn != null)
+        {
+            GameObject childObject = Instantiate(prefabToSpawn);
+            childInstance = childObject.GetComponent<Child>();
+            
+            if (childInstance != null)
+            {
+                childInstance.Initialize(currentWave);
+                childInstance.gameObject.SetActive(false);
+            }
+            else
+            {
+                Debug.LogError("생성된 프리팹에 Child 컴포넌트가 없습니다!");
+            }
+        }
+        else
+        {
+            Debug.LogError($"Wave {currentWave}에 해당하는 Child 프리팹이 할당되지 않았습니다!");
         }
     }
     #endregion

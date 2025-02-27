@@ -5,7 +5,6 @@ using System;
 public class GameManager : MonoBehaviour
 {   
     [SerializeField] private NightEventManager nightEventManager;
-    [SerializeField] private GameObject childPrefab;
 
     #region 싱글톤
     public static GameManager Instance { get; private set; }
@@ -76,17 +75,6 @@ public class GameManager : MonoBehaviour
     {
         nightEventManager.Initialize(this);
         CurrentWave = 1;  // 웨이브 1로 초기화
-        
-        // Child 오브젝트 생성
-        GameObject childObject = Instantiate(childPrefab);
-        childInstance = childObject.GetComponent<Child>();
-        
-        // 웨이브에 따른 초기화만 수행
-        childInstance.Initialize(CurrentWave);
-        
-        // 낮부터 시작하므로 아이를 초기에 비활성화
-        childInstance.gameObject.SetActive(false);
-        
         StartWave();
     }
 
