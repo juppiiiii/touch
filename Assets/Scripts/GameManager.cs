@@ -6,10 +6,6 @@ public class GameManager : MonoBehaviour
 {   
     [SerializeField] private NightEventManager nightEventManager;
     [SerializeField] private GameObject childPrefab;
-    [SerializeField] private GameObject toddlerModelPrefab;
-    [SerializeField] private GameObject teenModelPrefab;
-    [SerializeField] private RuntimeAnimatorController toddlerAnimController;
-    [SerializeField] private RuntimeAnimatorController teenAnimController;
 
     #region 싱글톤
     public static GameManager Instance { get; private set; }
@@ -80,18 +76,18 @@ public class GameManager : MonoBehaviour
     {
         nightEventManager.Initialize(this);
         CurrentWave = 1;  // 웨이브 1로 초기화
-        StartWave();
-
+        
         // Child 오브젝트 생성
         GameObject childObject = Instantiate(childPrefab);
         childInstance = childObject.GetComponent<Child>();
         
-        // Child 초기화
-        childInstance.Setup(toddlerModelPrefab, teenModelPrefab, 
-                            toddlerAnimController, teenAnimController);
-        
-        // 웨이브에 따른 초기화
+        // 웨이브에 따른 초기화만 수행
         childInstance.Initialize(CurrentWave);
+        
+        // 낮부터 시작하므로 아이를 초기에 비활성화
+        childInstance.gameObject.SetActive(false);
+        
+        StartWave();
     }
 
     public void StartWave()
@@ -101,6 +97,16 @@ public class GameManager : MonoBehaviour
 
     public void StartDay()
     {
+        // 현재 실행 중인 타이머가 있다면 중지
+        if (currentTimerCoroutine != null)
+        {
+            StopCoroutine(currentTimerCoroutine);
+            currentTimerCoroutine = null;
+        }
+        
+        // 타이머 초기화
+        TimerElapsed = 0f;
+        
         StartCoroutine(PrepareForDay());
     }
 
@@ -113,7 +119,18 @@ public class GameManager : MonoBehaviour
 
     public void StartNight()
     {
+        // 현재 실행 중인 타이머가 있다면 중지
+        if (currentTimerCoroutine != null)
+        {
+            StopCoroutine(currentTimerCoroutine);
+            currentTimerCoroutine = null;
+        }
+        
+        // 타이머 초기화
+        TimerElapsed = 0f;
+        
         StartCoroutine(PrepareForNight());
+        IsNight = true;
     }
 
     private IEnumerator PrepareForNight()
@@ -384,4 +401,9 @@ public class GameManager : MonoBehaviour
         Debug.Log("밤 시작");
     }
     #endregion
+
+    public Child GetChildInstance()
+    {
+        return childInstance;
+    }
 }
