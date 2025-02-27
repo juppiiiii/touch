@@ -5,14 +5,14 @@ public abstract class GhostlyHand : NightEvent
 {
     public enum HandState
     {
-        Advancing,  // 전진
+        Forwarding,  // 전진
         Grabbing,   // 잡기
         Eroding,    // 침식
         Retreating  // 후퇴
     }
     
     [Header("손길 기본 속성")]
-    [SerializeField] protected int advanceSpeed;
+    [SerializeField] protected int forwardSpeed;
     [SerializeField] protected int retreatSpeed;
     [SerializeField] protected float bindTime;
     [SerializeField] protected float objectBindChance;
@@ -20,7 +20,7 @@ public abstract class GhostlyHand : NightEvent
     [SerializeField] protected Vector3 size;
     
     // 현재 손길 상태
-    public HandState CurrentHandState { get; protected set; } = HandState.Advancing;
+    public HandState CurrentHandState { get; protected set; } = HandState.Forwarding;
     
     // 손길 시각 효과 컴포넌트
     [SerializeField] protected Renderer handRenderer;
@@ -67,7 +67,7 @@ public abstract class GhostlyHand : NightEvent
         return false;
     }
     
-    protected IEnumerator AdvancePhase(float duration)
+    protected IEnumerator ForwardePhase(float duration)
     {
         float elapsed = 0f;
         Vector3 startPos = transform.position;

@@ -10,7 +10,7 @@ public class GhostlyHandSide : GhostlyHand
     {
         base.Awake();
         
-        advanceSpeed = 10;
+        forwardSpeed = 10;
         retreatSpeed = 12;
         erosionSpeed = 7;
 
@@ -24,11 +24,11 @@ public class GhostlyHandSide : GhostlyHand
     {
         // 손길이 활성화되면 전진 상태로 시작
         Activate();
-        CurrentHandState = HandState.Advancing;
+        CurrentHandState = HandState.Forwarding;
         
         // 전진 페이즈
-        float advanceTime = Random.Range(2f, 4f);
-        yield return StartCoroutine(AdvancePhase(advanceTime));
+        float forwardTime = Random.Range(2f, 4f);
+        yield return StartCoroutine(ForwardePhase(forwardTime));
         
         // 측면형: 잡기 시도 후 침식 단계
         if (TryGrabObject())

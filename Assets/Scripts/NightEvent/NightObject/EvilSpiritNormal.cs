@@ -9,7 +9,7 @@ public class EvilSpiritNormal : EvilSpirit
         base.Awake();
         
         // 기본 속성값 직접 설정
-        advanceSpeed = 10;
+        forwardSpeed = 10;
         retreatSpeed = 15;
         erosionAmount = 0.3f;
     }
