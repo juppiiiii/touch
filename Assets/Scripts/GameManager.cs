@@ -131,16 +131,16 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator GameTimer(float duration)
     {
-        TimerElapsed = 0f;
-        while (TimerElapsed < duration)
+        TimerElapsed = duration;  // 시작 시간을 최대값으로 설정
+        while (TimerElapsed > 0)  // 0보다 클 때까지 실행
         {
             if (!isPaused)
             {
-                TimerElapsed += Time.deltaTime;
+                TimerElapsed -= Time.deltaTime;
             }
             yield return null;
         }
-        TimerElapsed = duration;
+        TimerElapsed = 0f;  // 음수 방지
         OnTimeOver();
     }
 
@@ -183,7 +183,7 @@ public class GameManager : MonoBehaviour
         string timeOfDay = IsNight ? "밤" : "낮";
         string pauseState = isPaused ? "타이머 일시정지" : "타이머 진행중";
         Debug.Log($"[게임 상태] {CurrentWave}웨이브 / {timeOfDay} / {pauseState}");
-        Debug.Log($"[타이머] 경과 시간: {TimerElapsed:F1}초");
+        Debug.Log($"[타이머] 남은 시간: {TimerElapsed:F1}초");
     }
 
     
@@ -241,7 +241,7 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region 상태 관리
-    // 다른 매니저에서 타이머 경과시간을 가져다 쓰고 싶다면 아래 메서드를 사용
+    // 다른 매니저에서 남은 시간을 가져다 쓰고 싶다면 아래 메서드를 사용
     public float GetTimerElapsed()
     {
         return TimerElapsed;
