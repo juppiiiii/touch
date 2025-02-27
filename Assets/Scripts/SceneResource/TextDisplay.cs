@@ -9,20 +9,18 @@ public class TextTypingEffect : MonoBehaviour
     public Text displayText;  // 출력할 UI 텍스트
     public Button nextButton;  // 다음 문장 버튼
     public float typingSpeed = 0.05f; // 글자 타이핑 속도
-    public CanvasFadeOut canvasFadeOut; // Canvas 서서히 사라지는 스크립트
-    public FinishDayFadeOut finishDayFadeOut;
-
+    public CanvasFadeOut canvasFadeOut; // 기존 Canvas 사라지는 기능
     private List<string> sentences;  // 문장 리스트
     private int currentIndex = 0;  // 현재 출력 중인 문장 인덱스
     private bool isTyping = false;  // 타이핑 중인지 체크
 
-    // public GameManager gameManager;
+    public FinishDayFadeOut finishDayFadeOut;
+    public FinishNightFadeOut finishNightFadeOut;
+
+    private DayStartDialogue dayStartDialogue; // 새로 추가: 낮 시작 이벤트용
 
     void Start()
     {
-        // GameManager.Instance.PauseTimer();
-
-        // 텍스트 파일을 한 줄씩 저장
         if (textFile != null)
         {
             sentences = new List<string>(textFile.text.Split('\n'));
@@ -32,20 +30,25 @@ public class TextTypingEffect : MonoBehaviour
             Debug.LogError("텍스트 파일이 연결되지 않았습니다!");
         }
 
-        // 버튼 클릭 이벤트 추가
         nextButton.onClick.AddListener(OnClickNext);
+        DisplayNextSentence();
+    }
 
-        // 첫 번째 문장 출력
+    // 🔹 낮이 시작될 때 `DayStartDialogue`에서 호출하는 함수 (기존 방식과 분리)
+    public void StartDialogue(DayStartDialogue dialogueController)
+    {
+        dayStartDialogue = dialogueController; // 낮 이벤트 매니저 저장
+        currentIndex = 0; // 대화 처음부터 시작
         DisplayNextSentence();
     }
 
     void OnClickNext()
     {
-        if (!isTyping) // 타이핑이 끝났다면
+        if (!isTyping)
         {
-            DisplayNextSentence(); // 다음 문장 출력
+            DisplayNextSentence();
         }
-        else // 아직 타이핑 중이라면 즉시 출력 완료
+        else
         {
             StopAllCoroutines();
             displayText.text = sentences[currentIndex - 1]; // 전체 문장 즉시 표시
@@ -63,16 +66,18 @@ public class TextTypingEffect : MonoBehaviour
         }
         else
         {
-            // 🔹 마지막 문장이 끝났다면 Canvas 서서히 사라지기 실행!
-            Debug.Log("마지막 문장 도달! Canvas 서서히 사라짐.");
+            Debug.Log("대화 종료!");
 
-            if (canvasFadeOut != null)
+            // 🔹 낮이 시작된 경우: `DayStartDialogue` 호출
+            if (dayStartDialogue != null)
             {
-                // 🔥 CanvasFadeOut 오브젝트 활성화
-                canvasFadeOut.gameObject.SetActive(true);
-                canvasFadeOut.StartFadeOut(); // 이제 Coroutine 실행 가능!
+                dayStartDialogue.OnDialogueEnd();
             }
-
+            // 🔹 기존 방식: `CanvasFadeOut` 호출
+            else if (canvasFadeOut != null)
+            {
+                canvasFadeOut.StartFadeOut();
+            }
             else if (finishDayFadeOut != null)
             {
                 // 🔥 CanvasFadeOut 오브젝트 활성화

@@ -53,7 +53,7 @@ public class NightTextManager : MonoBehaviour
             {
                 hasNightTriggered = true; // 밤 이벤트 한 번만 실행
                 isDisplaying = true;
-                GameManager.Instance.PauseTimer(); // 타이머 정지
+                // GameManager.Instance.PauseTimer(); // 타이머 정지
                 StartDialogue();
             }
             else if (!GameManager.Instance.IsNight)
