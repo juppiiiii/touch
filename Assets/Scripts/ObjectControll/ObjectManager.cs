@@ -111,7 +111,7 @@ public class ObjectManager : MonoBehaviour {
 
 		if (hits.Length > 0 && Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
 		{
-			if (hit.transform != null)
+			if (hit.transform != null && hit.transform.tag != "CannotMove")
 			{
 				selected = hit.transform.gameObject; // 클릭한 오브젝트 저장
 				//Debug.Log("Selected Object: " + selected.name); // 디버깅용
@@ -287,7 +287,7 @@ public class ObjectManager : MonoBehaviour {
 				continue; // 자기 자신은 제외
 
 			Vector3 direction;
-			//Debug.Log($"other : {other.transform.position.x} {other.transform.position.y} {other.transform.position.z}");
+			Debug.Log($"othername : {other.name} : {other.transform.position.x} {other.transform.position.y} {other.transform.position.z}");
 			float distance;
 			// 두 Collider가 겹치는지 검사하고, 겹침 정도를 계산
 			bool isOverlapping = Physics.ComputePenetration(
@@ -311,8 +311,8 @@ public class ObjectManager : MonoBehaviour {
 					// direction(법선)와 distance를 이용해 selected 오브젝트를 밀어냄
 					selected.transform.position += (dist - gap) * (distance + 1f);
 				}
-				//쌓기가 불가능한 경우 - 옆으로 밀어낸다.(겹치지 않도록)
-				else
+				//쌓기가 불가능한 경우 - 옆으로 밀어낸다.(겹치지 않도록)(이건 other과 selected의 이름이 동일하지 않은 경우에만 적용.)
+				/*else if (selected.name != other.name)
 				{
 					Vector3 gap = new Vector3(selected.transform.position.x - other.transform.position.x, 0, selected.transform.position.z - other.transform.position.z);Debug.Log($"{gap.x}, {gap.z}");
 					Vector3 dist = -gap.x < gap.z ? new Vector3(other.transform.localScale.x, 0, 0) : new Vector3(0, 0, -other.transform.localScale.y);
@@ -320,7 +320,7 @@ public class ObjectManager : MonoBehaviour {
 					Debug.Log($"other : {direction.x} {direction.y} {direction.z}");
 					// direction(법선)와 distance를 이용해 selected 오브젝트를 밀어냄
 					selected.transform.position += (dist - gap) * (distance + 1f);
-				}
+				}*/
 			}
 		}
 	}
