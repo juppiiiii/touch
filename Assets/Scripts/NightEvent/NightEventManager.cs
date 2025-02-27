@@ -291,12 +291,23 @@ public class NightEventManager : MonoBehaviour
             Destroy(childInstance.gameObject);
         }
 
+        // Bed 오브젝트를 이름으로 찾기
+        GameObject bed = GameObject.Find("Bed");
+        if (bed == null)
+        {
+            Debug.LogError("Scene에서 Bed 오브젝트를 찾을 수 없습니다!");
+            return;
+        }
+
         // 웨이브에 따라 적절한 프리팹 선택
         GameObject prefabToSpawn = (currentWave <= 2) ? toddlerPrefab : teenagerPrefab;
         
         if (prefabToSpawn != null)
         {
-            GameObject childObject = Instantiate(prefabToSpawn);
+            // Bed 위치에 아이 스폰
+            GameObject childObject = Instantiate(prefabToSpawn, bed.transform.position, Quaternion.identity);
+            childObject.transform.SetParent(bed.transform); // Bed의 자식으로 설정
+            
             childInstance = childObject.GetComponent<Child>();
             
             if (childInstance != null)
