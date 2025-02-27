@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-using Unity.VisualScripting;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjectManager : MonoBehaviour {
@@ -16,9 +14,6 @@ public class ObjectManager : MonoBehaviour {
 
 	//쌓기 가능한 물건을 미리 정해둠
 	private List<string> stackAble = new List<string>(){ "CleanBed", "Bookcase", "LowBookcase", "WrappedBox", "WrappedSB", "BottleWater", "OpenedBook", "FO", "NT"};
-
-	public GameObject gm;
-	public GameManager gameManager;
 
 	// 이동 가능 영역 한계
 	private float maxZ = -0.5f;
@@ -49,18 +44,15 @@ public class ObjectManager : MonoBehaviour {
 	private void Start()
 	{
 		mainCamera = Camera.main;
-		gm = GameObject.Find("GameObject");
-		gameManager = gm.GetComponent<GameManager>();
 	}
 
 	private void Update()
 	{
 		//낮에만 마우스 이동이 가능하도록 한정.
-		//if (!gameManager.IsNight) >> 낮이 반영될 때부터 적용하길...
+		if (!GameManager.Instance.IsNight)
 		{
 			LeftControl();
 			RightControl();
-
 			//선택된 오브젝트가 있을 경우 이동 처리
 			if (selected != null)
 			{
@@ -68,10 +60,6 @@ public class ObjectManager : MonoBehaviour {
 				{
 					DragMove();
 				}
-				/*else >> 밤에 움직이는 장난감들을 위한 이동. 옮길 예정
-				{
-					WASDMove();
-				}*/
 				Clamping();
 			}
 
@@ -162,31 +150,6 @@ public class ObjectManager : MonoBehaviour {
 		lastMousePosition = selected.transform.position;
 	}
 
-	// WASD 키 이동 처리(장난감 한정. 이동은 별도 구현 하여야 할 덧)
-	void WASDMove()
-	{
-		if (Input.GetKeyDown("w"))
-		{
-			Vector3 locate = selected.transform.position;
-			selected.transform.position = new Vector3(locate.x, locate.y, locate.z + 1);
-		}
-		if (Input.GetKeyDown("a"))
-		{
-			Vector3 locate = selected.transform.position;
-			selected.transform.position = new Vector3(locate.x - 1, locate.y, locate.z);
-		}
-		if (Input.GetKeyDown("s"))
-		{
-			Vector3 locate = selected.transform.position;
-			selected.transform.position = new Vector3(locate.x, locate.y, locate.z - 1);
-		}
-		if (Input.GetKeyDown("d"))
-		{
-			Vector3 locate = selected.transform.position;
-			selected.transform.position = new Vector3(locate.x + 1, locate.y, locate.z);
-		}
-	}
-
 	//마우스 우클릭 제어
 	void RightControl()
 	{
@@ -199,7 +162,7 @@ public class ObjectManager : MonoBehaviour {
 			isRightClickHeld = true;
 			rightClickTimer = 0f;
 			// 여기서 원형 게이지 객체를 생성할 수 있음.
-			gameManager.StartFillingInteractionGauge(3, 3.3f);
+			GameManager.Instance.StartFillingInteractionGauge(3, 3.3f);
 			
 		}
 
@@ -225,8 +188,8 @@ public class ObjectManager : MonoBehaviour {
 			rightClickTimer = 0f;
 			interactionWith = "";
 			ableInterection = false;
-			Debug.Log($"gauge : {gameManager.InteractionGauge}");
-			gameManager.ResetInteractionGauge();
+			Debug.Log($"gauge : {GameManager.Instance.InteractionGauge}");
+			GameManager.Instance.ResetInteractionGauge();
 		}
 	}
 
