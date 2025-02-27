@@ -9,6 +9,7 @@ TagManager:
   - SC
   - ST
   - FO
+  - Bar
   layers:
   - Default
   - TransparentFX
@@ -16,7 +17,7 @@ TagManager:
   - Hover
   - Water
   - UI
-  - 
+  - Wall
   - 
   - 
   - 
@@ -46,7 +47,10 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Tile
+  - name: Ignore Raycast
+    uniqueID: 2572577245
+    locked: 0
+  - name: Wall
     uniqueID: 178291327
     locked: 0
   m_RenderingLayers:
