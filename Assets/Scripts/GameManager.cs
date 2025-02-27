@@ -5,6 +5,11 @@ using System;
 public class GameManager : MonoBehaviour
 {   
     [SerializeField] private NightEventManager nightEventManager;
+    [SerializeField] private GameObject childPrefab;
+    [SerializeField] private GameObject toddlerModelPrefab;
+    [SerializeField] private GameObject teenModelPrefab;
+    [SerializeField] private RuntimeAnimatorController toddlerAnimController;
+    [SerializeField] private RuntimeAnimatorController teenAnimController;
 
     #region 싱글톤
     public static GameManager Instance { get; private set; }
@@ -62,6 +67,7 @@ public class GameManager : MonoBehaviour
     private Coroutine currentTimerCoroutine;
     private Coroutine interactionGaugeCoroutine;  // 상호작용 게이지 채우기 코루틴
     private Coroutine erosionGaugeCoroutine;      // 침식 게이지 채우기 코루틴
+    private Child childInstance;
     #endregion
 
     #region 이벤트
@@ -75,6 +81,17 @@ public class GameManager : MonoBehaviour
         nightEventManager.Initialize(this);
         CurrentWave = 1;  // 웨이브 1로 초기화
         StartWave();
+
+        // Child 오브젝트 생성
+        GameObject childObject = Instantiate(childPrefab);
+        childInstance = childObject.GetComponent<Child>();
+        
+        // Child 초기화
+        childInstance.Setup(toddlerModelPrefab, teenModelPrefab, 
+                            toddlerAnimController, teenAnimController);
+        
+        // 웨이브에 따른 초기화
+        childInstance.Initialize(CurrentWave);
     }
 
     public void StartWave()
