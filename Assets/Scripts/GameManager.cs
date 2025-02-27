@@ -96,6 +96,7 @@ public class GameManager : MonoBehaviour
         TimerElapsed = 0f;
         
         StartCoroutine(PrepareForDay());
+        IsNight = false;
     }
 
     private IEnumerator PrepareForDay()
@@ -116,7 +117,7 @@ public class GameManager : MonoBehaviour
         
         // 타이머 초기화
         TimerElapsed = 0f;
-        
+
         StartCoroutine(PrepareForNight());
         IsNight = true;
     }
@@ -130,10 +131,10 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator GameTimer(float duration)
     {
-        TimerElapsed = 0f;  // 타이머 초기화
+        TimerElapsed = 0f;
         while (TimerElapsed < duration)
         {
-            if (!isPaused)  // 일시정지 상태가 아닐 때만 시간이 흐름
+            if (!isPaused)
             {
                 TimerElapsed += Time.deltaTime;
             }
@@ -364,11 +365,11 @@ public class GameManager : MonoBehaviour
     #region 낮/밤 준비 종료 메서드
     public void FinishDayPreparation()
     {
-        IsNight = false;
         if (currentTimerCoroutine != null)
         {
             StopCoroutine(currentTimerCoroutine);
         }
+        ResumeTimer();
         currentTimerCoroutine = StartCoroutine(GameTimer(DAY_DURATION));
 
         OnNightEnded?.Invoke();
@@ -377,11 +378,11 @@ public class GameManager : MonoBehaviour
 
     public void FinishNightPreparation()
     {
-        IsNight = true;
         if (currentTimerCoroutine != null)
         {
             StopCoroutine(currentTimerCoroutine);
         }
+        ResumeTimer();
         float duration = (CurrentWave == 2) ? NIGHT_DURATION_WAVE2 : NIGHT_DURATION;
         currentTimerCoroutine = StartCoroutine(GameTimer(duration));
         
