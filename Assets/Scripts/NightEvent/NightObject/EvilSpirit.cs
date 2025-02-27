@@ -5,19 +5,19 @@ public abstract class EvilSpirit : NightEvent
 {
     public enum SpiritState
     {
-        Advancing,  // 전진
+        Forwarding,  // 전진
         Retreating, // 후퇴
         Eroding     // 침식
     }
     
     [Header("악령 기본 속성")]
-    [SerializeField] protected int advanceSpeed;
+    [SerializeField] protected int forwardSpeed;
     [SerializeField] protected int retreatSpeed;
     [SerializeField] protected float erosionAmount;
     [SerializeField] protected Vector3 size;
 
     // 현재 악령 상태
-    public SpiritState CurrentSpiritState { get; protected set; } = SpiritState.Advancing;
+    public SpiritState CurrentSpiritState { get; protected set; } = SpiritState.Forwarding;
     
     // 악령 시각 효과 컴포넌트
     [SerializeField] protected Renderer spiritRenderer;
@@ -43,11 +43,11 @@ public abstract class EvilSpirit : NightEvent
     {
         // 악령이 활성화되면 전진 상태로 시작
         Activate();
-        CurrentSpiritState = SpiritState.Advancing;
+        CurrentSpiritState = SpiritState.Forwarding;
         
         // 전진 페이즈
-        float advanceTime = Random.Range(3f, 5f);
-        yield return StartCoroutine(AdvancePhase(advanceTime));
+        float forwardTime = Random.Range(3f, 5f);
+        yield return StartCoroutine(ForwardePhase(forwardTime));
         
         // 침식 페이즈 (플레이어가 막지 않았다고 가정)
         CurrentSpiritState = SpiritState.Eroding;
@@ -63,7 +63,7 @@ public abstract class EvilSpirit : NightEvent
         EndEvent();
     }
     
-    private IEnumerator AdvancePhase(float duration)
+    private IEnumerator ForwardePhase(float duration)
     {
         float elapsed = 0f;
         Vector3 startPos = transform.position;

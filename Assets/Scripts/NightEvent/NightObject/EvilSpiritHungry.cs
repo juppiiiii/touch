@@ -9,7 +9,7 @@ public class EvilSpiritHungry : EvilSpirit
         base.Awake();
         
         // 기본 속성값 직접 설정
-        advanceSpeed = 15;
+        forwardSpeed = 15;
         retreatSpeed = 17;
         erosionAmount = 0.4f;
     }
