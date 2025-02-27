@@ -100,7 +100,8 @@ public class GameManager : MonoBehaviour
 
     public void StartDay()
     {
-        // 현재 실행 중인 타이머가 있다면 중지
+        IsNight = false;
+
         if (currentTimerCoroutine != null)
         {
             StopCoroutine(currentTimerCoroutine);

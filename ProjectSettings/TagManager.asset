@@ -11,6 +11,7 @@ TagManager:
   - FO
   - Bar
   - CannotMove
+  - Toy
   layers:
   - Default
   - TransparentFX
