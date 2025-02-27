@@ -4,29 +4,29 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 
-public class NightTextManager : MonoBehaviour
+public class DayTextManager : MonoBehaviour
 {
     public GameObject textCanvas; // 텍스트 출력용 캔버스
     public Text displayText; // 텍스트 UI
     public Button nextButton; // 다음 문장 버튼
-    public string jsonFileName = "NightText.json"; // JSON 파일 이름
+    public string jsonFileName = "DayText.json"; // 낮 대사 JSON 파일
 
     public CanvasFadeOut canvasFadeOut; // Canvas 서서히 사라지는 스크립트
 
-    private List<string> nightMessages;
+    private List<string> dayMessages;
     private int currentMessageIndex = 0;
     private bool isDisplaying = false;
-    private bool hasNightTriggered = false;
+    private bool hasDayTriggered = false;
     private Coroutine typingCoroutine;
 
     void Start()
     {
         LoadTextFromJson();
-        textCanvas.SetActive(true); // Canvas는 활성화하되 내부 UI는 숨김
+        textCanvas.SetActive(true); // 처음에는 비활성화
         displayText.gameObject.SetActive(false);
         nextButton.gameObject.SetActive(false);
         nextButton.onClick.AddListener(DisplayNextMessage);
-        StartCoroutine(CheckNightRoutine());
+        StartCoroutine(CheckDayRoutine());
     }
 
     void LoadTextFromJson()
@@ -36,7 +36,7 @@ public class NightTextManager : MonoBehaviour
         {
             string jsonContent = File.ReadAllText(filePath);
             TextData data = JsonUtility.FromJson<TextData>(jsonContent);
-            nightMessages = new List<string>(data.messages);
+            dayMessages = new List<string>(data.messages);
         }
         else
         {
@@ -44,27 +44,29 @@ public class NightTextManager : MonoBehaviour
         }
     }
 
-    IEnumerator CheckNightRoutine()
+    IEnumerator CheckDayRoutine()
     {
         while (true)
         {
             yield return new WaitForSeconds(1f);
-            if (GameManager.Instance.IsNight && !hasNightTriggered)
+
+            // 낮이 되었고, 첫 번째 낮(웨이브 1)이 아니라면 Canvas를 띄운다
+            if (!GameManager.Instance.IsNight && !hasDayTriggered && GameManager.Instance.CurrentWave > 1)
             {
-                hasNightTriggered = true; // 밤 이벤트 한 번만 실행
+                hasDayTriggered = true; // 낮 이벤트 한 번만 실행
                 isDisplaying = true;
-                // GameManager.Instance.PauseTimer(); // 타이머 정지
                 StartDialogue();
             }
-            else if (!GameManager.Instance.IsNight)
+            else if (GameManager.Instance.IsNight)
             {
-                hasNightTriggered = false; // 낮이 되면 다시 초기화
+                hasDayTriggered = false; // 밤이 되면 다시 초기화
             }
         }
     }
 
     void StartDialogue()
     {
+        // textCanvas.SetActive(true);
         currentMessageIndex = 0;
         displayText.gameObject.SetActive(true);
         nextButton.gameObject.SetActive(true);
@@ -73,12 +75,12 @@ public class NightTextManager : MonoBehaviour
 
     public void DisplayNextMessage()
     {
-        if (currentMessageIndex < nightMessages.Count)
+        if (currentMessageIndex < dayMessages.Count)
         {
             if (typingCoroutine != null)
                 StopCoroutine(typingCoroutine);
 
-            typingCoroutine = StartCoroutine(TypeTextEffect(nightMessages[currentMessageIndex]));
+            typingCoroutine = StartCoroutine(TypeTextEffect(dayMessages[currentMessageIndex]));
             currentMessageIndex++;
         }
         else
@@ -93,22 +95,22 @@ public class NightTextManager : MonoBehaviour
         foreach (char letter in message.ToCharArray())
         {
             displayText.text += letter;
-            yield return new WaitForSeconds(0.05f); // 한 글자씩 출력 속도 조절
+            yield return new WaitForSeconds(0.05f);
         }
     }
 
     void EndDialogue()
     {
+        // textCanvas.SetActive(false);
         displayText.gameObject.SetActive(false);
         nextButton.gameObject.SetActive(false);
-        // GameManager.Instance.ResumeTimer(); // 타이머 재개
         isDisplaying = false;
         canvasFadeOut.StartFadeOut();
     }
 }
 
 [System.Serializable]
-public class TextData
+public class TextDataes
 {
-    public string[] messages;
+    public string[] message;
 }
