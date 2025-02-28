@@ -1,0 +1,16 @@
+{
+    "Blanket": {
+        "canvasName": "BlanketCanvas",
+        "dialogues": [
+            "이불이 포근해 보인다.",
+            "하지만 자고 있을 때가 아니야!"
+        ]
+    },
+    "Robot": {
+        "canvasName": "RobotCanvas",
+        "dialogues": [
+            "이 로봇은 어디에서 온 걸까?",
+            "말을 걸어볼까?"
+        ]
+    }
+}
