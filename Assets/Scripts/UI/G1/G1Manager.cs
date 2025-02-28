@@ -23,6 +23,7 @@ public class G1Manager : MonoBehaviour
 
     private bool isProcessing = false; // 회전 처리 중인지 확인
 
+    public bool win;
     void Start()
     {
         // 게임이 시작될 때 회전 초기화
@@ -101,6 +102,7 @@ public class G1Manager : MonoBehaviour
     // ✅ 성공 시 처리 (Image UI를 활성화)
     IEnumerator Success()
     {
+        win = true; // send to ObjectManager
         isProcessing = true; // SetRotation 실행 방지
 
         if (needleRotator != null)
@@ -121,6 +123,7 @@ public class G1Manager : MonoBehaviour
     // ✅ 실패 시 처리 (Image UI를 활성화)
     IEnumerator Fail()
     {
+        win = false; // 오브젝트매니저에 보낼 값
         isProcessing = true; // SetRotation 실행 방지
 
         if (needleRotator != null)

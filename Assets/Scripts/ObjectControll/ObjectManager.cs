@@ -4,10 +4,16 @@ using UnityEditor;
 using UnityEngine;
 
 public class ObjectManager : MonoBehaviour {
-	//
+	//프리팹 호출
 	private bool[] calledPrefeb = new bool[3];
 	private int prefebCnt = 0;
 	public GameObject d1, d2, d3;
+	// 미니게임 호출과 회상씬
+	public int[] callMiniGame = { 1, 2, 4};
+	public bool showInteraction = false;
+
+	//미니게임 게임오브젝트
+	public GameObject g1, g2, g3, g4;
 
 	private bool isCorrect = true;
 	public GameObject selected;
@@ -54,8 +60,13 @@ public class ObjectManager : MonoBehaviour {
 
 	private void Update()
 	{
-		//낮에만 마우스 이동이 가능하도록 한정.
-		if (!GameManager.Instance.IsNight)
+        //미니게임 디버깅
+        /*if (Input.GetKeyDown("m"))
+        {
+			PlayMiniGame();
+        }*/
+        //낮에만 마우스 이동이 가능하도록 한정.
+        if (!GameManager.Instance.IsNight)
 		{
 			//낮이 되었을 때 프리팹 1회 호출
 			if (prefebCnt < 3)
@@ -217,6 +228,15 @@ public class ObjectManager : MonoBehaviour {
 
 		if (Input.GetMouseButtonUp(1))
 		{
+			//상호작용이 가능하다면 미니게임 실행
+			if (ableInterection)
+			{
+				if (selected.tag == "SC" || selected.tag == "ST")
+				{
+					Debug.Log("Sc or ST");
+					PlayMiniGame();
+				}
+			}
 			// 우클릭 해제 시 타이머와 상태 초기화
 			isRightClickHeld = false;
 			rightClickTimer = 0f;
@@ -225,6 +245,37 @@ public class ObjectManager : MonoBehaviour {
 			Debug.Log($"gauge : {GameManager.Instance.InteractionGauge}");
 			GameManager.Instance.ResetInteractionGauge();
 		}
+	}
+
+	//미니게임을 실행. 이기면 미니게임 상호작용 출력 가능하게 불값 반환
+	void PlayMiniGame()
+	{
+		int chooseGame = callMiniGame[Random.Range(1, 100) % 3];
+		GameManager.Instance.PauseTimer();
+		switch (chooseGame) 
+		{
+			case 1:
+				Debug.Log("1번 게임 실행");
+				G1Manager g1Manager = new G1Manager();
+				g1.SetActive(true);
+				showInteraction = g1Manager.win;
+				return;
+			case 2:
+				Debug.Log("2번 게임 실행");
+				G1Manager g2Manager = new G1Manager();
+				g2.SetActive(true);
+				showInteraction = g2Manager.win;
+				return;
+			case 3:// 3번 게임은 오류 발생으로 실행 불가
+				return;
+			case 4:
+				Debug.Log("4번 게임 실행");
+				G1Manager g4Manager = new G1Manager();
+				g4.SetActive(true);
+				showInteraction = g4Manager.win;
+				return;
+		}
+		GameManager.Instance.ResumeTimer();
 	}
 
 	void FindRightClick()

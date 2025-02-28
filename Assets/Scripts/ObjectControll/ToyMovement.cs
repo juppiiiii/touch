@@ -82,7 +82,7 @@ public class ToyMovement : MonoBehaviour {
 		//속박 상태 디버그
 		DebugInterrupt();
 		//밤에만 마우스 이동이 가능하도록 한정.
-		//if (gameManager.IsNight)
+		if (gameManager.IsNight)
 		{
 			if (disabled) // 속박당한 경우
 			{

@@ -20,6 +20,7 @@ public class G4Manager : MonoBehaviour
     public Color normalColor = Color.white; // 기본 색상
     public Color failColor = Color.red; // 실패 시 색상
 
+    public bool win;
     private void Start()
     {
         originalG4Position = G4.transform.localPosition; // G4의 초기 위치 저장
@@ -129,6 +130,7 @@ public class G4Manager : MonoBehaviour
 
     private IEnumerator Success()
     {
+        win = true;
         Debug.Log("성공!");
         yield return new WaitForSeconds(3);
         ResetColors(); // 게임 성공 시 색상 초기화
@@ -137,6 +139,7 @@ public class G4Manager : MonoBehaviour
 
     private IEnumerator Fail()
     {
+        win = false;
         Debug.Log("실패!");
         yield return new WaitForSeconds(3);
         ResetColors(); // 게임 실패 시 색상 초기화
