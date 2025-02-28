@@ -3248,6 +3248,10 @@ MonoBehaviour:
   jsonFileName: SecondDayClear.json
   canvasFadeOut: {fileID: 0}
   finishNightFadeOut: {fileID: 165840134}
+  nightMessages: []
+  currentMessageIndex: 0
+  isDisplaying: 0
+  hasNightTriggered: 0
 --- !u!225 &165840136
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -4965,6 +4969,7 @@ MonoBehaviour:
   Circle: {fileID: 354227636}
   successScore: 5
   failScore: 3
+  win: 0
 --- !u!114 &254704703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6331,7 +6336,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &356079545
 Transform:
   m_ObjectHideFlags: 0
@@ -9950,6 +9955,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e392e31df4937543b3e2cd8813c46dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 0}
   timerTxt: {fileID: 2014613443}
   day: {fileID: 218360432}
   night: {fileID: 1961999706}
@@ -14552,6 +14558,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb7e7da3164d1e241bca271d94289a84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  d1: {fileID: 3740543492330529413, guid: 12c6560be8892994db490d06b2295771, type: 3}
+  d2: {fileID: 7894592811992177981, guid: 38e3bf8a0dd0ee44397cfc29a1bc8225, type: 3}
+  d3: {fileID: 450586307185786610, guid: 20173081b069a394ab225f79e4a42efa, type: 3}
+  callMiniGame: 010000000200000004000000
+  showInteraction: 0
   selected: {fileID: 0}
   selectedTag: 
   leftHold: 0
@@ -16096,6 +16107,7 @@ MonoBehaviour:
   G4: {fileID: 1033271535}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   failColor: {r: 1, g: 0, b: 0, a: 1}
+  win: 0
 --- !u!114 &1033271539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19379,6 +19391,7 @@ MonoBehaviour:
   timerGaze: {fileID: 1390092905}
   failCircle: {fileID: 730099476}
   successCircle: {fileID: 2101322601}
+  win: 0
 --- !u!114 &1312844750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20167,6 +20180,10 @@ MonoBehaviour:
   backGround: {fileID: 0}
   jsonFileName: SecondNightClear.json
   canvasFadeOut: {fileID: 1370017821}
+  dayMessages: []
+  currentMessageIndex: 0
+  isDisplaying: 0
+  hasDayTriggered: 0
 --- !u!225 &1370017823
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -21318,6 +21335,10 @@ MonoBehaviour:
   backGround: {fileID: 0}
   jsonFileName: ThirdNightClear.json
   canvasFadeOut: {fileID: 1440053981}
+  dayMessages: []
+  currentMessageIndex: 0
+  isDisplaying: 0
+  hasDayTriggered: 0
 --- !u!114 &1440053981
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24213,6 +24234,7 @@ MonoBehaviour:
   G2: {fileID: 1634697236}
   successScore: 3
   failScore: 3
+  win: 0
 --- !u!114 &1634697239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27713,63 +27735,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1809142259}
   m_CullTransparentMesh: 1
---- !u!1001 &1817491984
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 450586307185786610, guid: 20173081b069a394ab225f79e4a42efa, type: 3}
-      propertyPath: m_Name
-      value: day3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5007969905121643303, guid: 20173081b069a394ab225f79e4a42efa, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 2.9
-      objectReference: {fileID: 0}
-    - target: {fileID: 5007969905121643303, guid: 20173081b069a394ab225f79e4a42efa, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 12.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5007969905121643303, guid: 20173081b069a394ab225f79e4a42efa, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -32.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5007969905121643303, guid: 20173081b069a394ab225f79e4a42efa, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5007969905121643303, guid: 20173081b069a394ab225f79e4a42efa, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5007969905121643303, guid: 20173081b069a394ab225f79e4a42efa, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5007969905121643303, guid: 20173081b069a394ab225f79e4a42efa, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5007969905121643303, guid: 20173081b069a394ab225f79e4a42efa, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5007969905121643303, guid: 20173081b069a394ab225f79e4a42efa, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5007969905121643303, guid: 20173081b069a394ab225f79e4a42efa, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 20173081b069a394ab225f79e4a42efa, type: 3}
 --- !u!1 &1821934710
 GameObject:
   m_ObjectHideFlags: 0
@@ -29187,6 +29152,10 @@ MonoBehaviour:
   jsonFileName: ThirdDayClear.json
   canvasFadeOut: {fileID: 0}
   finishNightFadeOut: {fileID: 1882592086}
+  nightMessages: []
+  currentMessageIndex: 0
+  isDisplaying: 0
+  hasNightTriggered: 0
 --- !u!114 &1882592086
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31284,7 +31253,6 @@ MonoBehaviour:
   textCanvas: {fileID: 1989584325}
   displayText: {fileID: 371954108}
   nextButton: {fileID: 1462763591}
-  backGround: {fileID: 701342677}
   jsonFileName: DayText.json
   canvasFadeOut: {fileID: 1989584328}
 --- !u!225 &1989584330
@@ -33245,5 +33213,4 @@ SceneRoots:
   - {fileID: 1791547465}
   - {fileID: 114623049}
   - {fileID: 218718101}
-  - {fileID: 1817491984}
   - {fileID: 655812657}
