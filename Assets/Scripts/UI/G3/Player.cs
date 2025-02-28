@@ -31,7 +31,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        // **점프 중이면 Y 위치 직접 변경**
+        // 점프 중이면 Y 위치 직접 변경
         if (isJumping)
         {
             transform.position += new Vector3(0, verticalVelocity * Time.deltaTime, 0);
@@ -47,9 +47,7 @@ public class Player : MonoBehaviour
     private void Jump()
     {
         isJumping = true;
-        transform.parent = originalParent; // 부모 해제
-
-        // **즉시 점프 속도 적용**
+        transform.SetParent(originalParent, true); // 부모 해제
         verticalVelocity = jumpSpeed;
         playerCollider.isTrigger = true; // 점프 중 충돌 OFF
     }
@@ -60,7 +58,13 @@ public class Player : MonoBehaviour
         {
             isJumping = false;
             verticalVelocity = 0; // 착지 시 속도 초기화
-            transform.parent = collision.transform; // Bar와 함께 이동
+            
+            // Bar의 위치 기준으로 플레이어의 위치를 보정
+            float barTopY = collision.transform.position.y + (collision.collider.bounds.size.y / 2);
+            float playerHeight = playerCollider.bounds.size.y / 2;
+
+            transform.SetParent(collision.transform, true); // 부모 설정
+            transform.position = new Vector3(transform.position.x, barTopY + playerHeight, transform.position.z); // 위치 보정
         }
     }
 
@@ -84,6 +88,7 @@ public class Player : MonoBehaviour
     {
         return isWin;
     }
+
     public bool IsFall()
     {   
         return isFall;

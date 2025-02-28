@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class DNChanger : MonoBehaviour
 {
-    public GameManager gameManager;
     public Text timerTxt;
     public GameObject day;
     public GameObject night;
@@ -15,9 +14,9 @@ public class DNChanger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timerTxt.text = Math.Truncate(gameManager.GetTimerElapsed() / 1).ToString();
-        if (gameManager.IsNight != currentNight) {
-            if (gameManager.IsNight) {
+        timerTxt.text = Math.Truncate(GameManager.Instance.GetTimerElapsed() / 1).ToString();
+        if (GameManager.Instance.IsNight != currentNight) {
+            if (GameManager.Instance.IsNight) {
                 currentNight = true;
                 NowNight();
             }

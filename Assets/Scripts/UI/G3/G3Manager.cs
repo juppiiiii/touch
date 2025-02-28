@@ -54,7 +54,6 @@ public class G3Manager : MonoBehaviour
         {
             yield return new WaitForSeconds(1f);
             timer -= 1f;
-            Debug.Log("남은 시간: " + timer + "초");
             timerGaze.fillAmount = timer / timeLimit;
 
             // 시간이 0 이하가 되면 게임 오버

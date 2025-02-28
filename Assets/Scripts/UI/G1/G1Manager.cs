@@ -49,8 +49,8 @@ public class G1Manager : MonoBehaviour
             needleRotator.Rotate();
         }
         
-        // ✅ 마우스 클릭 시 바늘 회전 정지
-        if (Input.GetMouseButtonDown(0))
+        // 마우스 클릭 시 바늘 회전 정지
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             needleRotator.StopRotation();
         }

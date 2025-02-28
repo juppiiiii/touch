@@ -1713,7 +1713,7 @@ RectTransform:
   m_GameObject: {fileID: 133852190}
   m_LocalRotation: {x: 0.23911765, y: -0.3696438, z: 0.09904577, w: 0.89239913}
   m_LocalPosition: {x: 0, y: 0, z: 29.356092}
-  m_LocalScale: {x: 0.04, y: 0.04, z: 0.04}
+  m_LocalScale: {x: 0.03, y: 0.03, z: 0.03}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 414423640}
@@ -5108,15 +5108,15 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 511306742}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -925.99567}
-  m_LocalScale: {x: 0.010943096, y: 0.010943095, z: 0.0121589955}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.4, y: 1.4, z: 1.4}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 133852191}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.04748535, y: -0.02368164}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 512, y: 512}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &511306744
@@ -6720,6 +6720,7 @@ MonoBehaviour:
   typingSpeed: 0.05
   canvasFadeOut: {fileID: 0}
   finishDayFadeOut: {fileID: 0}
+  finishNightFadeOut: {fileID: 0}
 --- !u!1 &686680092
 GameObject:
   m_ObjectHideFlags: 0
@@ -13177,15 +13178,15 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1414459362}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -925.99567}
-  m_LocalScale: {x: 0.010943096, y: 0.010943095, z: 0.0121589955}
-  m_ConstrainProportionsScale: 1
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.4, y: 1.4, z: 1.4}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 133852191}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.04748535, y: -0.02368164}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 512, y: 512}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1414459364
@@ -13204,7 +13205,7 @@ MonoBehaviour:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -13507,6 +13508,7 @@ MonoBehaviour:
   typingSpeed: 0.05
   canvasFadeOut: {fileID: 1133168743}
   finishDayFadeOut: {fileID: 0}
+  finishNightFadeOut: {fileID: 0}
 --- !u!1 &1457857684
 GameObject:
   m_ObjectHideFlags: 0
@@ -14381,7 +14383,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 120
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &1502248764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14453,8 +14455,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa21c67d952c6f547a3da5fa34d1b776, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpSpeed: 40
-  fallSpeed: 20
+  jumpSpeed: 5
+  fallSpeed: 5
   deadZone: -300
 --- !u!1 &1503299658
 GameObject:
@@ -19167,6 +19169,7 @@ MonoBehaviour:
   typingSpeed: 0.05
   canvasFadeOut: {fileID: 932913582}
   finishDayFadeOut: {fileID: 0}
+  finishNightFadeOut: {fileID: 0}
 --- !u!1 &1881816404
 GameObject:
   m_ObjectHideFlags: 0
@@ -19379,7 +19382,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e392e31df4937543b3e2cd8813c46dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 608118131}
   timerTxt: {fileID: 875200210}
   day: {fileID: 2111692432}
   night: {fileID: 986513055}
@@ -20967,6 +20969,7 @@ MonoBehaviour:
   typingSpeed: 0.05
   canvasFadeOut: {fileID: 1930017621}
   finishDayFadeOut: {fileID: 0}
+  finishNightFadeOut: {fileID: 0}
 --- !u!1 &2050897322
 GameObject:
   m_ObjectHideFlags: 0
@@ -21142,6 +21145,7 @@ MonoBehaviour:
   typingSpeed: 0.05
   canvasFadeOut: {fileID: 1718668652}
   finishDayFadeOut: {fileID: 0}
+  finishNightFadeOut: {fileID: 0}
 --- !u!1 &2063181341
 GameObject:
   m_ObjectHideFlags: 0
