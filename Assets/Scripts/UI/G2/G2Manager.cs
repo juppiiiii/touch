@@ -48,13 +48,13 @@ public class G2Manager : MonoBehaviour
             circleReducer.Reduce();
         }
 
-        if (circleReducer.NowScale() <= 1.1f && !hasReducedTooSmall)
+        if (circleReducer.NowScale() <= 0.1f && !hasReducedTooSmall)
         {
             tryScore++;
             hasReducedTooSmall = true; // 중복 실행 방지
             StartCoroutine(HandleKeyPress());
         }
-        else if (circleReducer.NowScale() > 1.1f)
+        else if (circleReducer.NowScale() > 0.1f)
         {
             hasReducedTooSmall = false; // 크기가 다시 커지면 다시 체크 가능하도록 설정
         }
