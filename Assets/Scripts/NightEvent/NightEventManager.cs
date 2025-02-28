@@ -15,34 +15,34 @@ public enum NightEventType
 [System.Serializable]
 public class EvilSpiritSettings
 {
-    public EvilSpirit normalPrefab;
-    public EvilSpirit hungryPrefab;
+    public GameObject normalPrefab;
+    public GameObject hungryPrefab;
     public float hungrySpawnRate = 0.3f;
 }
 
 [System.Serializable]
 public class GhostlyHandSettings
 {
-    public GhostlyHand sidePrefab;
-    public GhostlyHand ceilingPrefab;
+    public GameObject sidePrefab;
+    public GameObject ceilingPrefab;
     public float ceilingSpawnRate = 0.7f;
 }
 
 [System.Serializable]
 public class TossingSettings
 {
-    public float occurrenceChance = 0.2f;
-    public float occurrenceCycle = 60f;
+    public float occurrenceChance = 1f;     // 50% 확률
+    public float occurrenceCycle = 5f;        // 5초마다 체크
     public float basePenalty = 2f;
 }
 
 [System.Serializable]
 public class SleepTalkingSettings
 {
-    public float occurrenceChance = 0.15f;
-    public float interval = 90f;
-    public float duration = 10f;
-    public float penaltyTime = 5f;
+    public float occurrenceChance = 1f;     // 40% 확률
+    public float interval = 3f;               // 3초마다 체크
+    public float duration = 3f;               // 3초 동안 지속
+    public float penaltyTime = 5f;            // 5초 패널티
 }
 
 public class NightEventManager : MonoBehaviour
@@ -97,7 +97,6 @@ public class NightEventManager : MonoBehaviour
         StartEventRoutine(NightEventType.EvilSpirit, currentWave);
         StartEventRoutine(NightEventType.GhostlyHand, currentWave);
         StartEventRoutine(NightEventType.Tossing, currentWave);
-        StartEventRoutine(NightEventType.SleepTalking, currentWave);
     }
 
     public void StopAllNightEvents()
@@ -189,29 +188,19 @@ public class NightEventManager : MonoBehaviour
     private void SpawnEvilSpirit(int wave)
     {
         bool isHungry = Random.value > 0.7f;
-        string type = "악령";
-        
-        // 프리팹이 있을 때만 SpiritTypeName 사용
-        if (isHungry && evilSpiritSettings.hungryPrefab != null)
-        {
-            type = evilSpiritSettings.hungryPrefab.SpiritTypeName;
-        }
-        else if (!isHungry && evilSpiritSettings.normalPrefab != null)
-        {
-            type = evilSpiritSettings.normalPrefab.SpiritTypeName;
-        }
+        string type = isHungry ? "배고픈 악령" : "일반 악령";
         
         Debug.Log($"[웨이브 {wave}] {type} 출현! (현재 활성 이벤트 수: {activeEvents.Count + 1})");
         
         if (isHungry && evilSpiritSettings.hungryPrefab != null)
         {
-            EvilSpirit spawnedSpirit = Instantiate(evilSpiritSettings.hungryPrefab);
+            EvilSpirit spawnedSpirit = Instantiate(evilSpiritSettings.hungryPrefab).GetComponent<EvilSpirit>();
             activeEvents.Add(spawnedSpirit);
             spawnedSpirit.OnEventEnded += () => RemoveActiveEvent(spawnedSpirit);
         }
         else if (!isHungry && evilSpiritSettings.normalPrefab != null)
         {
-            EvilSpirit spawnedSpirit = Instantiate(evilSpiritSettings.normalPrefab);
+            EvilSpirit spawnedSpirit = Instantiate(evilSpiritSettings.normalPrefab).GetComponent<EvilSpirit>();
             activeEvents.Add(spawnedSpirit);
             spawnedSpirit.OnEventEnded += () => RemoveActiveEvent(spawnedSpirit);
         }
@@ -228,13 +217,13 @@ public class NightEventManager : MonoBehaviour
         
         if (isCeilingType && handSettings.ceilingPrefab != null)
         {
-            GhostlyHand spawnedHand = Instantiate(handSettings.ceilingPrefab);
+            GhostlyHand spawnedHand = Instantiate(handSettings.ceilingPrefab).GetComponent<GhostlyHand>();
             activeEvents.Add(spawnedHand);
             spawnedHand.OnEventEnded += () => RemoveActiveEvent(spawnedHand);
         }
         else if (!isCeilingType && handSettings.sidePrefab != null)
         {
-            GhostlyHand spawnedHand = Instantiate(handSettings.sidePrefab);
+            GhostlyHand spawnedHand = Instantiate(handSettings.sidePrefab).GetComponent<GhostlyHand>();
             activeEvents.Add(spawnedHand);
             spawnedHand.OnEventEnded += () => RemoveActiveEvent(spawnedHand);
         }
@@ -246,7 +235,28 @@ public class NightEventManager : MonoBehaviour
     {
         float penalty = tossingSettings.basePenalty;
         Debug.Log($"[뒤척이기 이벤트] 발생! (페널티: {penalty}초 감소)");
+        
+        if (childInstance != null)
+        {
+            childInstance.PlayTossingAnimation();
+            StartCoroutine(ReturnToSleeping(0.5f));
+            
+            // 뒤척이기 후 잠꼬대 발생 확률 체크
+            if (Random.value <= sleepTalkingSettings.occurrenceChance)
+            {
+                StartCoroutine(DelayedSleepTalking());
+            }
+        }
+        
         GameManager.Instance.ReduceTimer(penalty);
+    }
+
+    // 뒤척이기 후 약간의 딜레이를 두고 잠꼬대 시작
+    private IEnumerator DelayedSleepTalking()
+    {
+        // 뒤척이기 애니메이션이 끝나고 잠꼬대 시작
+        yield return new WaitForSeconds(0.5f);
+        StartSleepTalkingEvents(GameManager.Instance.CurrentWave);
     }
     #endregion
 
@@ -263,6 +273,19 @@ public class NightEventManager : MonoBehaviour
     {
         Debug.Log($"[잠꼬대 이벤트] 시작! (지속시간: {duration}초)");
         
+        if (childInstance != null)
+        {
+            // 현재 웨이브가 1-2웨이브(toddler)인 경우 눈 비비기 애니메이션
+            if (GameManager.Instance.CurrentWave <= 2)
+            {
+                childInstance.PlayRubbingEyesAnimation();
+            }
+            else
+            {
+                childInstance.PlaySleepingAnimation();
+            }
+        }
+        
         bool responded = false;
         yield return new WaitForSeconds(duration);
         
@@ -271,10 +294,26 @@ public class NightEventManager : MonoBehaviour
             Debug.Log($"[잠꼬대 이벤트] 대응 실패! (페널티: {penaltyTime}초 감소)");
             GameManager.Instance.ReduceTimer(penaltyTime);
         }
+
+        // 이벤트 종료 후 기본 수면 상태로 복귀
+        if (childInstance != null)
+        {
+            childInstance.PlaySleepingAnimation();
+        }
     }
     #endregion
 
     #region 유틸리티
+    // 기본 수면 상태로 돌아가는 코루틴
+    private IEnumerator ReturnToSleeping(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (childInstance != null)
+        {
+            childInstance.PlaySleepingAnimation();
+        }
+    }
+
     private void RemoveActiveEvent(NightEvent nightEvent)
     {
         if (activeEvents.Contains(nightEvent))
