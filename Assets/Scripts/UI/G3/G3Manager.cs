@@ -18,6 +18,8 @@ public class G3Manager : MonoBehaviour
     private bool isGameOver = false; // 게임 종료 여부 플래그 추가
     private float timer;
 
+    public bool win;
+
     private void Start()
     {
         if (failCircle != null)
@@ -69,6 +71,7 @@ public class G3Manager : MonoBehaviour
 
     IEnumerator Success()
     {
+        win = true;
         Debug.Log("Success");
         player.Stop();
         StopBars();
@@ -81,6 +84,7 @@ public class G3Manager : MonoBehaviour
 
     IEnumerator Fail()
     {
+        win = false;
         Debug.Log("Fail");
         player.Stop();
         StopBars();

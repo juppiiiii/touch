@@ -27,6 +27,8 @@ public class G2Manager : MonoBehaviour
     private bool isProcessing = false; // 키 입력 중인지 확인
     private bool hasReducedTooSmall = false; // NowScale 체크 후 중복 실행 방지
 
+    public bool win;
+
     void Start()
     {
         if (failCircle != null)
@@ -169,6 +171,7 @@ public class G2Manager : MonoBehaviour
 
     IEnumerator Success()
     {
+        win = true;
         isProcessing = true;
         circleReducer.StopReduce();
         successCircle.gameObject.SetActive(true);
@@ -186,6 +189,7 @@ public class G2Manager : MonoBehaviour
 
     IEnumerator Fail()
     {
+        win = false;
         isProcessing = true;
         circleReducer.StopReduce();
         failCircle.gameObject.SetActive(true);

@@ -4969,6 +4969,7 @@ MonoBehaviour:
   Circle: {fileID: 354227636}
   successScore: 5
   failScore: 3
+  win: 0
 --- !u!114 &254704703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14560,6 +14561,8 @@ MonoBehaviour:
   d1: {fileID: 3740543492330529413, guid: 12c6560be8892994db490d06b2295771, type: 3}
   d2: {fileID: 7894592811992177981, guid: 38e3bf8a0dd0ee44397cfc29a1bc8225, type: 3}
   d3: {fileID: 450586307185786610, guid: 20173081b069a394ab225f79e4a42efa, type: 3}
+  callMiniGame: 010000000200000004000000
+  showInteraction: 0
   selected: {fileID: 0}
   selectedTag: 
   leftHold: 0
@@ -16104,6 +16107,7 @@ MonoBehaviour:
   G4: {fileID: 1033271535}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   failColor: {r: 1, g: 0, b: 0, a: 1}
+  win: 0
 --- !u!114 &1033271539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19387,6 +19391,7 @@ MonoBehaviour:
   timerGaze: {fileID: 1390092905}
   failCircle: {fileID: 730099476}
   successCircle: {fileID: 2101322601}
+  win: 0
 --- !u!114 &1312844750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24229,6 +24234,7 @@ MonoBehaviour:
   G2: {fileID: 1634697236}
   successScore: 3
   failScore: 3
+  win: 0
 --- !u!114 &1634697239
 MonoBehaviour:
   m_ObjectHideFlags: 0
