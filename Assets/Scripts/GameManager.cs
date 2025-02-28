@@ -206,70 +206,70 @@ public class GameManager : MonoBehaviour
     // Update 호출 시, I 키를 누르면 현재 상태를 출력
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            PrintCurrentState();
-        }
+        // if (Input.GetKeyDown(KeyCode.I))
+        // {
+        //     PrintCurrentState();
+        // }
 
-        // 타이머 일시정지/재개 토글 (추후 삭제)
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            if (isPaused)
-            {
-                ResumeTimer();
-                Debug.Log("타이머 재개");
-            }
-            else
-            {
-                PauseTimer();
-                Debug.Log("타이머 일시정지");
-            }
-        }
+        // // 타이머 일시정지/재개 토글 (추후 삭제)
+        // if (Input.GetKeyDown(KeyCode.Q))
+        // {
+        //     if (isPaused)
+        //     {
+        //         ResumeTimer();
+        //         Debug.Log("타이머 재개");
+        //     }
+        //     else
+        //     {
+        //         PauseTimer();
+        //         Debug.Log("타이머 일시정지");
+        //     }
+        // }
 
-        // 패널티 테스트
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            ReduceTimer(5f);
-            Debug.Log("패널티 적용");
-        }
+        // // 패널티 테스트
+        // if (Input.GetKeyDown(KeyCode.P))
+        // {
+        //     ReduceTimer(5f);
+        //     Debug.Log("패널티 적용");
+        // }
 
-        // 스페이스바 누르면 낮/밤 전환 (디버그용)
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            if (IsNight)
-            {
-                if (CurrentWave < 4)
-                {
-                    CurrentWave++;
-                    StartWave();
-                    Debug.Log($"웨이브 {CurrentWave}의 낮으로 이동");
-                }
-                else
-                {
-                    EndGame();
-                    Debug.Log("게임 종료");
-                }
-            }
-            else
-            {
-                StartNight();
-                Debug.Log("밤으로 이동");
-            }
-        }
+        // // 스페이스바 누르면 낮/밤 전환 (디버그용)
+        // if (Input.GetKeyDown(KeyCode.Return))
+        // {
+        //     if (IsNight)
+        //     {
+        //         if (CurrentWave < 4)
+        //         {
+        //             CurrentWave++;
+        //             StartWave();
+        //             Debug.Log($"웨이브 {CurrentWave}의 낮으로 이동");
+        //         }
+        //         else
+        //         {
+        //             EndGame();
+        //             Debug.Log("게임 종료");
+        //         }
+        //     }
+        //     else
+        //     {
+        //         StartNight();
+        //         Debug.Log("밤으로 이동");
+        //     }
+        // }
 
-        // E키 누르면 현재 준비시간 종료
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            if (IsNight)
-            {
-                FinishNightPreparation();
-            }
-            else
-            {
-                FinishDayPreparation();
-            }
-            Debug.Log("준비 시간 종료");
-        }
+        // // E키 누르면 현재 준비시간 종료
+        // if (Input.GetKeyDown(KeyCode.E))
+        // {
+        //     if (IsNight)
+        //     {
+        //         FinishNightPreparation();
+        //     }
+        //     else
+        //     {
+        //         FinishDayPreparation();
+        //     }
+        //     Debug.Log("준비 시간 종료");
+        // }
     }
     #endregion
 
