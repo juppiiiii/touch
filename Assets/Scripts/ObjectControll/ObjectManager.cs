@@ -1,8 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using JetBrains.Annotations;
+using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class ObjectManager : MonoBehaviour {
 	//
+	private bool[] calledPrefeb = new bool[3];
+	private int prefebCnt = 0;
+	public GameObject d1, d2, d3;
+
 	private bool isCorrect = true;
 	public GameObject selected;
 	private bool isDragging = false;
@@ -51,6 +57,33 @@ public class ObjectManager : MonoBehaviour {
 		//낮에만 마우스 이동이 가능하도록 한정.
 		if (!GameManager.Instance.IsNight)
 		{
+			//낮이 되었을 때 프리팹 1회 호출
+			if (prefebCnt < 3)
+			{
+				 if (!calledPrefeb[prefebCnt]) // 최초 1회만.
+				{
+
+					calledPrefeb[prefebCnt] = true;
+					switch (prefebCnt)
+					{
+						case 0:
+							Vector3 p1 = new Vector3(8.4f, 5.1f, 10.2f);
+							Instantiate(d1, p1, Quaternion.identity);
+							return;
+						case 1:
+							Destroy(d1);
+							Vector3 p2 = new Vector3(-8.83f, 6.2f, 4f);
+							Instantiate(d2, p2, Quaternion.identity);
+							return;
+						case 2:
+							Destroy(d2);
+							Vector3 p3 = new Vector3(2.9f, 12.3f, -32.2f);
+							Instantiate(d3, p3, Quaternion.identity);
+							return;
+					}
+				}
+			}
+
 			LeftControl();
 			RightControl();
 			//선택된 오브젝트가 있을 경우 이동 처리
