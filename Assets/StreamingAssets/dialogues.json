@@ -1,16 +1,27 @@
 {
-    "Blanket": {
-        "canvasName": "BlanketCanvas",
-        "dialogues": [
-            "이불이 포근해 보인다.",
-            "하지만 자고 있을 때가 아니야!"
-        ]
-    },
-    "Robot": {
-        "canvasName": "RobotCanvas",
-        "dialogues": [
-            "이 로봇은 어디에서 온 걸까?",
-            "말을 걸어볼까?"
-        ]
-    }
+    "items": [
+        {
+            "key": "Blanket",
+            "data": {
+                "canvasName": "BlanketCanvas",
+                "dialogues": [
+                    "이불이 포근해 보인다.",
+                    "하지만 자고 있을 때가 아니야!"
+                ]
+            }
+        },
+        {
+            "key": "Robot",
+            "data": {
+                "canvasName": "RobotCanvas",
+                "dialogues": [
+                    "이 로봇은 어디에서 온 걸까?",
+                    "말을 걸어볼까?",
+                    "문장 3번째",
+                    "문장 4번째",
+                    "문장 5번째"
+                ]
+            }
+        }
+    ]
 }

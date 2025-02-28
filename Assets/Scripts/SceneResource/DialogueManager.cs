@@ -10,9 +10,16 @@ public class DialogueData
 }
 
 [System.Serializable]
+public class DialogueItem
+{
+    public string key;
+    public DialogueData data;
+}
+
+[System.Serializable]
 public class DialogueDatabase
 {
-    public Dictionary<string, DialogueData> dialogues;
+    public List<DialogueItem> items;
 }
 
 public class DialogueManager : MonoBehaviour
@@ -32,7 +39,6 @@ public class DialogueManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        Debug.Log("DialogueManager가 정상적으로 생성됨.");
         LoadDialogueData();
     }
 
@@ -57,13 +63,21 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
-        if (database.dialogues == null)
+        if (database.items == null)
         {
-            Debug.LogError("JSON 파싱 실패! dialogues가 null입니다.");
+            Debug.LogError("JSON 파싱 실패! items가 null입니다.");
             return;
         }
 
-        dialogueDictionary = database.dialogues;
+        // List를 Dictionary로 변환
+        dialogueDictionary = new Dictionary<string, DialogueData>();
+        foreach (DialogueItem item in database.items)
+        {
+            if (!dialogueDictionary.ContainsKey(item.key))
+            {
+                dialogueDictionary.Add(item.key, item.data);
+            }
+        }
 
         if (dialogueDictionary == null || dialogueDictionary.Count == 0)
         {
@@ -77,6 +91,18 @@ public class DialogueManager : MonoBehaviour
 
     public DialogueData GetDialogueData(string objectName)
     {
-        return dialogueDictionary.ContainsKey(objectName) ? dialogueDictionary[objectName] : null;
+        if (dialogueDictionary == null)
+        {
+            Debug.LogError("DialogueManager: JSON 데이터가 아직 로드되지 않았습니다!");
+            return null;
+        }
+
+        if (!dialogueDictionary.ContainsKey(objectName))
+        {
+            Debug.LogError($"'{objectName}'에 대한 대화 데이터가 JSON에 없습니다.");
+            return null;
+        }
+
+        return dialogueDictionary[objectName];
     }
 }
