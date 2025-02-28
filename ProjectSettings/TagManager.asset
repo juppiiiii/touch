@@ -12,6 +12,7 @@ TagManager:
   - Bar
   - CannotMove
   - Toy
+  - Background
   layers:
   - Default
   - TransparentFX
