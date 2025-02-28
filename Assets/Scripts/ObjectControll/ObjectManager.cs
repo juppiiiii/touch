@@ -16,10 +16,10 @@ public class ObjectManager : MonoBehaviour {
 	private List<string> stackAble = new List<string>(){ "CleanBed", "Bookcase", "LowBookcase", "WrappedBox", "WrappedSB", "BottleWater", "OpenedBook", "FO", "NT"};
 
 	// 이동 가능 영역 한계
-	private float maxZ = -0.5f;
-	private float minZ = -19.5f;
-	private float minX = 0.5f;
-	private float maxX = 19.5f;
+	private float maxZ = -0f;
+	private float minZ = -20f;
+	private float minX = 0f;
+	private float maxX = 20f;
 
 	// 쓰레기통과 세탁기의 영역
 	private float washMinX = 0;
@@ -71,6 +71,7 @@ public class ObjectManager : MonoBehaviour {
 				Debug.Log("WellDestroyed 결과: " + isCorrect);
 			}
 		}
+		//else selectd = null;
 	}
 
 	void LeftControl()
