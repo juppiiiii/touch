@@ -92,6 +92,7 @@ public class ObjectManager : MonoBehaviour {
 							Instantiate(d3, p3, Quaternion.identity);
 							return;
 					}
+					prefebCnt++;
 				}
 			}
 
@@ -276,6 +277,7 @@ public class ObjectManager : MonoBehaviour {
 				return;
 		}
 		GameManager.Instance.ResumeTimer();
+		//showInteraction을 가져가서 게임매니저에서 상호작용 씬을 표시시켜주면 된다.
 	}
 
 	void FindRightClick()
@@ -293,7 +295,7 @@ public class ObjectManager : MonoBehaviour {
 			if (hit.transform != null)
 			{
 				selected = hit.transform.gameObject; // 클릭한 오브젝트 저장
-													 //Debug.Log("Selected Object: " + selected.name); // 디버깅용
+				 //Debug.Log("Selected Object: " + selected.name); // 디버깅용
 
 				// 마우스 이전 위치 초기화
 				lastMousePosition = Input.mousePosition;
